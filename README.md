@@ -26,7 +26,7 @@ drupalsi:
     distribution: drupal                # Specify a distribution (e.g. commerce_kickstart, wetkit). Defaults to 'drupal'
     core: 7.x                           # Specify which core API version (e.g. 6.x, 7.x, 8.x). Defaults to '7.x'
     version: 7.28                       # Specify a version. Defaults to the latest stable
-    site_root: '/var/www/html/drupal'   # Full path to your Drupal root directory. Defaults to '/var/www/html/<distroname>'
+    distro_root: '/var/www/html'        # Full path to your Drupal root directory. This will create your site root folder at '/var/www/html/<distroname>'
     sites:
       default:
         profile: 'standard'             # Installation profile to use. Defaults to "standard"
@@ -47,7 +47,7 @@ drupalsi:
   dropfort:
     distribution: dropfort                  # Specify a distribution (e.g. commerce_kickstart, wetkit). Defaults to 'drupal'
     core: 7.x                               # Specify which core API version (e.g. 6.x, 7.x, 8.x). Defaults to '7.x'
-    version: 1.0                            # Specify a version. Defaults to the latest stable
+    distro_version: 1.0                            # Specify a version. Defaults to the latest stable
     distro_build_location: 'dropfort.make'  # Project download URL for your distribution. Defaults to https://update.drupal.org/release_history
                                             # Name of the make file to build the site with or the url of the distro's location.
     distro_build_type: 'make'
@@ -56,7 +56,7 @@ drupalsi:
                                             #    'svn'   _>  Checkout the site with Subversion
                                             #    'git'   _>  Clone the site with Git
                                             #    'get'   _>  Download the Drupal distribution with an HTTP GET request
-    site_root: '/var/www/html/dropfort'     # Full path to your Drupal root directory. Defaults to '/var/www/html/<distroname>', in this case would be '/var/www/html/dropfort'.
+    distro_root: '/var/www/html'            # Full path to your distro root directory. In this case would create '/var/www/html/dropfort'.
     distro_build_args:                           # Arguments to add to the build_location method. For example with 'get' requests, adds key/value pairs to the URL via querystring parameters. Defaults to ''.
       sitetoken: '134asdfasdf12341234sdasdf'
       core: '7.x'
