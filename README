@@ -1,0 +1,106 @@
+Drupal Site Install
+===================
+
+This module manages the installation of a Drupal site. It only cares for the installation task.
+Managing updates and code changes are the responsibility of the Drupal site itself.
+This module only installs a Drupal site if it does not currently exist.
+
+How it works
+------------
+
+Describe the site(s) you want on the server. The information you provide includes the
+credentials to the database, the site folder names and the configuration for the
+$DRUPAL_ROOT/sites/sites.php if necessary.
+
+You can also specify additional installation profiles to download and add to the available
+list of sites (e.g. dropfort_profile)
+
+Lastly, you can specify a whole distribution of Drupal to replace vanialla core.
+
+Sample Hiera configuration
+--------------------------
+
+````yaml
+drupalsi:
+  drupal:                               # Name of the distribution installation
+    distribution: drupal                # Specify a distribution (e.g. commerce_kickstart, wetkit). Defaults to 'drupal'
+    core: 7.x                           # Specify which core API version (e.g. 6.x, 7.x, 8.x). Defaults to '7.x'
+    version: 7.28                       # Specify a version. Defaults to the latest stable
+    site_root: '/var/www/html/drupal'   # Full path to your Drupal root directory. Defaults to '/var/www/html/<distroname>'
+    sites:
+      default:
+        profile: 'standard'             # Installation profile to use. Defaults to "standard"
+        account-name: 'admin'
+        account-pass: 'adminpassword'
+        account-mail: 'admin@example.com'
+        clean-url: true
+        db-prefix: ''
+        db-su: '<root>'
+        db-su-pw: '<pass>'
+        db-url= 'mysql://root:pass@127.0.0.1/db'
+        locale: '<en-GB>'
+        site-mail: 'admin@example.com'
+        site-name: 'Site Install'
+        sites-subdir: '<directory_name>'
+        base_url: '<https://example.com>'
+
+  dropfort:
+    distribution: dropfort                # Specify a distribution (e.g. commerce_kickstart, wetkit). Defaults to 'drupal'
+    core: 7.x                             # Specify which core API version (e.g. 6.x, 7.x, 8.x). Defaults to '7.x'
+    version: 1.0                          # Specify a version. Defaults to the latest stable
+    build-location: 'dropfort.make'       # Project download URL for your distribution. Defaults to https://update.drupal.org/release-history
+                                          # Name of the make file to build the site with or the url of the distro's location.
+    build-type: 'make'
+                                          #  Options:
+                                          #    'make'  ->  Build the site using a drush make file
+                                          #    'svn'   ->  Checkout the site with Subversion
+                                          #    'git'   ->  Clone the site with Git
+                                          #    'get'   ->  Download the Drupal distribution with an HTTP GET request
+    site-root: '/var/www/html/dropfort'   # Full path to your Drupal root directory. Defaults to '/var/www/html/<distroname>', in this case would be '/var/www/html/dropfort'.
+    build-args:                           # Arguments to add to the build-location method. For example with 'get' requests, adds key/value pairs to the URL via querystring parameters. Defaults to ''.
+      sitetoken: '134asdfasdf12341234sdasdf'
+      core: '7.x'
+    profiles:
+      dropfortl10n_profile:
+        build-type: 'get'
+                                          #  Options:
+                                          #    'make'  ->  Build the site using a drush make file
+                                          #    'svn'   ->  Checkout the site with Subversion
+                                          #    'git'   ->  Clone the site with Git
+                                          #    'get'   ->  Download the Drupal distribution with an HTTP GET request
+
+        build-location: 'https://updates.dropfort.com/fserver/release-history'
+                                          # Name of the make file to build the site with or the url of the profile's location:
+    sites:
+      default:
+        profile: 'dropfort_profile'       # This is an install profile which comes with this distribution
+        account-name: 'admin'
+        account-pass: 'adminpassword'
+        account-mail: 'admin@example.com'
+        clean-url: true
+        db-prefix: ''
+        db-su: '<root>'
+        db-su-pw: '<pass>'
+        db-url= 'mysql://root:pass@127.0.0.1/db'
+        locale: '<en-GB>'
+        site-mail: 'admin@example.com'
+        site-name: 'Site 2 Install'
+        sites-subdir: 'site2'
+        base_url: '<https://app.dropfort.com>'
+      account:
+        profile: 'dropfortl10n_profile'   # This is the install profile we added in the config above
+        account-name: 'admin'
+        account-pass: 'adminpassword'
+        account-mail: 'admin@example.com'
+        clean-url: true
+        db-prefix: ''
+        db-su: '<root>'
+        db-su-pw: '<pass>'
+        db-url= 'mysql://root:pass@127.0.0.1/db'
+        locale: '<en-GB>'
+        site-mail: 'admin@example.com'
+        site-name: 'Site 2 Install'
+        sites-subdir: 'site2'
+        base_url: '<https://account.dropfort.com>'
+
+````
