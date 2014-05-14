@@ -1,6 +1,6 @@
 # Defines a drupalsi::distro resource
 
-define drupalsi::distro ($distribution) {
+define drupalsi::distro ($distro) {
   include drush
 
   # Download the distro and place it in the proper location
@@ -8,17 +8,17 @@ define drupalsi::distro ($distribution) {
 
 
 
-  if ($distribution::distro_build_type == 'get') {
-    drush::dl {"drush-dl-${distribution::distribution}-${distribution::distro_version}":
-      source => $distribution::distro_build_location,
-      destination => $distribution::site_root,
-      require => File[$distribution::site_root]
+  if ($distro::distro_build_type == 'get') {
+    drush::dl {"drush-dl-${distro::distribution}-${distro::distro_version}":
+      source => $distro::distro_build_location,
+      destination => "${distro::distro_root}/${distro::distribution}",
+      require => File[$distro::distro_root]
     }
   }
 
-  $profiles = hiera_hash("drupalsi::${distribution}::profiles")
-  create_resources('drupalsi::profile', $profiles, $distribution)
+  $profiles = hiera_hash("drupalsi::${distro}::profiles")
+  create_resources('drupalsi::profile', $profiles, $distro)
 
-  $sites = hiera_hash("drupalsi::${distribution}::sites")
-  create_resources('drupalsi::site', $sites, $distribution)
+  $sites = hiera_hash("drupalsi::${distro}::sites")
+  create_resources('drupalsi::site', $sites, $distro)
 }
