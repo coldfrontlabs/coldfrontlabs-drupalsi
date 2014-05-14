@@ -47,7 +47,7 @@ drupalsi:
   dropfort:
     distribution: dropfort                  # Specify a distribution (e.g. commerce_kickstart, wetkit). Defaults to 'drupal'
     core: 7.x                               # Specify which core API version (e.g. 6.x, 7.x, 8.x). Defaults to '7.x'
-    distro_version: 1.0                            # Specify a version. Defaults to the latest stable
+    distro_version: 1.0                     # Specify a version. Defaults to the latest stable
     distro_build_location: 'dropfort.make'  # Project download URL for your distribution. Defaults to https://update.drupal.org/release_history
                                             # Name of the make file to build the site with or the url of the distro's location.
     distro_build_type: 'make'
@@ -57,11 +57,13 @@ drupalsi:
                                             #    'git'   _>  Clone the site with Git
                                             #    'get'   _>  Download the Drupal distribution with an HTTP GET request
     distro_root: '/var/www/html'            # Full path to your distro root directory. In this case would create '/var/www/html/dropfort'.
-    distro_build_args:                           # Arguments to add to the build_location method. For example with 'get' requests, adds key/value pairs to the URL via querystring parameters. Defaults to ''.
+    distro_build_args:                      # Arguments to add to the build_location method. For example with 'get' requests, adds key/value pairs to the URL via querystring parameters. Defaults to ''.
       sitetoken: '134asdfasdf12341234sdasdf'
       core: '7.x'
     profiles:
       dropfortl10n_profile:
+        profile: dropfortl10n_profile
+        version: 2.0                        # Builds out the full version based on the distro version. In this case it would be 7.x-2.0
         build_type: 'get'
                                             #  Options:
                                             #    'make'  _>  Build the site using a drush make file
@@ -70,7 +72,10 @@ drupalsi:
                                             #    'get'   _>  Download the Drupal distribution with an HTTP GET request
 
         build_location: 'https://updates.dropfort.com/fserver/release_history'
-                                            # Name of the make file to build the site with or the url of the profile's location:
+        build_args:                         # Arguments to add to the build_location method. For example with 'get' requests, adds key/value pairs to the URL via querystring parameters. Defaults to ''.
+          sitetoken: '134asdfasdf12341234sdasdf'
+          core: '7.x'                       # Name of the make file to build the site with or the url of the profile's location:
+
     sites:
       default:
         profile: 'dropfort_profile'         # This is an install profile which comes with this distribution
