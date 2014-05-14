@@ -6,8 +6,6 @@ define drupalsi::distro ($distro) {
   # Download the distro and place it in the proper location
   # Ex: drush dl drupal-7.28 --destination=/var/www/html/drupal -y
 
-
-
   if ($distro::distro_build_type == 'get') {
     drush::dl {"drush-dl-${distro::distribution}-${distro::distro_version}":
       source => $distro::distro_build_location,
