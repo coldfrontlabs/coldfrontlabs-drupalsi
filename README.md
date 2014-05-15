@@ -24,7 +24,7 @@ Sample Hiera configuration
 drupalsi:
   drupal:                               # Name of the distribution installation
     distribution: drupal                # Specify a distribution (e.g. commerce_kickstart, wetkit). Defaults to 'drupal'
-    core: 7.x                           # Specify which core API version (e.g. 6.x, 7.x, 8.x). Defaults to '7.x'
+    core: '7.x'                           # Specify which core API version (e.g. 6.x, 7.x, 8.x). Defaults to '7.x'
     version: 7.28                       # Specify a version. Defaults to the latest stable
     distro_root: '/var/www/html'        # Full path to your Drupal root directory. This will create your site root folder at '/var/www/html/<distroname>'
     sites:
@@ -37,7 +37,7 @@ drupalsi:
         db_prefix: ''
         db_su: '<root>'
         db_su_pw: '<pass>'
-        db_url= 'mysql://root:pass@127.0.0.1/db'
+        db_url: 'mysql://root:pass@127.0.0.1/db'
         locale: '<en_GB>'
         site_mail: 'admin@example.com'
         site_name: 'Site Install'
@@ -81,7 +81,7 @@ drupalsi:
         db_prefix: ''
         db_su: '<root>'
         db_su_pw: '<pass>'
-        db_url= 'mysql://root:pass@127.0.0.1/db'
+        db_url: 'mysql://root:pass@127.0.0.1/db'
         locale: '<en_GB>'
         site_mail: 'admin@example.com'
         site_name: 'Site 2 Install'
@@ -96,7 +96,7 @@ drupalsi:
         db_prefix: ''
         db_su: '<root>'
         db_su_pw: '<pass>'
-        db_url= 'mysql://root:pass@127.0.0.1/db'
+        db_url: 'mysql://root:pass@127.0.0.1/db'
         locale: '<en_GB>'
         site_mail: 'admin@example.com'
         site_name: 'Site 2 Install'
