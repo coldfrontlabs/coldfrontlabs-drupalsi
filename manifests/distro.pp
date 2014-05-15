@@ -12,6 +12,8 @@ define drupalsi::distro ($distribution = 'drupal',
                          $sites = undef
                          ) {
 
+  # Check if the distro is already there
+
   # Download the distro and place it in the proper location
   # Ex: drush dl drupal-7.28 --destination=/var/www/html/drupal -y
 
@@ -24,9 +26,11 @@ define drupalsi::distro ($distribution = 'drupal',
 
     drush::dl {"drush-dl-${name}-${distribution}-${api_version}":
       source => $distro_build_location,
-      destination => "${distro_root}/${distribution}",
+      destination => $distro_root,
       project_name => $distribution,
-      default_major => $api_version
+      default_major => $api_version,
+      drupal_project_rename => $name,
+      onlyif => "test ! -f ${distro_root}/${name}/index.php",
     }
   }
 
