@@ -24,7 +24,7 @@ Sample Hiera configuration
 drupalsi:
   drupal:                               # Name of the distribution installation
     distribution: drupal-7.28           # Specify a distribution (e.g. commerce_kickstart, wetkit). Defaults to 'drupal'. Include the version optionally.
-    core: 7                             # Specify which core API version (e.g. 6, 7, 8). Defaults to '7'
+    api_version: 7                      # Specify which core API version (e.g. 6, 7, 8). Defaults to '7'
     distro_root: '/var/www/html'        # Full path to your Drupal root directory with no trailing slash. This will create your site root folder at '/var/www/html/<distroname>'
     sites:
       default:
@@ -45,7 +45,7 @@ drupalsi:
 
   dropfort:
     distribution: dropfort                  # Specify a distribution (e.g. commerce_kickstart, wetkit). Defaults to 'drupal'
-    core: 7                                 # Specify which core API version (e.g. 6, 7, 8). Defaults to '7'
+    api_version: 7                          # Specify which core API version (e.g. 6, 7, 8). Defaults to '7'
     distro_build_location: 'dropfort.make'  # Project download URL for your distribution. Defaults to https://update.drupal.org/release_history
                                             # Name of the make file to build the site with or the url of the distro's location.
     distro_build_type: 'make'
