@@ -22,7 +22,7 @@ define drupalsi::distro ($distribution = 'drupal',
       $distro_build_location = ''
     }
 
-    drush::dl {"drush-dl-${name}-${distro[distribution]}-${distro[distro_version]}":
+    drush::dl {"drush-dl-${name}-${distribution}-${api_version}":
       source => $distro_build_location,
       destination => "${distro_root}/${distribution}",
       project_name => $distribution,
