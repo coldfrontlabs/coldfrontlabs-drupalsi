@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 Drupal Site Install
 ===================
 
