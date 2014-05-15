@@ -11,8 +11,8 @@ define drupalsi::distro ($distro) {
     $distro[distribution] = drupal
   }
 
-  if !$distro[core] {
-    $distro[core] = 7
+  if !$distro[api_version] {
+    $distro[api_version] = 7
   }
 
   if !$distro[distro_root] {
@@ -31,7 +31,7 @@ define drupalsi::distro ($distro) {
       source => $distro[distro_build_location],
       destination => "${distro[distro_root]}/${distro[distribution]}",
       project_name => $distro[distribution],
-      default_major => $distro[core]
+      default_major => $distro[api_version]
     }
   }
 
