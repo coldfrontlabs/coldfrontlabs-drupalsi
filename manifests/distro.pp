@@ -19,4 +19,6 @@ define drupalsi::distro ($distro) {
 
   $sites = hiera_hash("drupalsi::${distro}::sites")
   create_resources('drupalsi::site', $sites, $distro)
+
+  # Generate the sites.php file for all sites installed on this distro
 }
