@@ -7,31 +7,31 @@ define drupalsi::distro ($distro) {
   # Ex: drush dl drupal-7.28 --destination=/var/www/html/drupal -y
 
   # Set some global defaults for distros
-  if !$distro[distribution] {
-    $distro[distribution] = drupal
+  if !$distro['distribution'] {
+    $distro['distribution'] = drupal
   }
 
-  if !$distro[api_version] {
-    $distro[api_version] = 7
+  if !$distro['api_version'] {
+    $distro['api_version'] = 7
   }
 
-  if !$distro[distro_root] {
-    $distro[distro_root] = '/var/www/html'
+  if !$distro['distro_root'] {
+    $distro['distro_root'] = '/var/www/html'
   }
 
 
-  if ($distro[distro_build_type] == 'get') {
+  if ($distro['distro_build_type'] == 'get') {
 
     # Set some defaults for the GET build type
-    if !$distro[distro_build_location] {
-      $distro[distro_build_location] = ''
+    if !$distro['distro_build_location'] {
+      $distro['distro_build_location'] = ''
     }
 
     drush::dl {"drush-dl-${name}-${distro[distribution]}-${distro[distro_version]}":
-      source => $distro[distro_build_location],
+      source => $distro['distro_build_location'],
       destination => "${distro[distro_root]}/${distro[distribution]}",
-      project_name => $distro[distribution],
-      default_major => $distro[api_version]
+      project_name => $distro['distribution'],
+      default_major => $distro['api_version']
     }
   }
 
