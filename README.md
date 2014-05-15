@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Drupal Site Install
 ===================
 
@@ -37,7 +38,7 @@ drupalsi:
         db_prefix: ''
         db_su: '<root>'
         db_su_pw: '<pass>'
-        db_url= 'mysql://root:pass@127.0.0.1/db'
+        db_url: 'mysql://root:pass@127.0.0.1/db'
         locale: '<en_GB>'
         site_mail: 'admin@example.com'
         site_name: 'Site Install'
@@ -86,7 +87,7 @@ drupalsi:
         db_prefix: ''
         db_su: '<root>'
         db_su_pw: '<pass>'
-        db_url= 'mysql://root:pass@127.0.0.1/db'
+        db_url: 'mysql://root:pass@127.0.0.1/db'
         locale: '<en_GB>'
         site_mail: 'admin@example.com'
         site_name: 'Site 2 Install'
@@ -101,11 +102,9 @@ drupalsi:
         db_prefix: ''
         db_su: '<root>'
         db_su_pw: '<pass>'
-        db_url= 'mysql://root:pass@127.0.0.1/db'
+        db_url: 'mysql://root:pass@127.0.0.1/db'
         locale: '<en_GB>'
         site_mail: 'admin@example.com'
         site_name: 'Site 2 Install'
         sites_subdir: 'site2'
         base_url: '<https://account.dropfort.com>'
-
-````

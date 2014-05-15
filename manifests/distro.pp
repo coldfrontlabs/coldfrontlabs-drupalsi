@@ -14,11 +14,9 @@ define drupalsi::distro ($distro) {
     }
   }
 
-  $profiles = hiera_hash("drupalsi::${distro}::profiles")
-  create_resources('drupalsi::profile', $profiles, $distro)
+  create_resources('drupalsi::profile', ${distro::profiles})
+  create_resources('drupalsi::site', ${distro::sites})
 
-  $sites = hiera_hash("drupalsi::${distro}::sites")
-  create_resources('drupalsi::site', $sites, $distro)
 
   # Generate the sites.php file for all sites installed on this distro
 }
