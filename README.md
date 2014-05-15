@@ -23,9 +23,8 @@ Sample Hiera configuration
 ````yaml
 drupalsi:
   drupal:                               # Name of the distribution installation
-    distribution: drupal                # Specify a distribution (e.g. commerce_kickstart, wetkit). Defaults to 'drupal'
+    distribution: drupal-7.28           # Specify a distribution (e.g. commerce_kickstart, wetkit). Defaults to 'drupal'. Include the version optionally.
     core: 7.x                           # Specify which core API version (e.g. 6.x, 7.x, 8.x). Defaults to '7.x'
-    version: 7.28                       # Specify a version. Defaults to the latest stable
     distro_root: '/var/www/html'        # Full path to your Drupal root directory. This will create your site root folder at '/var/www/html/<distroname>'
     sites:
       default:
