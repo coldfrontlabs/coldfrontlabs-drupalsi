@@ -90,6 +90,7 @@ drupalsi:
         site_name: 'Site 2 Install'
         sites_subdir: 'site2'
         base_url: '<https://app.dropfort.com>'
+        keyvalue: 'key=value'               # See drush si documentation for more details
       account:
         profile: 'dropfortl10n_profile'     # This is the install profile we added in the config above
         account_name: 'admin'
