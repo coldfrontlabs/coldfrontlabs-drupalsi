@@ -31,16 +31,23 @@ drupalsi::distros:
     api_version: 7                          # Specify which core API version (e.g. 6, 7, 8). Defaults to '7'
     distro_build_location: 'dropfort.make'  # Project download URL for your distribution. Defaults to https://update.drupal.org/release_history
                                             # Name of the make file to build the site with or the url of the distro's location.
-    distro_build_type: 'make'
-                                            #  Options:
-                                            #    'make'  _>  Build the site using a drush make file
-                                            #    'svn'   _>  Checkout the site with Subversion
+
+    distro_build_type: 'make'               #  Options:
+                                            #    'make'  _>  Build the profile using a drush make file. Optionally from a remote file source. See distro_build_args for more details
                                             #    'git'   _>  Clone the site with Git
-                                            #    'get'   _>  Download the Drupal distribution with an HTTP GET request
+                                            #    'drush'   _>  Download the Drupal distribution with an HTTP GET request
+
     distro_root: '/var/www/html'            # Full path to your distro root directory. In this case would create '/var/www/html/dropfort'.
     distro_build_args:                      # Arguments to add to the build_location method. For example with 'get' requests, adds key/value pairs to the URL via querystring parameters. Defaults to ''.
-      sitetoken: '134asdfasdf12341234sdasdf'
-      core: '7.x'
+
+      # Args for the 'make' build type
+      url: 'https://git.dropfort.com/dropfort/dropfort_make/raw/7.x-1.x/dropfort.make' # Publicly available URL to a make file
+      url_args: 'private_token=1234567'    # URL Encoded string of arguments to append to the URL. Omit the '?' character as it is automatically added.
+
+      # Args for the 'git' build type
+      # @todo
+      # Args for the 'drush' build type
+      # @todo
 
 drupalsi::sites:
   default:
@@ -99,10 +106,10 @@ drupalsi::profiles:
     version: 2.0                        # Builds out the full version based on the distro version. In this case it would be 7.x-2.0
     build_type: 'get'
                                         #  Options:
-                                        #    'make'  _>  Build the site using a drush make file
-                                        #    'svn'   _>  Checkout the site with Subversion
+                                        #    'make'  _>  Build the profile using a drush make file. Optionally from a remote file source. See distro_build_args for more details
+                                        #    'drush' _>  Download the site with drush
                                         #    'git'   _>  Clone the site with Git
-                                        #    'get'   _>  Download the Drupal distribution with an HTTP GET request
+                                        #    'local' _>  Profile which is already present. For example the 'standard' install profile in Drupal. Used to generate the dependency tree in Puppet.
 
     build_location: 'https://updates.dropfort.com/fserver/release_history'
     build_args:                         # Arguments to add to the build_location method. For example with 'get' requests, adds key/value pairs to the URL via querystring parameters. Defaults to ''.
