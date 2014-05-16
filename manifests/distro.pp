@@ -67,7 +67,7 @@ define drupalsi::distro ($distribution = 'drupal',
     'site_root' => "${distro_root}/${name}"
   }
 
-  #create_resources('drupalsi::profile', ${distro::profiles})
+  #create_resources('drupalsi::profile', ${distro::profiles})->
   create_resources('drupalsi::site', $sites, $distro_settings)
 
 
