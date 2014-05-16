@@ -49,8 +49,10 @@ define drupalsi::distro ($distribution = 'drupal',
     }
 
     file {"${$distro_build_location}":
+      path => $path,
       source => [$path],
       mode => 0655,
+      ensure => present,
     }
 
     drush::make {"drush-make-${name}":
