@@ -48,7 +48,7 @@ define drupalsi::distro ($distribution = 'drupal',
     file {"${$distro_build_location}":
       path => $distro_build_location,
       source => [$distro_build_location],
-      mode => 0655,
+      mode => 0644,
       ensure => present,
     }
 
