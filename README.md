@@ -30,7 +30,7 @@ drupalsi::distros:
     distribution: dropfort                  # Specify a distribution (e.g. commerce_kickstart, wetkit). Defaults to 'drupal'
     api_version: 7                          # Specify which core API version (e.g. 6, 7, 8). Defaults to '7'
     distro_build_location: 'dropfort.make'  # Project download URL for your distribution. Defaults to https://update.drupal.org/release_history
-                                            # Name of the make file to build the site with or the url of the distro's location.
+                                            # Full path to the make file to build the site with.
 
     distro_build_type: 'make'               #  Options:
                                             #    'make'  _>  Build the profile using a drush make file. Optionally from a remote file source. See distro_build_args for more details

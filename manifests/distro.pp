@@ -8,8 +8,6 @@ define drupalsi::distro ($distribution = 'drupal',
                          $distro_build_type = 'get',
                          $distro_build_location = 'https://updates.drupal.org/release-history',
                          $distro_build_args = {},
-                         $profiles = {},
-                         $sites = {}
                          ) {
 
   # Steps:
@@ -33,6 +31,22 @@ define drupalsi::distro ($distribution = 'drupal',
     }
   }
   elsif ($distro_build_type == 'make') {
+    if $distro_build_args['url'] {
+      if $distro_build_args['url_args'] {
+        $path = "${distro_build_args['url']}?${distro_build_args[url_args]}"
+      }
+      else {
+        $path = "${distro_build_args['url']}"
+      }
+    }
+    else {
+      $path = $distro_build_location
+    }
+
+    file {"${$distro_build_location}":
+      source => [$path]
+    }
+
     drush::make {"drush-make-${name}":
       makefile => $distro_build_location,
       build_path => "${distro_root}/${name}",
@@ -58,6 +72,7 @@ define drupalsi::distro ($distribution = 'drupal',
       translations => $distro_build_args[translations],
       version => $distro_build_args[version],
       working_copy => $distro_build_args[working_copy],
+      require => File["${distro_build_location}"],
     }
   }
 
