@@ -35,7 +35,6 @@ define drupalsi::site ($profile,
     site_mail => $site_mail,
     site_name => $site_name,
     sites_subdir => $sites_subdir,
-    base_url => $base_url,
     settings => $keyvalue,
     onlyif => "test ! -f ${site_root}/sites/${name}/settings.php",
   }
