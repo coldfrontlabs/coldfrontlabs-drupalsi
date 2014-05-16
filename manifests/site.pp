@@ -21,7 +21,7 @@ define drupalsi::site ($profile,
 
   # Build the site root based on the distro information
   $distros = hiera("drupalsi::distros")
-  $distro_root = $distro_base[$distro]['distro_root']
+  $distro_root = $distros[$distro]['distro_root']
   $site_root = "$distro_root/$distro"
 
   if !$sites_subdir {
