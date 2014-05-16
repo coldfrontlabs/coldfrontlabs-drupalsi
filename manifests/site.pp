@@ -26,7 +26,6 @@ define drupalsi::site ($profile,
     $sitessubdir = $sites_subdir
   }
 
-
   drush::si {"drush-si-${name}-${site_name}-${site_root}":
     profile => $profile,
     db_url => $db_url,
@@ -45,7 +44,4 @@ define drupalsi::site ($profile,
     settings => $keyvalue,
     onlyif => "test ! -f ${site_root}/sites/${sitessubdir}/settings.php",
   }
-
-  # Ex: drush si --root=${distribution}::site_root --destination=${site}::sites_subdir --db-url=${sites}::db_url ...
-  # Also need the distro_root value from the distro the site is being installed and set the --root option for drush
 }
