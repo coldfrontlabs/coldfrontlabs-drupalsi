@@ -35,12 +35,12 @@ define drupalsi::distro ($distribution = 'drupal',
   }
 
   # Additional settings for creating profiles and sites
-  $settings = {
+  $distro_settings = {
     'site_root' => "${distro_root}/${name}"
   }
 
   #create_resources('drupalsi::profile', ${distro::profiles})
-  create_resources('drupalsi::site', $sites, $settings)
+  create_resources('drupalsi::site', $sites, $distro_settings)
 
 
   # Generate the sites.php file for all sites installed on this distro

@@ -43,7 +43,7 @@ define drupalsi::site ($profile,
     site_name => $site_name,
     sites_subdir => $sitessubdir,
     settings => $keyvalue,
-    onlyif => "test ! -f ${site_root}/sites/${sitesubdir}/settings.php",
+    onlyif => "test ! -f ${site_root}/sites/${sitessubdir}/settings.php",
   }
 
   # Ex: drush si --root=${distribution}::site_root --destination=${site}::sites_subdir --db-url=${sites}::db_url ...
