@@ -19,6 +19,13 @@ define drupalsi::site ($profile,
 ) {
   include drush
 
+  if !$sites_subdir {
+    $sitessubdir = $name
+  }
+  else {
+    $sitessubdir = $sites_subdir
+  }
+
 
   drush::si {"drush-si-${name}-${site_name}-${site_root}":
     profile => $profile,
@@ -34,7 +41,7 @@ define drupalsi::site ($profile,
     locale => $locale,
     site_mail => $site_mail,
     site_name => $site_name,
-    sites_subdir => $sites_subdir,
+    sites_subdir => $sitessubdir,
     settings => $keyvalue,
     onlyif => "test ! -f ${site_root}/sites/${name}/settings.php",
   }
