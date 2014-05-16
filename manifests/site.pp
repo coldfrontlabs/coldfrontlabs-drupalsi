@@ -20,8 +20,9 @@ define drupalsi::site ($profile,
   include drush
 
   # Build the site root based on the distro information
-  $distro_base = hiera("drupalsi::distros::${distro}::distro_root")
-  $site_root = "${distro_base}/${distro}"
+  $distros = hiera("drupalsi::distros")
+  $distro_root = $distro_base[$distro]['distro_root']
+  $site_root = "$distro_root/$distro"
 
   if !$sites_subdir {
     $sitessubdir = $name
