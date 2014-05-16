@@ -58,13 +58,13 @@ define drupalsi::distro ($distribution = 'drupal',
       translations => $distro_build_args[translations],
       version => $distro_build_args[version],
       working_copy => $distro_build_args[working_copy],
-      onlyif => "test ! -d ${distro_root}/${name}",
     }
   }
 
   # Additional settings for creating profiles and sites
   $distro_settings = {
-    'site_root' => "${distro_root}/${name}"
+    'site_root' => "${distro_root}/${name}",
+    'distro' => $name
   }
 
   #create_resources('drupalsi::profile', ${distro::profiles})
