@@ -12,11 +12,9 @@ define drupalsi::distro ($distribution = 'drupal',
                          $sites = {}
                          ) {
 
-  # Check if the distro is already there
-  $onlyf = "test ! -f ${distro_root}/${name}/index.php"
-
-  # Download the distro and place it in the proper location
-  # Ex: drush dl drupal-7.28 --destination=/var/www/html/drupal -y
+  # Steps:
+  # 1. Check if the distro is already there
+  # 2. Download the distro and place it in the proper location
 
   if ($distro_build_type == 'get') {
 
@@ -31,7 +29,7 @@ define drupalsi::distro ($distribution = 'drupal',
       project_name => $distribution,
       default_major => $api_version,
       drupal_project_rename => $name,
-      onlyif => $onlyif,
+      onlyif => "test ! -f ${distro_root}/${name}/index.php",
     }
   }
   elsif ($distro_build_type == 'make') {
@@ -60,7 +58,7 @@ define drupalsi::distro ($distribution = 'drupal',
       translations => $distro_build_args[translations],
       version => $distro_build_args[version],
       working_copy => $distro_build_args[working_copy],
-      onlyif => $onlyif,
+      onlyif => "test ! -d ${distro_root}/${name}",
     }
   }
 
