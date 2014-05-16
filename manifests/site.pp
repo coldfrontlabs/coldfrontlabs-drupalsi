@@ -44,6 +44,6 @@ define drupalsi::site ($profile,
     sites_subdir => $sitessubdir,
     settings => $keyvalue,
     onlyif => "test ! -f ${site_root}/sites/${sitessubdir}/settings.php -a -f ${site_root}/index.php",
-    require => Drupalsi::Distro[]
+    require => Drupalsi::Distro[$distro]
   }
 }
