@@ -39,18 +39,15 @@ define drupalsi::distro ($distribution = 'drupal',
         $path = "${distro_build_args['url']}"
       }
       exec { "drupalsi-${name}-download":
-        command => "wget -q ${$path} -O ${$distro_build_location}",
+        command => "wget -q ${path} -O ${distro_build_location}",
         creates => $distro_build_location,
         path => [ "/bin/", "/sbin/" , "/usr/bin/", "/usr/sbin/", "/usr/local/bin", "/usr/local/sbin"],
       }
     }
-    else {
-      $path = $distro_build_location
-    }
 
     file {"${$distro_build_location}":
-      path => $path,
-      source => [$path],
+      path => $distro_build_location,
+      source => [$distro_build_location],
       mode => 0655,
       ensure => present,
     }
