@@ -1,11 +1,12 @@
 # @todo get the arguments from drush si and the install.sh file as setup to be
 # passed in via hiera
 class drupalsi () {
-  $distros = hiera_hash('drupalsi', {})
-  create_resources('drupalsi::distro', $distros)
+  $distros = hiera_hash('drupalsi::distros', {})
+  create_resources(drupalsi::distro, $distros)
 
+  $profiles = hiera_hash('drupalsi::profiles', {})
+  create_resources(drupalsi::profile, $profiles)
 
-  #create_resources('drupalsi::profile', ${distro::profiles})
-  create_resources(drupalsi::site, $sites, $distro_settings)
-
+  $sites = hiera_hash('drupalsi::sites', {})
+  create_resources(drupalsi::site, $sites)
 }

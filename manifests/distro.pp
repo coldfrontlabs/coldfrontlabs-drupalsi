@@ -23,7 +23,7 @@ define drupalsi::distro ($distribution = 'drupal',
       $distro_build_location = ''
     }
 
-    drush::dl {"drush-dl-${name}-${distribution}-${api_version}":
+    drush::dl {"drush-dl-${name}":
       source => $distro_build_location,
       destination => $distro_root,
       project_name => $distribution,
@@ -33,7 +33,7 @@ define drupalsi::distro ($distribution = 'drupal',
     }
   }
   elsif ($distro_build_type == 'make') {
-    drush::make {"drush-make-${name}-${distribution}-${api_version}":
+    drush::make {"drush-make-${name}":
       makefile => $distro_build_location,
       build_path => "${distro_root}/${name}",
       concurrency => $distro_build_args[concurrency],

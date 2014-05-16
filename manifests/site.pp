@@ -27,7 +27,7 @@ define drupalsi::site ($profile,
     $sitessubdir = $sites_subdir
   }
 
-  drush::si {"drush-si-${name}-${site_name}-${site_root}":
+  drush::si {"drush-si-${name}":
     profile => $profile,
     db_url => $db_url,
     site_root => $site_root,
