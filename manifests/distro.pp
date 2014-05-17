@@ -38,22 +38,19 @@ define drupalsi::distro ($distribution = 'drupal',
       else {
         $path = "${distro_build_args['url']}"
       }
-      exec { "drupalsi-${name}-download":
-        command => "wget -q ${path} -O ${distro_build_location}",
-        creates => $distro_build_location,
-        path => [ "/bin/", "/sbin/" , "/usr/bin/", "/usr/sbin/", "/usr/local/bin", "/usr/local/sbin"],
-      }
+    }
+    else {
+      $path = $distro_build_location
     }
 
-    file {"${$distro_build_location}":
-      path => $distro_build_location,
-      source => [$distro_build_location],
+    file {"${$distro_build_location}.build":
       mode => 0644,
       ensure => present,
+      content => template('drupalsi/drush.make.erb'),
     }
 
     drush::make {"drush-make-${name}":
-      makefile => $distro_build_location,
+      makefile => "$distro_build_location.build",
       build_path => "${distro_root}/${name}",
       concurrency => $distro_build_args[concurrency],
       contrib_destination => $distro_build_args[contrib_destination],
@@ -77,7 +74,7 @@ define drupalsi::distro ($distribution = 'drupal',
       translations => $distro_build_args[translations],
       version => $distro_build_args[version],
       working_copy => $distro_build_args[working_copy],
-      require => File["${distro_build_location}"],
+      require => File["${distro_build_location}.build"],
     }
   }
 
