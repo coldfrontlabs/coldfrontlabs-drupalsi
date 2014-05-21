@@ -8,13 +8,15 @@ define drupalsi::distro ($distribution = 'drupal',
                          $distro_build_type = 'get',
                          $distro_build_location = 'https://updates.drupal.org/release-history',
                          $distro_build_args = {},
-                         ) {
+                         )
+{
+  include drush
+
   # Steps:
   # 1. Check if the distro is already there
   # 2. Download the distro and place it in the proper location
 
   if ($distro_build_type == 'drush') {
-    include drush
 
     # Set some defaults for the GET build type
     if !$distro_build_location {
