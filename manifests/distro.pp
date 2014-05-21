@@ -70,7 +70,6 @@ define drupalsi::distro ($distribution = 'drupal',
       translations => $distro_build_args[translations],
       version => $distro_build_args[version],
       working_copy => $distro_build_args[working_copy],
-      require => File["${distro_build_location}.build"],
     }
   }
 
