@@ -45,14 +45,8 @@ define drupalsi::distro ($distribution = 'drupal',
       $path = $distro_build_location
     }
 
-    file {"${$distro_build_location}.build":
-      mode => 0644,
-      ensure => present,
-      content => template('drupalsi/drush.make.erb'),
-    }
-
     drush::make {"drush-make-${name}":
-      makefile => "$distro_build_location.build",
+      makefile => "$path",
       build_path => "${distro_root}/${name}",
       concurrency => $distro_build_args[concurrency],
       contrib_destination => $distro_build_args[contrib_destination],
