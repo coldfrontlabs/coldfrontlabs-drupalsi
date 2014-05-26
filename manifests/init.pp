@@ -1,5 +1,5 @@
-# @todo get the arguments from drush si and the install.sh file as setup to be
-# passed in via hiera
+# @todo Add documentation block here
+# @todo Add Drupal site installation verification (ex: onlyif to check the install profile used).
 class drupalsi () {
   include drush
 
