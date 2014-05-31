@@ -5,6 +5,11 @@ This module manages the installation of a Drupal site. It only cares for the ins
 Managing updates and code changes are the responsibility of the Drupal site itself.
 This module only installs a Drupal site if it does not currently exist.
 
+Dependencies
+------------
+
+- [Coldfront Drush module](https://github.com/coldfrontlabs/coldfrontlabs-drush)
+
 How it works
 ------------
 
