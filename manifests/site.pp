@@ -16,6 +16,9 @@ define drupalsi::site ($profile,
                        $sites_subdir = undef,
                        $base_url = undef,
                        $keyvalue = undef,
+                       $public_dir = undef,
+                       $private_dif = undef,
+                       $tmp_dir = undef
 ) {
   include drush
 
@@ -64,4 +67,33 @@ define drupalsi::site ($profile,
       Package['php-pear'],
     ]
   }
+
+  # Build the files directories
+  if !$public_dir {
+    $pubdir = "${sitessubdir}/files"
+  }
+
+  file {"drupalsi-public-files-${name}":
+    path => "${site_root}/sites/${pubdir}",
+    ensure => 'directory',
+    mode => '0755',
+    owner => 'apache',  #@todo determine the webserver user's name
+    recurse => true,
+    require => Drush::Si["drush-si-${name}"],
+  }
+  # @todo add call to drush config to set the public directory path
+
+  if $private_dir {
+    file {"drupalsi-private-dir-${private_dif}":
+      path => "${private_dir}",
+      ensure => 'directory',
+      mode => '0755',
+      owner => 'apache',  #@todo determine the webserver user's name
+      recurse => true,
+      require => Drush::Si["drush-si-${name}"],
+    }
+  }
+  # @todo add call to drush config to set the public directory path
+
+  # @todo add tmp dir
 }
