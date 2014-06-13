@@ -17,7 +17,7 @@ define drupalsi::site ($profile,
                        $base_url = undef,
                        $keyvalue = undef,
                        $public_dir = undef,
-                       $private_dif = undef,
+                       $private_dir = undef,
                        $tmp_dir = undef
 ) {
   include drush
