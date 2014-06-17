@@ -149,6 +149,7 @@ define drupalsi::site ($profile,
       monthday => $monthday,
       month    => $month,
       weekday  => $weekday,
+      require => Drush::Si["drush-si-${name}"],
     }
   }
 }
