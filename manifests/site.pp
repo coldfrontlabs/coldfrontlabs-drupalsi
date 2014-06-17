@@ -3,6 +3,7 @@
 define drupalsi::site ($profile,
                        $db_url,
                        $distro,
+                       $webserver_user,
                        $account_name = undef,
                        $account_pass = undef,
                        $account_mail = undef,
@@ -18,7 +19,8 @@ define drupalsi::site ($profile,
                        $keyvalue = undef,
                        $public_dir = undef,
                        $private_dir = undef,
-                       $tmp_dir = undef
+                       $tmp_dir = undef,
+                       $cron_schedule = "0 0 0/1 1/1 * ? *",
 ) {
   include drush
 
