@@ -82,15 +82,30 @@ define drupalsi::site ($profile,
     owner => $webserver_user,
     recurse => true,
     require => Drush::Si["drush-si-${name}"],
+  }->
+  file {"drupalsi-public-files-${name}-htaccess":
+    path => "${site_root}/sites/${pubdir}/.htaccess",
+    ensure => 'present',
+    mode => '0444',
+    owner => $webserver_user,  #@todo determine the webserver user's name
+    require => Drush::Si["drush-si-${name}"],
   }
 
   if $private_dir {
     file {"drupalsi-private-dir-${private_dif}":
       path => "${private_dir}",
       ensure => 'directory',
-      mode => '0755',
+      mode => '0644',
       owner => $webserver_user,  #@todo determine the webserver user's name
       recurse => true,
+      require => Drush::Si["drush-si-${name}"],
+    }->
+    # Make sure the file permissions on the htaccess file are different from the rest
+    file {"drupalsi-private-dir-${private_dif}-htaccess":
+      path => "${private_dir}/.htaccess",
+      ensure => 'present',
+      mode => '0444',
+      owner => $webserver_user,  #@todo determine the webserver user's name
       require => Drush::Si["drush-si-${name}"],
     }
   }
