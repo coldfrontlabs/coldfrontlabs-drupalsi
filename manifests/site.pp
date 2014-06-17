@@ -3,6 +3,7 @@
 define drupalsi::site ($profile,
                        $db_url,
                        $distro,
+                       $webserver_user,
                        $account_name = undef,
                        $account_pass = undef,
                        $account_mail = undef,
@@ -18,7 +19,8 @@ define drupalsi::site ($profile,
                        $keyvalue = undef,
                        $public_dir = undef,
                        $private_dir = undef,
-                       $tmp_dir = undef
+                       $tmp_dir = undef,
+                       $cron_schedule = undef,
 ) {
   include drush
 
@@ -77,23 +79,77 @@ define drupalsi::site ($profile,
     path => "${site_root}/sites/${pubdir}",
     ensure => 'directory',
     mode => '0755',
-    owner => 'apache',  #@todo determine the webserver user's name
+    owner => $webserver_user,
     recurse => true,
     require => Drush::Si["drush-si-${name}"],
   }
-  # @todo add call to drush config to set the public directory path
 
   if $private_dir {
     file {"drupalsi-private-dir-${private_dif}":
       path => "${private_dir}",
       ensure => 'directory',
       mode => '0755',
-      owner => 'apache',  #@todo determine the webserver user's name
+      owner => $webserver_user,  #@todo determine the webserver user's name
       recurse => true,
       require => Drush::Si["drush-si-${name}"],
     }
   }
-  # @todo add call to drush config to set the public directory path
 
-  # @todo add tmp dir
+
+  # Configure cron for the site
+  if $cron_schedule {
+    if $cron_schedule['minute'] {
+      $min = $cron_schedule['minute']
+    }
+    else {
+      $min = '0'
+    }
+    if $cron_schedule['hour'] {
+      $hour = $cron_schedule['hour']
+    }
+    else {
+      $hour = '*/1'
+    }
+    if $cron_schedule['day'] {
+      $day = $cron_schedule['day']
+    }
+    else {
+      $day = '*'
+    }
+    if $cron_schedule['monthday'] {
+      $monthday = $cron_schedule['monthday']
+    }
+    else {
+      $monthday = '*'
+    }
+    if $cron_schedule['month'] {
+      $month = $cron_schedule['month']
+    }
+    else {
+      $month = '*'
+    }
+    if $cron_schedule['weekday'] {
+      $weekday = $cron_schedule['weekday']
+    }
+    else {
+      $weekday = '*'
+    }
+
+  	# Build the command strings.
+  	$command = "drush --quiet --yes --root=${site_root}/sites/${sitessubdir} cron"
+  	$run_command = "/usr/bin/env PATH=$path COLUMNS=72"
+
+    cron {"drupalsi-site-cron-${name}":
+    	ensure   => 'present',
+    	command  => "${run_command} ${command}",
+    	user     => $webserver_user,
+    	minute   => $minute,
+    	hour     => $hour,
+      day      => $day,
+      monthday => $monthday,
+      month    => $month,
+      weekday  => $weekday,
+      require  => Drush::Si["drush-si-${name}"],
+    }
+  }
 }

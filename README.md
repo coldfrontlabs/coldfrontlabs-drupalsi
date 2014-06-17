@@ -77,6 +77,14 @@ drupalsi::sites:
     distro: drupal
     public_dir: "/absolute/path/to/public/files" # Leave blank to default to sites/{name}/files
     private_dir: "/absolute/path/to/private/files" # Leave blank to omit a private files dir
+    webserver_user = "apache"
+    cron_schedule:
+      minute:   '0'
+      hour:     '*/1'
+      day:      '*'
+      monthday: '*'
+      month:    '*'
+      weekday:  '*'
   dropfort:
     profile: 'dropfort_profile'         # This is an install profile which comes with this distribution
     account_name: 'admin'
