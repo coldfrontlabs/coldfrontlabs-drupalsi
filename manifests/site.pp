@@ -78,7 +78,7 @@ define drupalsi::site ($profile,
   file {"drupalsi-public-files-${name}":
     path => "${site_root}/sites/${pubdir}",
     ensure => 'directory',
-    mode => '0755',
+    mode => '0644',
     owner => $webserver_user,
     recurse => true,
     require => Drush::Si["drush-si-${name}"],
