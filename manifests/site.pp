@@ -55,18 +55,6 @@ define drupalsi::site ($profile,
     onlyif => "test ! -f ${site_root}/sites/${sitessubdir}/settings.php -a -f ${site_root}/index.php",
     require => [
       Drupalsi::Distro[$distro],
-      Package['php-cli'],
-      Package['php-common'],
-      Package['php-gd'],
-      Package['php-ldap'],
-      Package['php-mbstring'],
-      Package['php-mysql'],
-      Package['php-pdo'],
-      Package['php-process'],
-      Package['php-xml'],
-      Package['php-xmlrpc'],
-      Package['php-devel'],
-      Package['php-pear'],
     ]
   }
 
