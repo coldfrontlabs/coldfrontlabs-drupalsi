@@ -21,6 +21,8 @@ define drupalsi::site ($profile,
                        $private_dir = undef,
                        $tmp_dir = undef,
                        $cron_schedule = undef,
+                       $alias = undef,
+                       $auto_alias = true,
 ) {
   include drush
 
@@ -56,6 +58,13 @@ define drupalsi::site ($profile,
     require => [
       Drupalsi::Distro[$distro],
     ]
+  }
+
+  # Set drush site alias values
+  if $auto_alias {
+    if !$alias {
+      $a = ${name}
+    }
   }
 
   # Build the files directories

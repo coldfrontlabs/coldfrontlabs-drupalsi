@@ -87,7 +87,7 @@ drupalsi::sites:
       month:    '*'
       weekday:  '*'
     auto_alias: true                    # Flag to generate the site alias automatically. Defaults to true.
-    alias: 'mysite'                     # Name to use when generating the drush site alias entry
+    alias: 'mysite'                     # Name to use when generating the drush site alias entry. Defaults to the name generate by Puppet for your site. It is highly recommended you set a value for alias.
   dropfort:
     profile: 'dropfort_profile'         # This is an install profile which comes with this distribution
     account_name: 'admin'
