@@ -22,7 +22,7 @@ define drupalsi::site ($profile,
                        $tmp_dir = undef,
                        $cron_schedule = undef,
                        $alias = undef,
-                       $auto_alias = true,
+                       $auto_alias = false,
 ) {
   include drush
 
@@ -62,8 +62,28 @@ define drupalsi::site ($profile,
 
   # Set drush site alias values
   if $auto_alias {
-    if !$alias {
-      $a = ${name}
+    # Set the alias name
+    if $alias {
+      $a = $alias
+    }
+    else {
+      $a = $name
+    }
+
+    # Set the group name
+    if $distros[$distro]['alias'] {
+      $g = $distros[$distro]['alias']
+    }
+    else {
+      $g = $distro
+    }
+
+    drush::site_alias_file {"drush-site-alias-${a}":
+      name => $a,
+      group => $g,
+      root => $site_root,
+      os => 'Linux', # @todo determine this with Facter
+      # @todo everything else!
     }
   }
 
