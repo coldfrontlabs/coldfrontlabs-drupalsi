@@ -21,7 +21,7 @@ define drupalsi::site ($profile,
                        $private_dir = undef,
                        $tmp_dir = undef,
                        $cron_schedule = undef,
-                       $alias = undef,
+                       $site_alias = undef,
                        $auto_alias = false,
 ) {
   include drush
@@ -63,16 +63,16 @@ define drupalsi::site ($profile,
   # Set drush site alias values
   if $auto_alias {
     # Set the alias name
-    if $alias {
-      $a = $alias
+    if $site_alias {
+      $a = $site_alias
     }
     else {
       $a = $name
     }
 
     # Set the group name
-    if $distros[$distro]['alias'] {
-      $g = $distros[$distro]['alias']
+    if $distros[$distro]['group_alias'] {
+      $g = $distros[$distro]['group_alias']
     }
     else {
       $g = $distro
