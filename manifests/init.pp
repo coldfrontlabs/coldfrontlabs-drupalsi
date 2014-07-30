@@ -11,7 +11,4 @@ class drupalsi () {
 
   $sites = hiera_hash('drupalsi::sites', {})
   create_resources(drupalsi::site, $sites)
-
-  $site_aliases = hiera_hash('drupalsi::aliases', {})
-  create_resources(drush::site_alias_file, $site_aliases)
 }
