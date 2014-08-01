@@ -125,12 +125,6 @@ define drupalsi::site ($profile,
     else {
       $hour = '*/1'
     }
-    if $cron_schedule['day'] {
-      $day = $cron_schedule['day']
-    }
-    else {
-      $day = '*'
-    }
     if $cron_schedule['monthday'] {
       $monthday = $cron_schedule['monthday']
     }
@@ -150,17 +144,16 @@ define drupalsi::site ($profile,
       $weekday = '*'
     }
 
-  	# Build the command strings.
-  	$command = "drush --quiet --yes --root=${site_root}/sites/${sitessubdir} cron"
-  	$run_command = "/usr/bin/env PATH=$path COLUMNS=72"
+   # Build the command strings.
+   $command = "drush --quiet --yes --root=${site_root} -l ${sitessubdir} cron"
+   $run_command = "/usr/bin/env PATH=$path COLUMNS=72"
 
     cron {"drupalsi-site-cron-${name}":
-    	ensure   => 'present',
-    	command  => "${run_command} ${command}",
-    	user     => $webserver_user,
-    	minute   => $minute,
-    	hour     => $hour,
-      day      => $day,
+      ensure   => 'present',
+      command  => "${run_command} ${command}",
+      user     => $webserver_user,
+      minute   => $min,
+      hour     => $hour,
       monthday => $monthday,
       month    => $month,
       weekday  => $weekday,
