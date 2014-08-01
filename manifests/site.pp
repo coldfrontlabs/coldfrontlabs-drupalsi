@@ -21,6 +21,8 @@ define drupalsi::site ($profile,
                        $private_dir = undef,
                        $tmp_dir = undef,
                        $cron_schedule = undef,
+                       $site_alias = undef,
+                       $auto_alias = false,
 ) {
   include drush
 
@@ -55,19 +57,34 @@ define drupalsi::site ($profile,
     onlyif => "test ! -f ${site_root}/sites/${sitessubdir}/settings.php -a -f ${site_root}/index.php",
     require => [
       Drupalsi::Distro[$distro],
-      Package['php-cli'],
-      Package['php-common'],
-      Package['php-gd'],
-      Package['php-ldap'],
-      Package['php-mbstring'],
-      Package['php-mysql'],
-      Package['php-pdo'],
-      Package['php-process'],
-      Package['php-xml'],
-      Package['php-xmlrpc'],
-      Package['php-devel'],
-      Package['php-pear'],
     ]
+  }
+
+  # Set drush site alias values
+  if $auto_alias {
+    # Set the alias name
+    if $site_alias {
+      $a = $site_alias
+    }
+    else {
+      $a = $name
+    }
+
+    # Set the group name
+    if $distros[$distro]['group_alias'] {
+      $g = $distros[$distro]['group_alias']
+    }
+    else {
+      $g = $distro
+    }
+
+    drush::site_alias_file {"drush-site-alias-${a}":
+      name => $a,
+      group => $g,
+      root => $site_root,
+      os => 'Linux', # @todo determine this with Facter
+      # @todo everything else!
+    }
   }
 
   # Build the files directories
