@@ -82,7 +82,6 @@ drupalsi::sites:
     cron_schedule:
       minute:   '0'
       hour:     '*/1'
-      day:      '*'
       monthday: '*'
       month:    '*'
       weekday:  '*'
