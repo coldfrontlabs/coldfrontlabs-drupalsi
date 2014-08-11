@@ -8,3 +8,4 @@ description 'Manage Drupal site installations, distributions and installation pr
 project_page 'https://github.com/coldfrontlabs/coldfrontlabs-drupalsi'
 
 dependency 'coldfrontlabs/drush', '>= 0.1.0'
+dependency 'puppetlabs/stdlib', '>= 4.3.2'
