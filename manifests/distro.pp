@@ -16,6 +16,8 @@ define drupalsi::distro ($distribution = 'drupal',
   # 1. Check if the distro is already there
   # 2. Download the distro and place it in the proper location
 
+  $buildname = md5("${distributions}-${api_version}-${distro_build_type}")
+
   if ($distro_build_type == 'get') {
 
     # Set some defaults for the GET build type
@@ -23,7 +25,7 @@ define drupalsi::distro ($distribution = 'drupal',
       $distro_build_location = ''
     }
 
-    drush::dl {"drush-dl-${name}":
+    drush::dl {"drush-dl-${buildname}":
       source => $distro_build_location,
       destination => $distro_root,
       project_name => $distribution,
@@ -45,7 +47,7 @@ define drupalsi::distro ($distribution = 'drupal',
       $path = $distro_build_location
     }
 
-    drush::make {"drush-make-${name}":
+    drush::make {"drush-make-${buildname}":
       makefile => "$path",
       build_path => "${distro_root}/${name}",
       concurrency => $distro_build_args[concurrency],
