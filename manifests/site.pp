@@ -187,7 +187,7 @@ define drupalsi::site ($profile,
       mode => '0600',
       content => template('drupalsi/additional_settings.php.erb'),
       owner => $webserver_user,
-      require => File["${site_root}/sites/${sites_subdir}"],
+      require => Drush::Si["drush-si-${name}"],
     }->
     file_line {"drupalsi-{$name}-settings-require}":
       path => "${site_root}/sites/${sites_subdir}/settings.php",
