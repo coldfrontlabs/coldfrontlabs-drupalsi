@@ -181,24 +181,17 @@ define drupalsi::site ($profile,
   # Add additional settings to settings.php
   # @todo see if we can create an augeas lense to do this better
   if $additional_settings {
-
-  }
-}
-
-# Define the additional settings resource
-# @todo once puppet supports loops, we'll get rid of this
-define drupalsi::site::additional_settings ($site_root, $sites_subdir, $setting) {
-  $filehash = md5("${site_root}-${sites_subdir}-${setting}")
-
-  file {"drupalsi-{$name}-additional-settings":
-    path => "${site_root}/sites/${sites_subdir}/attional_settings.php",
-    ensure => 'present',
-    mode => '0600',
-    owner => $webserver_user,
-    require => File["${site_root}/sites/${sites_subdir}"],
-  }->
-  file_line {"${filehash}":
-    path => "${site_root}/sites/${sites_subdir}/settings.php",
-    line => "require_once('additional_settings.php');",
+    file {"drupalsi-{$name}-additional-settings":
+      path => "${site_root}/sites/${sites_subdir}/attional_settings.php",
+      ensure => 'present',
+      mode => '0600',
+      content => template('drupalsi/additional_settings.php.erb'),
+      owner => $webserver_user,
+      require => File["${site_root}/sites/${sites_subdir}"],
+    }->
+    file_line {"${filehash}":
+      path => "${site_root}/sites/${sites_subdir}/settings.php",
+      line => "require_once('additional_settings.php');",
+    }
   }
 }
