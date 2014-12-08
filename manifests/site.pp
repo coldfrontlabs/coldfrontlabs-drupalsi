@@ -23,7 +23,7 @@ define drupalsi::site ($profile,
                        $cron_schedule = undef,
                        $site_alias = undef,
                        $auto_alias = false,
-                       $additional_settings = {}
+                       $additional_settings = undef
 ) {
   include drush
 
@@ -180,7 +180,9 @@ define drupalsi::site ($profile,
 
   # Add additional settings to settings.php
   # @todo see if we can create an augeas lense to do this better
-  drupalsi::site::additional_settings{$additional_settings:;}
+  if $additional_settings {
+    drupalsi::site::additional_settings{$additional_settings:;}
+  }
 }
 
 # Define the additional settings resource
