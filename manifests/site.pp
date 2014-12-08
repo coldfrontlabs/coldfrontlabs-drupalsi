@@ -183,6 +183,8 @@ define drupalsi::site ($profile,
   drupalsi::site::additional_settings{$additional_settings:;}
 }
 
+# Define the additional settings resource
+# @todo once puppet supports loops, we'll get rid of this
 define drupalsi::site::additional_settings ($site_root, $sites_subdir, $setting) {
   $filehash = md5("${site_root}-${sites_subdir}-${setting}")
 
