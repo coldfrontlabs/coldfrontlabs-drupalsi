@@ -23,7 +23,7 @@ define drupalsi::site ($profile,
                        $cron_schedule = undef,
                        $site_alias = undef,
                        $auto_alias = false,
-                       $additional_settings = undef
+                       $additional_settings = {}
 ) {
   include drush
 
@@ -176,5 +176,18 @@ define drupalsi::site ($profile,
       weekday  => $weekday,
       require  => Drush::Si["drush-si-${name}"],
     }
+  }
+
+  # Add additional settings to settings.php
+  # @todo see if we can create an augeas lense to do this better
+  drupalsi::site::additional_settings{$additional_settings:;}
+}
+
+define drupalsi::site::additional_settings ($site_root, $sites_subdir, $setting) {
+  $filehash = md5("${site_root}-${sites_subdir}-${setting}")
+
+  file_line {"${filehash}":
+    path => "${site_root}/sites/${sites_subdir}/settings.php",
+    line => $setting,
   }
 }
