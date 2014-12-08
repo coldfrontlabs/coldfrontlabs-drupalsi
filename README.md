@@ -87,6 +87,9 @@ drupalsi::sites:
       weekday:  '*'
     auto_alias: true                    # Flag to generate the site alias automatically. Defaults to true.
     site_alias: 'mysite'                     # Name to use when generating the drush site alias entry. Defaults to the name generate by Puppet for your site. It is highly recommended you set a value for alias.
+    additional_settings:                # Array of PHP lines to add to the settings.php file for your site.
+      - '$conf["devel_debug_mail_directory"] = "/path/to/folder";'
+      - '$conf["mail_system"] array("default-system" => "DevelMailLog");'
   dropfort:
     profile: 'dropfort_profile'         # This is an install profile which comes with this distribution
     account_name: 'admin'
