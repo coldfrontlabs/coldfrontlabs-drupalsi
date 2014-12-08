@@ -41,7 +41,7 @@ drupalsi::distros:
     distro_build_type: 'make'               #  Options:
                                             #    'make'  _>  Build the profile using a drush make file. Optionally from a remote file source. See distro_build_args for more details
                                             #    'git'   _>  Clone the site with Git
-                                            #    'drush'   _>  Download the Drupal distribution with an HTTP GET request
+                                            #    'get'   _>  Download the Drupal distribution with an HTTP GET request
 
     distro_root: '/var/www/html'            # Full path to your distro root directory. In this case would create '/var/www/html/dropfort'.
     distro_build_args:                      # Arguments to add to the build_location method. For example with 'get' requests, adds key/value pairs to the URL via querystring parameters. Defaults to ''.
@@ -131,7 +131,7 @@ drupalsi::profiles:
     build_type: 'get'
                                         #  Options:
                                         #    'make'  _>  Build the profile using a drush make file. Optionally from a remote file source. See distro_build_args for more details
-                                        #    'drush' _>  Download the site with drush
+                                        #    'get' _>  Download the site with drush
                                         #    'git'   _>  Clone the site with Git
                                         #    'local' _>  Profile which is already present. For example the 'standard' install profile in Drupal. Used to generate the dependency tree in Puppet.
 
