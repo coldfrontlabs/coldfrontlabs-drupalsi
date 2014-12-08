@@ -182,9 +182,9 @@ define drupalsi::site ($profile,
   # @todo see if we can create an augeas lense to do this better
   if $additional_settings {
     file {"drupalsi-{$name}-additional-settings":
-      path => "${site_root}/sites/${sites_subdir}/attional_settings.php",
+      path => "${site_root}/sites/${sites_subdir}/addional_settings.php",
       ensure => 'present',
-      mode => '0600',
+      mode => '0444',
       content => template('drupalsi/additional_settings.php.erb'),
       owner => $webserver_user,
       require => Drush::Si["drush-si-${name}"],
