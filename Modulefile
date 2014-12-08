@@ -1,5 +1,5 @@
 name    'coldfrontlabs-drupalsi'
-version '0.1.0'
+version '0.2.0'
 source 'https://github.com/coldfrontlabs/coldfrontlabs-drupalsi'
 author 'Coldfront Labs Inc.'
 license 'GPL License, Version 2.0'
@@ -8,3 +8,4 @@ description 'Manage Drupal site installations, distributions and installation pr
 project_page 'https://github.com/coldfrontlabs/coldfrontlabs-drupalsi'
 
 dependency 'coldfrontlabs/drush', '>= 0.1.0'
+dependency 'puppetlabs/stdlib', '>= 4.4.0'

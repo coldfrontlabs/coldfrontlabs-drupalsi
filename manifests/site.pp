@@ -23,6 +23,7 @@ define drupalsi::site ($profile,
                        $cron_schedule = undef,
                        $site_alias = undef,
                        $auto_alias = false,
+                       $additional_settings = undef
 ) {
   include drush
 
@@ -126,7 +127,6 @@ define drupalsi::site ($profile,
       require => Drush::Si["drush-si-${name}"],
     }
   }
-
 
   # Configure cron for the site
   if $cron_schedule {
