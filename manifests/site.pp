@@ -189,7 +189,7 @@ define drupalsi::site ($profile,
       owner => $webserver_user,
       require => File["${site_root}/sites/${sites_subdir}"],
     }->
-    file_line {"${filehash}":
+    file_line {"drupalsi-{$name}-settings-require}":
       path => "${site_root}/sites/${sites_subdir}/settings.php",
       line => "require_once('additional_settings.php');",
     }
