@@ -110,7 +110,7 @@ define drupalsi::site ($profile,
   }
 
   if $private_dir {
-    file {"drupalsi-private-dir-${private_dif}":
+    file {"drupalsi-private-dir-${private_dir}":
       path => "${private_dir}",
       ensure => 'directory',
       mode => '0644',
@@ -119,7 +119,7 @@ define drupalsi::site ($profile,
       require => Drush::Si["drush-si-${name}"],
     }->
     # Make sure the file permissions on the htaccess file are different from the rest
-    file {"drupalsi-private-dir-${private_dif}-htaccess":
+    file {"drupalsi-private-dir-${private_dir}-htaccess":
       path => "${private_dir}/.htaccess",
       ensure => 'present',
       mode => '0444',
@@ -181,7 +181,7 @@ define drupalsi::site ($profile,
   # Add additional settings to settings.php
   # @todo see if we can create an augeas lense to do this better
   if $additional_settings {
-    drupalsi::site::additional_settings{$additional_settings:;}
+
   }
 }
 
@@ -190,8 +190,15 @@ define drupalsi::site ($profile,
 define drupalsi::site::additional_settings ($site_root, $sites_subdir, $setting) {
   $filehash = md5("${site_root}-${sites_subdir}-${setting}")
 
+  file {"drupalsi-{$name}-additional-settings":
+    path => "${site_root}/sites/${sites_subdir}/attional_settings.php",
+    ensure => 'present',
+    mode => '0600',
+    owner => $webserver_user,
+    require => File["${site_root}/sites/${sites_subdir}"],
+  }->
   file_line {"${filehash}":
     path => "${site_root}/sites/${sites_subdir}/settings.php",
-    line => $setting,
+    line => "require_once('additional_settings.php');",
   }
 }
