@@ -185,7 +185,7 @@ define drupalsi::site ($profile,
   # @todo see if we can create an augeas lense to do this better
   if $additional_settings {
     file {"drupalsi-{$name}-additional-settings":
-      path => "${site_root}/sites/${sitessubdir}/addional_settings.php",
+      path => "${site_root}/sites/${sitessubdir}/additional_settings.php",
       ensure => 'present',
       mode => '0444',
       content => template('drupalsi/additional_settings.php.erb'),
