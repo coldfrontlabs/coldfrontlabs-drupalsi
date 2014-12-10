@@ -60,7 +60,11 @@ drupalsi::distros:
     distribution: drupal-7.28           # Specify a distribution (e.g. commerce_kickstart, wetkit). Defaults to 'drupal'. Include the version optionally.
     api_version: 7                      # Specify which core API version (e.g. 6, 7, 8). Defaults to '7'
     distro_root: '/var/www/html'        # Full path to your Drupal root directory with no trailing slash. This will create your site root folder at '/var/www/html/<distroname>'
-    group_alias: default                    # Value to use to create the drush site alias group for sites on this distro. Defaults to the value of 'distribution'.
+    group_alias: default                # Value to use to create the drush site alias group for sites on this distro. Defaults to the value of 'distribution'.
+    omit_files:                         # List of files to remove from core. Useful for removing uncessary files for production sites.
+      - INSTALL.txt
+      - CHANGELOG.txt
+      - update.php
   dropfort:
     distribution: dropfort                  # Specify a distribution (e.g. commerce_kickstart, wetkit). Defaults to 'drupal'
     api_version: 7                          # Specify which core API version (e.g. 6, 7, 8). Defaults to '7'

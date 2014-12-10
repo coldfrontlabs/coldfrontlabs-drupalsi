@@ -8,6 +8,7 @@ define drupalsi::distro ($distribution = 'drupal',
                          $distro_build_type = 'get',
                          $distro_build_location = 'https://updates.drupal.org/release-history',
                          $distro_build_args = {},
+                         $omit_files = undef,
                          )
 {
   include drush
@@ -74,6 +75,9 @@ define drupalsi::distro ($distribution = 'drupal',
       working_copy => $distro_build_args[working_copy],
     }
   }
+
+  # Remove core files
+  # @todo
 
   # Generate the sites.php file for all sites installed on this distro
 }
