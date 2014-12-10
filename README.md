@@ -22,6 +22,35 @@ list of sites (e.g. dropfort_profile)
 
 Lastly, you can specify a whole distribution of Drupal to replace vanialla core.
 
+Document Root Configuration
+---------------------------
+
+When Drupal is installed, it will create your document root for your given host. It would be best
+to ensure that no other puppet module or process is attempting to create that directory. If you're using
+the puppetlabs-apache module for instance, you may want to set your virtualhost to **not** manage
+your document root by setting ``manage_docroot => false`` in your vhost definition. This module
+will attempt to remove the directory if it is created by another puppet resource, but it is
+best to leave the directory to be managed by coldfrontlabs-drupalsi.
+
+Here is a sample hiera configuration which disable the managing of the document root for apache.
+
+Ex:
+
+````yaml
+apache::vhosts:
+  app.mysite.net:
+    port: 80
+    manage_docroot: false
+    docroot: /var/www/html/mysite
+    override: All
+    options:
+      - Indexes
+      - FollowSymLinks
+      - MultiViews
+    priority: 10
+
+````
+
 Sample Hiera configuration
 --------------------------
 
