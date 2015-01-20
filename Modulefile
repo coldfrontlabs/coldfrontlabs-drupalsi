@@ -1,5 +1,5 @@
 name    'coldfrontlabs-drupalsi'
-version '0.2.0'
+version '0.2.1'
 source 'https://github.com/coldfrontlabs/coldfrontlabs-drupalsi'
 author 'Coldfront Labs Inc.'
 license 'GPL License, Version 2.0'
