@@ -1,5 +1,5 @@
 name    'coldfrontlabs-drupalsi'
-version '0.2.1'
+version '0.2.3'
 source 'https://github.com/coldfrontlabs/coldfrontlabs-drupalsi'
 author 'Coldfront Labs Inc.'
 license 'GPL License, Version 2.0'
@@ -7,5 +7,5 @@ summary 'Drupal site management with Puppet'
 description 'Manage Drupal site installations, distributions and installation profiles with Puppet.'
 project_page 'https://github.com/coldfrontlabs/coldfrontlabs-drupalsi'
 
-dependency 'coldfrontlabs/drush', '>= 0.1.0'
+dependency 'coldfrontlabs/drush', '>= 0.2.0'
 dependency 'puppetlabs/stdlib', '>= 4.4.0'
