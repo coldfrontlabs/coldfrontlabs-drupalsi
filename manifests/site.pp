@@ -214,7 +214,7 @@ define drupalsi::site ($profile,
       'sites_file' => "${site_root}/sites/sites.php",
     }
 
-    create_resource(drupalsi::site::site_alias, $site_aliases, $site_alias_defaults)
+    create_resources(drupalsi::site::site_alias, $site_aliases, $site_alias_defaults)
   }
 }
 
