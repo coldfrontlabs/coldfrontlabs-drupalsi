@@ -189,8 +189,6 @@ define drupalsi::site ($profile,
       ensure => 'present',
       mode => '0444',
       content => template('drupalsi/additional_settings.php.erb'),
-      owner => $webserver_user,
-      group => $webserver_user,
       require => Drush::Si["drush-si-${name}"],
     }->
     file_line {"drupalsi-{$name}-settings-require}":

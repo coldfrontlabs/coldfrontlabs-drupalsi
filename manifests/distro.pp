@@ -75,7 +75,7 @@ define drupalsi::distro ($distribution = 'drupal',
     }
   }
 
-  # Generate the sites.php file for all sites installed on this distro
+  # Generate the sites.php file for use with all sites installed on this distro
   file {"drupalsi-sitesphp-${buildname}":
     ensure => 'present',
     path => "${distro_root}/${name}/sites/sites.php",
