@@ -234,7 +234,7 @@ define drupalsi::site::site_alias($domain,
     $pth = ".${path}"
   }
 
-  $parsed_alias = inline_template("\$sites['<%= $p %><%= $domain %><%= $pth %>'] = '<%= $directory %>'")
+  $parsed_alias = inline_template("\$sites['<%= ${p} %><%= ${domain} %><%= ${pth} %>'] = '<%= ${directory} %>'")
 
   file_line{"${name}":
     path => $sites_file,

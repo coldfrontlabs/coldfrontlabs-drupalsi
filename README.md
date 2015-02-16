@@ -87,10 +87,10 @@ drupalsi::sites:
       weekday:  '*'
     auto_alias: true                    # Flag to generate the site alias automatically. Defaults to true. (not yet implemented)
     site_aliases:                       # Specific values to enter into the sites.php file. These will be added after any automatically generated values. The ``sites_subdir`` value is used as the directory value by default.
-      mysite.com:                       # Generates: $sites['8080.mysite.com'] = 'default';
+      mysitecom:                       # Generates: $sites['8080.mysite.com'] = 'default';
         domain: 'mysite.com'
         port: 8080
-      myothersite.com:                  # Generates: $sites['myothersite.com.subpath'] = 'default';
+      myothersitecom:                  # Generates: $sites['myothersite.com.subpath'] = 'default';
         domain: 'myothersite.com'
         path: 'subpath'
     auto_drush_alias: true              # Flag to generate the drush alias automatically. Defaults to true. (not yet implemented)
