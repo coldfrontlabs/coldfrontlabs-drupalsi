@@ -3,3 +3,6 @@
  * This file is managed by Puppet and should not be edited
  *********************************************************/
 
+<% @site_aliases.each do |key, val| -%>
+$sites['<%= key %>'] = '<%= val %>';
+<% end -%>

@@ -22,6 +22,7 @@ define drupalsi::site ($profile,
                        $tmp_dir = undef,
                        $cron_schedule = undef,
                        $drush_alias = undef,
+                       $site_aliases = undef,
                        $auto_drush_alias = false,
                        $auto_alias = true,
                        $additional_settings = undef
@@ -200,4 +201,45 @@ define drupalsi::site ($profile,
   }
 
   # Add entries into sites.php
+  # @todo add automatic entry if required
+  if $auto_alias {
+    # @todo parse parts of the URL (get path, port and domain)
+    # @todo build the alias entry
+  }
+
+  # Add manually defined resources
+  if $site_aliases {
+    $site_alias_defaults = {
+      'directory' => $sitessubdir,
+    }
+
+    create_resource(drupalsi::site::site_alias, $site_aliases, $site_alias_defaults)
+  }
+}
+
+define drupalsi::site::site_alias($name,
+                                  $domain,
+                                  $port = undef,
+                                  $path = undef,
+                                  $directory,
+                                  $sites_file
+) {
+
+  # Build the site alias entry
+  if $port {
+    $p = "${port}."
+  }
+
+  if $path {
+    $pth = ".${path}"
+  }
+
+  $parsed_alias = inline_template("\$sites['<%= $p+$domain+$path %>'] = '<%= $directory %>'")
+
+  file_line{"${name}":
+    path => $sites_file,
+    line => $parsed_alias,
+    require => File[$sites_file],
+    ensure => 'present',
+  }
 }
