@@ -90,7 +90,7 @@ drupalsi::sites:
       mysite.com:                       # Generates: $sites['8080.mysite.com'] = 'default';
         domain: 'mysite.com'
         port: 8080
-      myothersite.com:                  # Generates: $sites['myothersite.com.subpath'] = 'other';
+      myothersite.com:                  # Generates: $sites['myothersite.com.subpath'] = 'default';
         domain: 'myothersite.com'
         path: 'subpath'
     auto_drush_alias: true              # Flag to generate the drush alias automatically. Defaults to true. (not yet implemented)
