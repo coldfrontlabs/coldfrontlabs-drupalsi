@@ -208,7 +208,7 @@ define drupalsi::site ($profile,
   }
 
   # Add manually defined resources
-  if $site_aliases {
+  if $site_aliases and is_hash($site_aliases) {
     $site_alias_defaults = {
       'directory' => $sitessubdir,
       'sites_file' => "${site_root}/sites/sites.php",
