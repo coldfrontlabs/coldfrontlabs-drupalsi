@@ -209,27 +209,16 @@ define drupalsi::site ($profile,
 
   # Add manually defined resources
   if $site_aliases {
-    # Convert to hash if single value
-    if !is_hash($site_aliases) {
-      $sitealiases = {
-        "${site_aliases}" => {
-          'domain' => $site_aliases,
-        }
-      }
-    }
-    else {
-      $sitealiases = $site_aliases
-    }
     $site_alias_defaults = {
       'directory' => $sitessubdir,
       'sites_file' => "${site_root}/sites/sites.php",
     }
 
-    create_resources(drupalsi::site::site_alias, $sitealiases, $site_alias_defaults)
+    create_resources(drupalsi::site::site_alias, $site_aliases, $site_alias_defaults)
   }
 }
 
-define drupalsi::site::site_alias($domain = $name,
+define drupalsi::site::site_alias($domain,
                                   $port = undef,
                                   $path = undef,
                                   $directory,
