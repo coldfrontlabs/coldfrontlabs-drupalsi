@@ -76,4 +76,11 @@ define drupalsi::distro ($distribution = 'drupal',
   }
 
   # Generate the sites.php file for all sites installed on this distro
+  file {"drupalsi-sitesphp-${buildname}":
+    ensure => 'present',
+    path => "${distro_root}/${name}/sites/sites.php",
+    require => Drush::Make["drush-make-${buildname}"],
+    content => template('drupalsi/sites.php.erb'),
+    mode => '0644',
+  }
 }
