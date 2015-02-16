@@ -211,6 +211,7 @@ define drupalsi::site ($profile,
   if $site_aliases {
     $site_alias_defaults = {
       'directory' => $sitessubdir,
+      'sites_file' => "${site_root}/sites/sites.php",
     }
 
     create_resource(drupalsi::site::site_alias, $site_aliases, $site_alias_defaults)
