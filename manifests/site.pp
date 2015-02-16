@@ -218,8 +218,7 @@ define drupalsi::site ($profile,
   }
 }
 
-define drupalsi::site::site_alias($name,
-                                  $domain,
+define drupalsi::site::site_alias($domain = $name,
                                   $port = undef,
                                   $path = undef,
                                   $directory,
