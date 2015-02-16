@@ -212,7 +212,7 @@ define drupalsi::site ($profile,
     # Convert to hash if single value
     if !is_hash($site_aliases) {
       $sitealiases = {
-        $site_aliases => {
+        "${site_aliases}" => {
           'domain' => $site_aliases,
         }
       }
