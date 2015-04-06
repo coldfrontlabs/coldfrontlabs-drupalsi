@@ -85,7 +85,15 @@ define drupalsi::distro ($distribution = 'drupal',
     mode => '0644',
   }
 
-  # Remove core files
-  # @todo
+  if $omit_files {
+    drupalsi::distro::omitfiles{$omit_files:}
+  }
+}
 
+# Remove files
+define drupalsi::distro::omitfiles() {
+  file{"${distro_root}/${name}":
+    ensure => 'absent',
+    require => Drush::Make["drush-make-${buildname}"],
+  }
 }
