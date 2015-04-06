@@ -8,7 +8,7 @@ define drupalsi::distro ($distribution = 'drupal',
                          $distro_build_type = 'get',
                          $distro_build_location = 'https://updates.drupal.org/release-history',
                          $distro_build_args = {},
-                         $omit_files = {},
+                         $omit_files = {}
                          )
 {
   include drush
