@@ -1,6 +1,6 @@
 {
   "name": "coldfrontlabs-drupalsi",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "author": "coldfrontlabs",
   "summary": "Define Drupal sites, installation profiles and distributions to be installed.",
   "license": "GPL, Version 2.0",
