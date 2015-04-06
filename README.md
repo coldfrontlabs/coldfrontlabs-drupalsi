@@ -111,7 +111,7 @@ drupalsi::sites:
     distro: drupal
     public_dir: "/absolute/path/to/public/files" # Leave blank to default to sites/{name}/files
     private_dir: "/absolute/path/to/private/files" # Leave blank to omit a private files dir
-    webserver_user = "apache"
+    webserver_user : "apache"
     cron_schedule:
       minute:   '0'
       hour:     '*/1'
