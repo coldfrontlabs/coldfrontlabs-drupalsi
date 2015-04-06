@@ -63,8 +63,18 @@ drupalsi::distros:
     group_alias: default                # Value to use to create the drush site alias group for sites on this distro. Defaults to the value of 'distribution'.
     omit_files:                         # List of files to remove from core. Useful for removing uncessary files for production sites.
       - INSTALL.txt
+      - web.config
       - CHANGELOG.txt
-      - update.php
+      -	README.txt
+      -	PATCHES.txt
+      -	INSTALL.mysql.txt
+      -	INSTALL.pgsql.txt
+      - INSTALL.sqlite.txt
+      -	LICENSE.txt
+      -	MAINTAINERS.txt
+      -	UPGRADE.txt
+      -	COPYRIGHT.txt
+
   dropfort:
     distribution: dropfort                  # Specify a distribution (e.g. commerce_kickstart, wetkit). Defaults to 'drupal'
     api_version: 7                          # Specify which core API version (e.g. 6, 7, 8). Defaults to '7'
