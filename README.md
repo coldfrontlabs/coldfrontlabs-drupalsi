@@ -22,6 +22,35 @@ list of sites (e.g. dropfort_profile)
 
 Lastly, you can specify a whole distribution of Drupal to replace vanialla core.
 
+Document Root Configuration
+---------------------------
+
+When Drupal is installed, it will create your document root for your given host. It would be best
+to ensure that no other puppet module or process is attempting to create that directory. If you're using
+the puppetlabs-apache module for instance, you may want to set your virtualhost to **not** manage
+your document root by setting ``manage_docroot => false`` in your vhost definition. This module
+will attempt to remove the directory if it is created by another puppet resource, but it is
+best to leave the directory to be managed by coldfrontlabs-drupalsi.
+
+Here is a sample hiera configuration which disable the managing of the document root for apache.
+
+Ex:
+
+````yaml
+apache::vhosts:
+  app.mysite.net:
+    port: 80
+    manage_docroot: false
+    docroot: /var/www/html/mysite
+    override: All
+    options:
+      - Indexes
+      - FollowSymLinks
+      - MultiViews
+    priority: 10
+
+````
+
 Sample Hiera configuration
 --------------------------
 
@@ -31,7 +60,11 @@ drupalsi::distros:
     distribution: drupal-7.28           # Specify a distribution (e.g. commerce_kickstart, wetkit). Defaults to 'drupal'. Include the version optionally.
     api_version: 7                      # Specify which core API version (e.g. 6, 7, 8). Defaults to '7'
     distro_root: '/var/www/html'        # Full path to your Drupal root directory with no trailing slash. This will create your site root folder at '/var/www/html/<distroname>'
-    group_alias: default                    # Value to use to create the drush site alias group for sites on this distro. Defaults to the value of 'distribution'.
+    group_alias: default                # Value to use to create the drush site alias group for sites on this distro. Defaults to the value of 'distribution'.
+    omit_files:                         # List of files to remove from core. Useful for removing uncessary files for production sites.
+      - INSTALL.txt
+      - CHANGELOG.txt
+      - update.php
   dropfort:
     distribution: dropfort                  # Specify a distribution (e.g. commerce_kickstart, wetkit). Defaults to 'drupal'
     api_version: 7                          # Specify which core API version (e.g. 6, 7, 8). Defaults to '7'

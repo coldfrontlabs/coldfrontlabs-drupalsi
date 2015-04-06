@@ -8,6 +8,7 @@ define drupalsi::distro ($distribution = 'drupal',
                          $distro_build_type = 'get',
                          $distro_build_location = 'https://updates.drupal.org/release-history',
                          $distro_build_args = {},
+                         $omit_files = {},
                          )
 {
   include drush
@@ -75,11 +76,24 @@ define drupalsi::distro ($distribution = 'drupal',
     }
   }
 
+
   # Generate the sites.php file for use with all sites installed on this distro
   file {"${distro_root}/${name}/sites/sites.php":
     ensure => 'present',
     require => Drush::Make["drush-make-${buildname}"],
     content => template('drupalsi/sites.php.erb'),
     mode => '0644',
+  }
+
+  if $omit_files {
+    drupalsi::distro::omitfiles{$omit_files:}
+  }
+}
+
+# Remove files
+define drupalsi::distro::omitfiles() {
+  file{"${distro_root}/${name}":
+    ensure => 'absent',
+    require => Drush::Make["drush-make-${buildname}"],
   }
 }
