@@ -34,7 +34,7 @@ define drupalsi::distro ($distribution = 'drupal',
       drupal_project_rename => $name,
       onlyif => "test ! -f ${distro_root}/${name}/index.php",
     }
-    $buildaction = "drush-dl-${buildname}"
+    $buildaction = "Drush::Dl[drush-dl-${buildname}]"
   }
   elsif ($distro_build_type == 'make') {
     if $distro_build_args['url'] {
@@ -75,7 +75,7 @@ define drupalsi::distro ($distribution = 'drupal',
       version => $distro_build_args[version],
       working_copy => $distro_build_args[working_copy],
     }
-    $buildaction = "drush-make-${buildname}"
+    $buildaction = "Drush::Make[drush-make-${buildname}]"
   }
 
 
@@ -103,7 +103,7 @@ define drupalsi::distro::omitfiles() {
   if validate_absolute_path($parts[1]) {
     file{$parts[1]:
       ensure => 'absent',
-      require => Drush::Make[$parts[0]],
+      require => $parts[0],
     }
   }
 }
