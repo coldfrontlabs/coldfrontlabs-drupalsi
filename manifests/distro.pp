@@ -1,7 +1,4 @@
 # Defines a drupalsi::distro resource
-
-# Defines a drupalsi::distro resource
-
 define drupalsi::distro ($distribution = 'drupal',
                          $api_version = 7,
                          $distro_root = '/var/www/html',
