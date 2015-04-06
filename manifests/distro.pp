@@ -34,6 +34,7 @@ define drupalsi::distro ($distribution = 'drupal',
       drupal_project_rename => $name,
       onlyif => "test ! -f ${distro_root}/${name}/index.php",
     }
+    $buildaction = "drush-dl-${buildname}"
   }
   elsif ($distro_build_type == 'make') {
     if $distro_build_args['url'] {
@@ -74,6 +75,7 @@ define drupalsi::distro ($distribution = 'drupal',
       version => $distro_build_args[version],
       working_copy => $distro_build_args[working_copy],
     }
+    $buildaction = "drush-make-${buildname}"
   }
 
 
@@ -85,15 +87,23 @@ define drupalsi::distro ($distribution = 'drupal',
     mode => '0644',
   }
 
-  if $omit_files {
-    drupalsi::distro::omitfiles{$omit_files:}
+  if !empty($omit_files) {
+    # See below why we're doing this
+    $omitfiles = prefix($omit_files, "${buildaction}||${distro_root}/")
+    drupalsi::distro::omitfiles{$omitfiles:}
   }
 }
 
 # Remove files
 define drupalsi::distro::omitfiles() {
-  file{"${distro_root}/${name}":
-    ensure => 'absent',
-    require => Drush::Make["drush-make-${buildname}"],
+  # Since I can't loop or pass other arguments, we have to build data into the string
+  # Not ideal but it works. If anyone has a better idea please submit a patch
+  $parts = split($name, "||")
+
+  if validate_absolute_path($parts[1]) {
+    file{$parts[1]:
+      ensure => 'absent',
+      require => Drush::Make[$parts[0]],
+    }
   }
 }
