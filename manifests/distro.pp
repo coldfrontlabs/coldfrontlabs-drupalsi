@@ -32,6 +32,14 @@ define drupalsi::distro ($distribution = 'drupal',
       onlyif => "test ! -f ${distro_root}/${name}/index.php",
     }
     $buildaction = "Drush::Dl[drush-dl-${buildname}]"
+
+    file {"${distro_root}/${name}/sites/sites.php":
+      ensure => 'present',
+      require => Drush::Dl["drush-dl-${buildname}"],
+      content => template('drupalsi/sites.php.erb'),
+      mode => '0644',
+    }
+
   }
   elsif ($distro_build_type == 'make') {
     if $distro_build_args['url'] {
@@ -73,16 +81,18 @@ define drupalsi::distro ($distribution = 'drupal',
       working_copy => $distro_build_args[working_copy],
     }
     $buildaction = "Drush::Make[drush-make-${buildname}]"
-  }
 
 
-  # Generate the sites.php file for use with all sites installed on this distro
-  file {"${distro_root}/${name}/sites/sites.php":
-    ensure => 'present',
-    require => Drush::Make["drush-make-${buildname}"],
-    content => template('drupalsi/sites.php.erb'),
-    mode => '0644',
+    # Generate the sites.php file for use with all sites installed on this distro
+    file {"${distro_root}/${name}/sites/sites.php":
+      ensure => 'present',
+      require => Drush::Make["drush-make-${buildname}"],
+      content => template('drupalsi/sites.php.erb'),
+      mode => '0644',
+    }
+
   }
+
 
   if !empty($omit_files) {
     # See below why we're doing this
