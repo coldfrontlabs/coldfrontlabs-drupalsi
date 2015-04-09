@@ -1,3 +1,6 @@
+v0.4.1
+  - Fix dependency bug when using get to build distros
+
 v0.4.0
   - Add support for removing files from Drupal directory (see omit_files option)
 
