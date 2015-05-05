@@ -128,7 +128,7 @@ drupalsi::sites:
       monthday: '*'
       month:    '*'
       weekday:  '*'
-    auto_alias: true                    # Flag to generate the site alias automatically. Defaults to true. (not yet implemented)
+    auto_alias: true                    # Flag to generate the site alias automatically. Defaults to true. Requires base_url to be set.
     site_aliases:                       # Specific values to enter into the sites.php file. These will be added after any automatically generated values. The ``sites_subdir`` value is used as the directory value by default. See @https://api.drupal.org/api/drupal/sites%21example.sites.php/7
       mysitecom:                       # Generates: $sites['8080.mysite.com'] = 'default';
         domain: 'mysite.com'

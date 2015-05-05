@@ -1,3 +1,6 @@
+v0.4.2
+  - Add basic support for automatic sites.php entries
+
 v0.4.1
   - Fix dependency bug when using get to build distros
 
