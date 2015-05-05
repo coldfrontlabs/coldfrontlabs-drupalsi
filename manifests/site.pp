@@ -215,7 +215,7 @@ define drupalsi::site ($profile,
       $generated_alias = {
         "${base_url}" => {
           domain => $url_parts[1],
-          },
+        },
       }
       create_resources(drupalsi::site::site_alias, $generated_alias, $site_alias_defaults)
 
