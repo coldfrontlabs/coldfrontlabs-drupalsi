@@ -201,19 +201,29 @@ define drupalsi::site ($profile,
   }
 
   # Add entries into sites.php
+  $site_alias_defaults = {
+    'directory' => $sitessubdir,
+    'sites_file' => "${site_root}/sites/sites.php",
+  }
+
   # @todo add automatic entry if required
-  if $auto_alias {
-    # @todo parse parts of the URL (get path, port and domain)
-    # @todo build the alias entry
+  if $auto_alias and $base_url {
+    $url_parts = split($base_url, '://')
+    # @todo Add support for ports in base_url (ex: http://mydomain.com:8080)
+    # @todo Add support for paths in base_url (ex: http://mydomain.com:8080/subdir)
+    if is_domain_name($url_parts[1]) {
+      $generated_alias = {
+        "${base_url}" => {
+          domain => $url_parts[1],
+          },
+      }
+      create_resources(drupalsi::site::site_alias, $generated_alias, $site_alias_defaults)
+
+    }
   }
 
   # Add manually defined resources
   if $site_aliases and is_hash($site_aliases) {
-    $site_alias_defaults = {
-      'directory' => $sitessubdir,
-      'sites_file' => "${site_root}/sites/sites.php",
-    }
-
     create_resources(drupalsi::site::site_alias, $site_aliases, $site_alias_defaults)
   }
 }
