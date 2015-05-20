@@ -79,6 +79,8 @@ define drupalsi::distro ($distribution = 'drupal',
       translations => $distro_build_args[translations],
       version => $distro_build_args[version],
       working_copy => $distro_build_args[working_copy],
+      dropfort_userauth_token => $distro_build_args[dropfort_userauth_token],
+      dropfort_url => $distro_build_args[dropfort_url],
     }
     $buildaction = "Drush::Make[drush-make-${buildname}]"
 
