@@ -1,3 +1,6 @@
+v0.4.3
+  - Add support for dropfort_userauth_token and dropfort_url for distro definitions
+
 v0.4.2
   - Add basic support for automatic sites.php entries
 
