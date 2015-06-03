@@ -1,6 +1,6 @@
 v0.5.0
   - Add "git" clone option
-  - Add additional git options
+  - Add additional git options [TODO]
   - Improve site install detection [TODO]
 v0.4.3
   - Add support for dropfort_userauth_token and dropfort_url for distro definitions
