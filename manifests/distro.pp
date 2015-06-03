@@ -41,6 +41,16 @@ define drupalsi::distro ($distribution = 'drupal',
     }
 
   }
+  elsif ($distro_build_type == 'git') {
+    include git
+    exec {"git-clone-${buildname}":
+      command => "git clone ${distro_build_location} ${distro_root}/${name}",
+      creates => "${distro_root}/${name}/index.php",
+      path => ["/usr/bin", "/usr/sbin"],
+    }
+
+    $buildaction = "Exec[git-clone-${buildname}]"
+  }
   elsif ($distro_build_type == 'make') {
     if $distro_build_args['url'] {
       if $distro_build_args['url_args'] {
@@ -94,7 +104,6 @@ define drupalsi::distro ($distribution = 'drupal',
     }
 
   }
-
 
   if !empty($omit_files) {
     # See below why we're doing this
