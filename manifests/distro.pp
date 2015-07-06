@@ -43,11 +43,18 @@ define drupalsi::distro ($distribution = 'drupal',
   }
   elsif ($distro_build_type == 'git') {
     include git
+    if has_key($distro_build_args, 'git_branch') {
+      $branch = join([ "-b ", '"', $distro_build_args['git_branch'], '"'])
+    } else {
+      $branch = ""
+    }
+
     exec {"git-clone-${buildname}":
-      command => "git clone ${distro_build_location} ${distro_root}/${name}",
+      command => "git clone ${branch} ${distro_build_location} ${distro_root}/${name}",
       creates => "${distro_root}/${name}/index.php",
       path => ["/usr/bin", "/usr/sbin"],
       require => Class['git'],
+      onlyif => "test ! -d ${distro_root}/${name}",
     }
 
     $buildaction = "Exec[git-clone-${buildname}]"
@@ -117,7 +124,7 @@ define drupalsi::distro ($distribution = 'drupal',
 define drupalsi::distro::omitfiles() {
   # Since I can't loop or pass other arguments, we have to build data into the string
   # Not ideal but it works. If anyone has a better idea please submit a patch
-  $parts = split($name, "\|\|")
+  $parts = split($name, "||")
 
   notify {"Removing file ${parts[1]} from Drupal distribution.":}
 

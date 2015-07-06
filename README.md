@@ -80,6 +80,7 @@ drupalsi::distros:
     api_version: 7                          # Specify which core API version (e.g. 6, 7, 8). Defaults to '7'
     distro_build_location: 'dropfort.make'  # Project download URL for your distribution. Defaults to https://update.drupal.org/release_history
                                             # Full path to the make file to build the site with.
+                                            # For git, this is the url of the Git repo.
 
     distro_build_type: 'make'               #  Options:
                                             #    'make'  _>  Build the profile using a drush make file. Optionally from a remote file source. See distro_build_args for more details
@@ -96,7 +97,7 @@ drupalsi::distros:
       no_cache: true
 
       # Args for the 'git' build type
-      # @todo
+      git_branch: 'master'                 # Name of branch (optional).
 
 
       # Args for the 'drush' build type
