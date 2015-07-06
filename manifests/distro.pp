@@ -55,6 +55,7 @@ define drupalsi::distro ($distribution = 'drupal',
       path => ["/usr/bin", "/usr/sbin"],
       require => Class['git'],
       onlyif => "test ! -d ${distro_root}/${name}",
+      timeout => 1800,
     }
 
     $buildaction = "Exec[git-clone-${buildname}]"
