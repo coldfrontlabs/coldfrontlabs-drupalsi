@@ -136,6 +136,7 @@ define drupalsi::distro ($distribution = 'drupal',
       nocheckcertificate => $validate,
       source_hash => $distro_build_args[hash],
       redownload => false,
+      before => Drush::Arr["drush-arr-${buildname}"],
     }
 
     drush::arr {"drush-arr-${buildname}":
@@ -147,19 +148,11 @@ define drupalsi::distro ($distribution = 'drupal',
       db_url => $distro_build_args[db_url],
       #overwrite => $distro_build_args[overwrite], Overwrite is ignored on purpose. DrupalSi will not overwrite an existing site.
       tar_options => $distro_build_args[tar_options],
-      require => Wget::Fetch["drupalsi-archive-wget-${buildname}"],
     }
 
-    # Attempt to clear the caches, no guarantee all sites' caches will be cleared.
-    # @todo make this smarter
-    drush::cc{"drush-cc-${buildname}":
-      site_root => "${distro_root}/${name}",
-      require => Drush::Arr["drush-arr-${buildname}"],
-    }
-
-    tidy {"${distro_root}/archive-${buildname}":
-      require => Drush::Arr["drush-arr-${buildname}"],
-    }
+    #tidy {"${distro_root}/archive-${buildname}":
+    #  subscribe => Drush::Arr["drush-arr-${buildname}"],
+    #}
   }
 
   if !empty($omit_files) {
