@@ -122,7 +122,6 @@ drupalsi::distros:
       dl_pass: 'password'                  # Password to download the file. @see maestrodev/wget
       hash: THISISAHASH                    # File hash to validate the download
       validate_certificate: true           # Boolean value to validate any TLS/SSL certificate. Defaults to "true".
-      file: '/var/www/html/archive.tgz'    # Absolute path to a local file resource
 
       ## Any arguments from drush arr command with '-' replaced with '_'. @see coldfrontlabs/drush
       db_url: "mysql://dbuser:dbpass@localhost/dbname"

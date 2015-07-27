@@ -121,12 +121,19 @@ define drupalsi::distro ($distribution = 'drupal',
       $path = "${distro_build_location}"
     }
 
+    if $distro_build_args[validate_certificate] {
+      $validate = false
+    }
+    else {
+      $validate = true
+    }
+
     wget::fetch {"drupalsi-archive-wget-${buildname}":
       timeout => 0,
       source => $path,
       destination => "${distro_root}/archive-${buildname}",
       verbose => false,
-      nocheckcertificate => true,
+      nocheckcertificate => $validate,
       source_hash => $distro_build_args[hash],
       redownload => false,
     }
