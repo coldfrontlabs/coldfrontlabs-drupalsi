@@ -115,10 +115,10 @@ define drupalsi::distro ($distribution = 'drupal',
   elsif ($distro_build_type == 'archive') {
     # Download the file
     if $distro_build_args['url_args'] {
-      $path = "${distro_build_args['url']}?${distro_build_args[url_args]}"
+      $path = "${distro_build_location}?${distro_build_args[url_args]}"
     }
     else {
-      $path = "${distro_build_args['url']}"
+      $path = "${distro_build_location}"
     }
 
     wget::fetch {"drupalsi-archive-wget-${buildname}":

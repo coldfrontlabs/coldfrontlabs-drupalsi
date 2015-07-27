@@ -81,6 +81,7 @@ drupalsi::distros:
     distro_build_location: 'dropfort.make'  # Project download URL for your distribution. Defaults to https://update.drupal.org/release_history
                                             # Full path to the make file to build the site with.
                                             # For git, this is the url of the Git repo.
+                                            # For archive, this is the url of the archive backup file.
 
     distro_build_type: 'make'               #  Options:
                                             #    'make'  _>  Build the profile using a drush make file. Optionally from a remote file source. See distro_build_args for more details
@@ -116,7 +117,6 @@ drupalsi::distros:
       ############################################
       # Args for the 'archive' build type
       ############################################
-      url: 'https://mybackups.com/archive.tgz' # Publicly available URL to archive
       url_args: 'private_token=1234567'    # URL Encoded string of arguments to append to the URL. Omit the '?' character as it is automatically added.
       dl_user: 'username'                  # Username to download the file. @see maestrodev/wget
       dl_pass: 'password'                  # Password to download the file. @see maestrodev/wget
