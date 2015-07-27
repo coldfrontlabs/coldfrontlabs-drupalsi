@@ -1,6 +1,6 @@
 {
   "name": "coldfrontlabs-drupalsi",
-  "version": "0.5.0",
+  "version": "0.5.5",
   "author": "coldfrontlabs",
   "summary": "Define Drupal sites, installation profiles and distributions to be installed.",
   "license": "GPL, Version 2.0",
@@ -9,7 +9,8 @@
   "issues_url": "https://github.com/coldfrontlabs/coldfrontlabs-drupalsi/issues",
   "dependencies": [
     {"name":"puppetlabs-stdlib","version_requirement":">= 1.0.0"},
-    {"name":"coldfrontlabs/drush", "version_requirement":">= 0.4.2"}
+    {"name":"coldfrontlabs/drush", "version_requirement":">= 0.4.2"},
+    {"name":"maestrodev/wget", "version_requirement":">= 1.7.0"}
   ]
 }
 

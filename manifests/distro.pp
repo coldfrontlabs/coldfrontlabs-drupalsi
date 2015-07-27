@@ -111,7 +111,48 @@ define drupalsi::distro ($distribution = 'drupal',
       content => template('drupalsi/sites.php.erb'),
       mode => '0644',
     }
+  }
+  elsif ($distro_build_type == 'archive') {
+    # Download the file
+    if $distro_build_args['url_args'] {
+      $path = "${distro_build_args['url']}?${distro_build_args[url_args]}"
+    }
+    else {
+      $path = "${distro_build_args['url']}"
+    }
 
+    wget::fetch {"drupalsi-archive-wget-${buildname}":
+      timeout => 0,
+      source => $path,
+      destination => "${distro_root}/archive-${buildname}",
+      verbose => false,
+      nocheckcertificate => true,
+      source_hash => $distro_build_args[hash],
+      redownload => false,
+    }
+
+    drush::arr {"drush-arr-${buildname}":
+      filename => "${distro_root}/archive-${buildname}",
+      destination => "${distro_root}/${name}",
+      db_prefix => $distro_build_args[db_prefix],
+      db_su => $distro_build_args[db_su],
+      db_su_pw => $distro_build_args[db_su_pw],
+      db_url => $distro_build_args[db_url],
+      #overwrite => $distro_build_args[overwrite], Overwrite is ignored on purpose. DrupalSi will not overwrite an existing site.
+      tar_options => $distro_build_args[tar_options],
+      require => Wget::Fetch["drupalsi-archive-wget-${buildname}"],
+    }
+
+    # Attempt to clear the caches, no guarantee all sites' caches will be cleared.
+    # @todo make this smarter
+    drush::cc{"drush-cc-${buildname}":
+      site_root => "${distro_root}/${name}",
+      require => Drush::Arr["drush-arr-${buildname}"],
+    }
+
+    tidy {"${distro_root}/archive-${buildname}":
+      require => Drush::Arr["drush-arr-${buildname}"],
+    }
   }
 
   if !empty($omit_files) {
