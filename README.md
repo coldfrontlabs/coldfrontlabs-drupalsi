@@ -120,7 +120,7 @@ drupalsi::distros:
       url_args: 'private_token=1234567'    # URL Encoded string of arguments to append to the URL. Omit the '?' character as it is automatically added.
       dl_user: 'username'                  # Username to download the file. @see maestrodev/wget
       dl_pass: 'password'                  # Password to download the file. @see maestrodev/wget
-      hash: THISISAHASH                    # File hash to validate the download
+      hash: THISISAHASH                    # File hash to validate the download. This is required.
       validate_certificate: true           # Boolean value to validate any TLS/SSL certificate. Defaults to "true".
 
       ## Any arguments from drush arr command with '-' replaced with '_'. @see coldfrontlabs/drush

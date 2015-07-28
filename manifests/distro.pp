@@ -113,6 +113,9 @@ define drupalsi::distro ($distribution = 'drupal',
     }
   }
   elsif ($distro_build_type == 'archive') {
+    # Ensure the hash is there and the proper length
+    validate_slength($distro_build_args[hash], 32)
+
     # Download the file
     if $distro_build_args['url_args'] {
       $path = "${distro_build_location}?${distro_build_args[url_args]}"
@@ -136,6 +139,8 @@ define drupalsi::distro ($distribution = 'drupal',
       nocheckcertificate => $validate,
       source_hash => $distro_build_args[hash],
       redownload => false,
+      user => $distro_build_args[dl_user],
+      pass => $distro_build_args[dl_pass],
       before => Drush::Arr["drush-arr-${buildname}"],
     }
 
