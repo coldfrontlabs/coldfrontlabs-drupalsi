@@ -131,26 +131,20 @@ define drupalsi::distro ($distribution = 'drupal',
       $validate = true
     }
 
-    # Only download the file if the destination dir doesn't exist
-    # The exec is used to prevent wget from running when we don't want it to
-    exec {"drupalsi-archive-wget-test-${buildname}":
-      command => '/bin/true',
-      onlyif => "test ! -d ${distro_root}/${name}",
-      before => Drush::Arr["drush-arr-${buildname}"],
-    }->
     wget::fetch {"drupalsi-archive-wget-${buildname}":
       timeout => 0,
       source => $path,
-      destination => "${distro_root}/archive-${buildname}",
+      destination => "/tmp/drush-archive-${buildname}",
       verbose => false,
       nocheckcertificate => $validate,
       source_hash => $distro_build_args[hash],
       user => $distro_build_args[dl_user],
-      pass => $distro_build_args[dl_pass],
+      password => $distro_build_args[dl_pass],
+      before => Drush::Arr["drush-arr-${buildname}"],
     }
 
     drush::arr {"drush-arr-${buildname}":
-      filename => "${distro_root}/archive-${buildname}",
+      filename => "/tmp/drush-archive-${buildname}",
       destination => "${distro_root}/${name}",
       db_prefix => $distro_build_args[db_prefix],
       db_su => $distro_build_args[db_su],
@@ -160,9 +154,10 @@ define drupalsi::distro ($distribution = 'drupal',
       tar_options => $distro_build_args[tar_options],
     }
 
-    tidy {"${distro_root}/archive-${buildname}":
-      subscribe => Drush::Arr["drush-arr-${buildname}"],
-    }
+    # @todo figure out a way to remove the archive when it's not required
+    #tidy {"${distro_root}/archive-${buildname}":
+    # subscribe => Drush::Arr["drush-arr-${buildname}"],
+    #}
   }
 
   if !empty($omit_files) {
