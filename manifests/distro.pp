@@ -111,7 +111,53 @@ define drupalsi::distro ($distribution = 'drupal',
       content => template('drupalsi/sites.php.erb'),
       mode => '0644',
     }
+  }
+  elsif ($distro_build_type == 'archive') {
+    # Ensure the hash is there and the proper length
+    validate_slength($distro_build_args[hash], 32)
 
+    # Download the file
+    if $distro_build_args['url_args'] {
+      $path = "${distro_build_location}?${distro_build_args[url_args]}"
+    }
+    else {
+      $path = "${distro_build_location}"
+    }
+
+    if $distro_build_args[validate_certificate] {
+      $validate = false
+    }
+    else {
+      $validate = true
+    }
+
+    wget::fetch {"drupalsi-archive-wget-${buildname}":
+      timeout => 0,
+      source => $path,
+      destination => "/tmp/drush-archive-${buildname}",
+      verbose => false,
+      nocheckcertificate => $validate,
+      source_hash => $distro_build_args[hash],
+      user => $distro_build_args[dl_user],
+      password => $distro_build_args[dl_pass],
+      before => Drush::Arr["drush-arr-${buildname}"],
+    }
+
+    drush::arr {"drush-arr-${buildname}":
+      filename => "/tmp/drush-archive-${buildname}",
+      destination => "${distro_root}/${name}",
+      db_prefix => $distro_build_args[db_prefix],
+      db_su => $distro_build_args[db_su],
+      db_su_pw => $distro_build_args[db_su_pw],
+      db_url => $distro_build_args[db_url],
+      #overwrite => $distro_build_args[overwrite], Overwrite is ignored on purpose. DrupalSi will not overwrite an existing site.
+      tar_options => $distro_build_args[tar_options],
+    }
+
+    # @todo figure out a way to remove the archive when it's not required
+    #tidy {"${distro_root}/archive-${buildname}":
+    # subscribe => Drush::Arr["drush-arr-${buildname}"],
+    #}
   }
 
   if !empty($omit_files) {
