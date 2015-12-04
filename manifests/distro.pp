@@ -154,6 +154,8 @@ define drupalsi::distro ($distribution = 'drupal',
       tar_options => $distro_build_args[tar_options],
     }
 
+    $buildaction = "Drush::Arr[drush-arr-${buildname}]"
+
     # @todo figure out a way to remove the archive when it's not required
     #tidy {"${distro_root}/archive-${buildname}":
     # subscribe => Drush::Arr["drush-arr-${buildname}"],
