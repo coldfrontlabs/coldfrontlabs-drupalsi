@@ -187,6 +187,7 @@ define drupalsi::site ($profile,
   # Add local settings to settings.php
   if $additional_settings {
     # Do nothing, remove the file
+    warning('additional_settings is deprecated. User local_settings instead. Your additional_settings will NOT be applied.')
     file {"drupalsi-{$name}-additional-settings":
       path => "${site_root}/sites/${sitessubdir}/additional_settings.php",
       ensure => 'absent',
