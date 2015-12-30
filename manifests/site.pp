@@ -25,7 +25,8 @@ define drupalsi::site ($profile,
                        $site_aliases = undef,
                        $auto_drush_alias = false,
                        $auto_alias = true,
-                       $additional_settings = undef
+                       $local_settings = undef,
+                       $additional_settings = undef # deprecated
 ) {
   include drush
 
@@ -183,19 +184,28 @@ define drupalsi::site ($profile,
     }
   }
 
-  # Add additional settings to settings.php
-  # @todo see if we can create an augeas lense to do this better
+  # Add local settings to settings.php
   if $additional_settings {
+    # Do nothing, remove the file
+    warning('additional_settings is deprecated. User local_settings instead. Your additional_settings will NOT be applied.')
     file {"drupalsi-{$name}-additional-settings":
       path => "${site_root}/sites/${sitessubdir}/additional_settings.php",
+      ensure => 'absent',
+      mode => '0444',
+      require => Drush::Si["drush-si-${name}"],
+    }
+  }
+  if $local_settings {
+    file {"drupalsi-{$name}-local-settings":
+      path => "${site_root}/sites/${sitessubdir}/settings.local.php",
       ensure => 'present',
       mode => '0444',
-      content => template('drupalsi/additional_settings.php.erb'),
+      content => template('drupalsi/settings.local.php.erb'),
       require => Drush::Si["drush-si-${name}"],
     }->
     file_line {"drupalsi-{$name}-settings-require}":
       path => "${site_root}/sites/${sitessubdir}/settings.php",
-      line => "require_once('additional_settings.php');",
+      line => "if (file_exists(__DIR__ . '/settings.local.php')) {include __DIR__ . '/settings.local.php';}",
       require => Drush::Si["drush-si-${name}"],
     }
   }
