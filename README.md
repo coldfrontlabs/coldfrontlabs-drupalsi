@@ -163,7 +163,7 @@ drupalsi::sites:
         path: 'subpath'
     auto_drush_alias: true              # Flag to generate the drush alias automatically. Defaults to true. (not yet implemented)
     drush_alias: 'mysite'               # Name to use when generating the drush site alias entry. Defaults to the name generate by Puppet for your site. It is highly recommended you set a value for alias. (not yet implemented)
-    additional_settings:                # Array of PHP lines to add to the settings.php file for your site. Note that these values are set after the install.php has been run.
+    local_settings:                # Array of PHP lines to add to the settings.php file for your site. Note that these values are set after the install.php has been run.
       - '$conf["devel_debug_mail_directory"] = "/path/to/folder";'
       - '$conf["mail_system"]["default-system"] = "DevelMailLog";'
   dropfort:
