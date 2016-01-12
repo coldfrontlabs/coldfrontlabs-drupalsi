@@ -205,7 +205,7 @@ define drupalsi::site ($profile,
     }->
     file_line {"drupalsi-{$name}-settings-require}":
       path => "${site_root}/sites/${sitessubdir}/settings.php",
-      line => "if (file_exists(__DIR__ . '/settings.local.php')) {include __DIR__ . '/settings.local.php';}",
+      line => "if (file_exists(__DIR__ . '/settings.local.php')) {include_once __DIR__ . '/settings.local.php';}",
       require => Drush::Si["drush-si-${name}"],
     }
   }
