@@ -128,6 +128,7 @@ define drupalsi::site ($profile,
       path => "${private_dir}/.htaccess",
       ensure => 'present',
       mode => '0444',
+      content => template('drupalsi/htaccess-private.erb'),
       owner => $webserver_user,  #@todo determine the webserver user's name
       group => $webserver_user,  #@todo determine the webserver user's name
       require => Drush::Si["drush-si-${name}"],
