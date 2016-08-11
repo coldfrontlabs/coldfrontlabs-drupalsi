@@ -175,8 +175,6 @@ define drupalsi::distro::omitfiles() {
   # Not ideal but it works. If anyone has a better idea please submit a patch
   $parts = split($name, "\|\|")
 
-  notify {"Removing file ${parts[1]} from Drupal distribution.":}
-
   validate_absolute_path($parts[1])
 
   file{$parts[1]:
