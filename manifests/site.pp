@@ -99,7 +99,7 @@ define drupalsi::site ($profile,
   file {"drupalsi-public-files-${name}":
     path => "${site_root}/sites/${pubdir}",
     ensure => 'directory',
-    mode => '0644',
+    mode => '0664',
     owner => $webserver_user,
     group => $webserver_user,
     recurse => true,
@@ -118,7 +118,7 @@ define drupalsi::site ($profile,
     file {"drupalsi-private-dir-${private_dir}":
       path => "${private_dir}",
       ensure => 'directory',
-      mode => '0644',
+      mode => '0664',
       owner => $webserver_user,  #@todo determine the webserver user's name
       recurse => true,
       require => Drush::Si["drush-si-${name}"],
