@@ -14,7 +14,7 @@ define drupalsi::distro ($distribution = 'drupal',
   # 1. Check if the distro is already there
   # 2. Download the distro and place it in the proper location
 
-  $buildname = md5("${distribution}-${api_version}-${distro_build_type}-${distro_root}-${distro_build_location}")
+  $buildname = md5("${distribution}-${api_version}-${distro_build_type}-${distro_root}-${distro_build_location}-${name}")
 
   if ($distro_build_type == 'get') {
 
