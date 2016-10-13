@@ -102,8 +102,12 @@ define drupalsi::site ($profile,
     mode => '0664',
     owner => $webserver_user,
     group => $webserver_user,
-    recurse => true,
+    recurse => false,
     require => Drush::Si["drush-si-${name}"],
+    checksum => 'none',
+  }->
+  exec { "enforce drupalsi-public-files-${name} permissions": 
+    command => "/bin/chown -R ${webserver_user}:${webserver_user} ${site_root}/sites/${pubdir}",
   }->
   file {"drupalsi-public-files-${name}-htaccess":
     path => "${site_root}/sites/${pubdir}/.htaccess",
@@ -120,8 +124,12 @@ define drupalsi::site ($profile,
       ensure => 'directory',
       mode => '0664',
       owner => $webserver_user,  #@todo determine the webserver user's name
-      recurse => true,
+      recurse => false,
       require => Drush::Si["drush-si-${name}"],
+      checksum => 'none',
+    }->
+    exec { "enforce drupalsi-private-dir-${private_dir} permissions": 
+      command => "/bin/chown -R ${webserver_user}:${webserver_user} ${private_dir}",
     }->
     # Make sure the file permissions on the htaccess file are different from the rest
     file {"drupalsi-private-dir-${private_dir}-htaccess":
