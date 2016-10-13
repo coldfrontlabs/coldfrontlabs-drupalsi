@@ -96,15 +96,27 @@ define drupalsi::site ($profile,
     $pubdir = "${sitessubdir}/files"
   }
 
-  file {"drupalsi-public-files-${name}":
+
+exec { "enforce ${jetty_install_dir} permissions": 
+  command => "/usr/bin/find ${jetty_install_dir} ! -user jetty -o ! - 
+group users -exec chown jetty:users {} \\;", 
+  onlyif  => "/usr/bin/test $(/usr/bin/find ${jetty_install_dir} ! - 
+user jetty -o ! -group users | wc -l) -gt 0", 
+} 
+
+
+file {"drupalsi-public-files-${name}":
     path => "${site_root}/sites/${pubdir}",
     ensure => 'directory',
     mode => '0664',
     owner => $webserver_user,
     group => $webserver_user,
-    recurse => true,
+    recurse => false,
     require => Drush::Si["drush-si-${name}"],
     checksum => 'none',
+  }->
+  exec { "enforce drupalsi-public-files-${name} permissions": 
+    command => "/bin/chown -R ${webserver_user}:${webserver_user} ${site_root}/sites/${pubdir}",
   }->
   file {"drupalsi-public-files-${name}-htaccess":
     path => "${site_root}/sites/${pubdir}/.htaccess",
@@ -121,9 +133,12 @@ define drupalsi::site ($profile,
       ensure => 'directory',
       mode => '0664',
       owner => $webserver_user,  #@todo determine the webserver user's name
-      recurse => true,
+      recurse => false,
       require => Drush::Si["drush-si-${name}"],
       checksum => 'none',
+    }->
+    exec { "enforce drupalsi-private-dir-${private_dir} permissions": 
+      command => "/bin/chown -R ${webserver_user}:${webserver_user} ${private_dir}",
     }->
     # Make sure the file permissions on the htaccess file are different from the rest
     file {"drupalsi-private-dir-${private_dir}-htaccess":
