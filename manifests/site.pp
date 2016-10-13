@@ -96,7 +96,7 @@ define drupalsi::site ($profile,
     $pubdir = "${sitessubdir}/files"
   }
 
-file {"drupalsi-public-files-${name}":
+  file {"drupalsi-public-files-${name}":
     path => "${site_root}/sites/${pubdir}",
     ensure => 'directory',
     mode => '0664',
