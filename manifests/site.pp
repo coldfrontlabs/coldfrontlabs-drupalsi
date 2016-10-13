@@ -96,15 +96,6 @@ define drupalsi::site ($profile,
     $pubdir = "${sitessubdir}/files"
   }
 
-
-exec { "enforce ${jetty_install_dir} permissions": 
-  command => "/usr/bin/find ${jetty_install_dir} ! -user jetty -o ! - 
-group users -exec chown jetty:users {} \\;", 
-  onlyif  => "/usr/bin/test $(/usr/bin/find ${jetty_install_dir} ! - 
-user jetty -o ! -group users | wc -l) -gt 0", 
-} 
-
-
 file {"drupalsi-public-files-${name}":
     path => "${site_root}/sites/${pubdir}",
     ensure => 'directory',
