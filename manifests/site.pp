@@ -29,13 +29,14 @@ define drupalsi::site ($profile,
                        $additional_settings = undef # deprecated
 ) {
   include drush
+  include stdlib
 
   # Build the site root based on the distro information
   $distros = hiera("drupalsi::distros")
   $distro_root = $distros[$distro]['distro_root']
   $site_root = "$distro_root/$distro"
 
-  if !$sites_subdir {
+  if !$sites_subdir or empty($sitessubdir) {
     $sitessubdir = $name
   }
   else {
@@ -92,8 +93,19 @@ define drupalsi::site ($profile,
   }
 
   # Build the files directories
-  if !$public_dir {
+  if !$public_dir or empty($public_dir) {
     $pubdir = "${sitessubdir}/files"
+  }
+  else {
+    # Check if absolute or relative.
+# @todo we'll need this once we start updating to newer puppet stdlib
+    if validate_legacy("Stdlib::Absolutepath", 'is_absolute_path', $public_dir) {
+#    if is_absolute_path($public_dir) {
+      $pubdir = $public_dir
+    }
+    else {
+      $pubdir = "${sitessubdir}/${public_dir}"
+    }
   }
 
   file {"drupalsi-public-files-${name}":

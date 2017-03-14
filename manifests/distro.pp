@@ -108,8 +108,6 @@ define drupalsi::distro ($distribution = 'drupal',
       dropfort_userauth_token => $distro_build_args[dropfort_userauth_token],
       dropfort_url => $distro_build_args[dropfort_url],
     }
-    $buildaction = "Drush::Make[drush-make-${buildname}]"
-
 
     # Generate the sites.php file for use with all sites installed on this distro
     file {"${distro_root}/${name}/sites/sites.php":
@@ -118,6 +116,8 @@ define drupalsi::distro ($distribution = 'drupal',
       content => template('drupalsi/sites.php.erb'),
       mode => '0644',
     }
+
+    $buildaction = "Drush::Make[drush-make-${buildname}]"
   }
   elsif ($distro_build_type == 'archive') {
     # Ensure the hash is there and the proper length
