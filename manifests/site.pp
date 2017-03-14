@@ -135,6 +135,9 @@ define drupalsi::site ($profile,
   }
 
   if $private_dir {
+    # Fail on relative paths.
+    validate_absolute_path($private_dir)
+
     file {"drupalsi-private-dir-${private_dir}":
       path => "${private_dir}",
       ensure => 'directory',
