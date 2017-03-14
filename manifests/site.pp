@@ -105,17 +105,22 @@ define drupalsi::site ($profile,
     recurse => false,
     require => Drush::Si["drush-si-${name}"],
     checksum => 'none',
-  }->
+  }
+
+  # Set the permissions in the files dir.
   exec { "enforce drupalsi-public-files-${name} permissions": 
     command => "/bin/chown -R ${webserver_user}:${webserver_user} ${site_root}/sites/${pubdir}",
-  }->
+    require => File["drupalsi-public-files-${name}"],
+  }
+
+  # Ensure there's an .htaccess file present.
   file {"drupalsi-public-files-${name}-htaccess":
     path => "${site_root}/sites/${pubdir}/.htaccess",
     ensure => 'present',
     mode => '0444',
     owner => $webserver_user,  #@todo determine the webserver user's name
     group => $webserver_user,  #@todo determine the webserver user's name
-    require => Drush::Si["drush-si-${name}"],
+    require => File["drupalsi-public-files-${name}"],
   }
 
   if $private_dir {
@@ -127,10 +132,13 @@ define drupalsi::site ($profile,
       recurse => false,
       require => Drush::Si["drush-si-${name}"],
       checksum => 'none',
-    }->
+    }
+
     exec { "enforce drupalsi-private-dir-${private_dir} permissions": 
       command => "/bin/chown -R ${webserver_user}:${webserver_user} ${private_dir}",
-    }->
+      require => File["drupalsi-private-dir-${private_dir}"],
+    }
+
     # Make sure the file permissions on the htaccess file are different from the rest
     file {"drupalsi-private-dir-${private_dir}-htaccess":
       path => "${private_dir}/.htaccess",
@@ -139,7 +147,7 @@ define drupalsi::site ($profile,
       content => template('drupalsi/htaccess-private.erb'),
       owner => $webserver_user,  #@todo determine the webserver user's name
       group => $webserver_user,  #@todo determine the webserver user's name
-      require => Drush::Si["drush-si-${name}"],
+      require => File["drupalsi-private-dir-${private_dir}"],
     }
   }
 
