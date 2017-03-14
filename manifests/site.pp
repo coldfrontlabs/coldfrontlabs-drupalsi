@@ -94,7 +94,7 @@ define drupalsi::site ($profile,
 
   # Build the files directories
   if !$public_dir or empty($public_dir) {
-    $pubdir = "${sitessubdir}/files"
+    $pubdir = "${site_root}/sites/${sitessubdir}/files"
   }
   else {
     # Check if absolute or relative.
@@ -103,12 +103,12 @@ define drupalsi::site ($profile,
       $pubdir = $public_dir
     }
     else {
-      $pubdir = "${sitessubdir}/${public_dir}"
+      $pubdir = "${site_root}/sites/${sitessubdir}/${public_dir}"
     }
   }
 
   file {"drupalsi-public-files-${name}":
-    path => "${site_root}/sites/${pubdir}",
+    path => "${pubdir}",
     ensure => 'directory',
     mode => '0664',
     owner => $webserver_user,
@@ -120,13 +120,13 @@ define drupalsi::site ($profile,
 
   # Set the permissions in the files dir.
   exec { "enforce drupalsi-public-files-${name} permissions": 
-    command => "/bin/chown -R ${webserver_user}:${webserver_user} ${site_root}/sites/${pubdir}",
+    command => "/bin/chown -R ${webserver_user}:${webserver_user} ${pubdir}",
     require => File["drupalsi-public-files-${name}"],
   }
 
   # Ensure there's an .htaccess file present.
   file {"drupalsi-public-files-${name}-htaccess":
-    path => "${site_root}/sites/${pubdir}/.htaccess",
+    path => "${pubdir}/.htaccess",
     ensure => 'present',
     mode => '0444',
     owner => $webserver_user,  #@todo determine the webserver user's name
