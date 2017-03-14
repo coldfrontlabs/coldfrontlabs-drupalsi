@@ -59,6 +59,13 @@ define drupalsi::distro ($distribution = 'drupal',
     }
 
     $buildaction = "Exec[git-clone-${buildname}]"
+
+    # Ensure the file is there even if it's blank.
+    file {"${distro_root}/${name}/sites/sites.php":
+      ensure => 'present',
+      require => Exec["git-clone-${buildname}"],
+      mode => '0644',
+    }
   }
   elsif ($distro_build_type == 'make') {
     if $distro_build_args['url'] {
@@ -156,10 +163,12 @@ define drupalsi::distro ($distribution = 'drupal',
 
     $buildaction = "Drush::Arr[drush-arr-${buildname}]"
 
-    # @todo figure out a way to remove the archive when it's not required
-    #tidy {"${distro_root}/archive-${buildname}":
-    # subscribe => Drush::Arr["drush-arr-${buildname}"],
-    #}
+    # Ensure the file is there even if it's blank.
+    file {"${distro_root}/${name}/sites/sites.php":
+      ensure => 'present',
+      require => Drush::Arr["drush-arr-${buildname}"],
+      mode => '0644',
+    }
   }
 
   if !empty($omit_files) {
