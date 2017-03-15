@@ -44,7 +44,7 @@ define drupalsi::site ($profile,
   }
   
   # @todo create checks for other db types.
-  $db_exists_check = "test ! \$(drush sqlq --db-url=${db_url} "SELECT COUNT(DISTINCT table_name) FROM information_schema.columns WHERE table_schema = (SELECT DATABASE());" --extra='-r -s') -gt 0"
+  $db_exists_check = "test ! \$(drush sqlq --db-url=${db_url} 'SELECT COUNT(DISTINCT table_name) FROM information_schema.columns WHERE table_schema = (SELECT DATABASE());' --extra='-r -s') -gt 0"
 
   drush::si {"drush-si-${name}":
     profile => $profile,
