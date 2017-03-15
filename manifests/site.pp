@@ -42,6 +42,9 @@ define drupalsi::site ($profile,
   else {
     $sitessubdir = $sites_subdir
   }
+  
+  # @todo create checks for other db types.
+  $db_exists_check = "test ! \$(drush sqlq --db-url=${db_url} "SELECT COUNT(DISTINCT table_name) FROM information_schema.columns WHERE table_schema = (SELECT DATABASE());" --extra='-r -s') -gt 0"
 
   drush::si {"drush-si-${name}":
     profile => $profile,
@@ -59,7 +62,7 @@ define drupalsi::site ($profile,
     site_name => $site_name,
     sites_subdir => $sitessubdir,
     settings => $keyvalue,
-    onlyif => "test ! -f ${site_root}/sites/${sitessubdir}/settings.php -a -f ${site_root}/index.php",
+    onlyif => ["test ! -f ${site_root}/sites/${sitessubdir}/settings.php -a -f ${site_root}/index.php", "${db_exists_check}"],
     require => [
       Drupalsi::Distro[$distro],
     ]
