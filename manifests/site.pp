@@ -36,13 +36,13 @@ define drupalsi::site ($profile,
   $distro_root = $distros[$distro]['distro_root']
   $site_root = "$distro_root/$distro"
 
-  if !$sites_subdir or empty($sitessubdir) {
+  if !$sites_subdir or empty($sites_subdir) {
     $sitessubdir = $name
   }
   else {
     $sitessubdir = $sites_subdir
   }
-  
+
   # @todo create checks for other db types.
   $db_exists_check = "test ! \$(drush sqlq --db-url=${db_url} 'SELECT COUNT(DISTINCT table_name) FROM information_schema.columns WHERE table_schema = (SELECT DATABASE());' --extra='-r -s') -gt 0"
 
@@ -122,7 +122,7 @@ define drupalsi::site ($profile,
   }
 
   # Set the permissions in the files dir.
-  exec { "enforce drupalsi-public-files-${name} permissions": 
+  exec { "enforce drupalsi-public-files-${name} permissions":
     command => "/bin/chown -R ${webserver_user}:${webserver_user} ${pubdir}",
     require => File["drupalsi-public-files-${name}"],
   }
@@ -151,7 +151,7 @@ define drupalsi::site ($profile,
       checksum => 'none',
     }
 
-    exec { "enforce drupalsi-private-dir-${private_dir} permissions": 
+    exec { "enforce drupalsi-private-dir-${private_dir} permissions":
       command => "/bin/chown -R ${webserver_user}:${webserver_user} ${private_dir}",
       require => File["drupalsi-private-dir-${private_dir}"],
     }
