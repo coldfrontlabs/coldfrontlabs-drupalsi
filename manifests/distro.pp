@@ -37,7 +37,7 @@ define drupalsi::distro ($distribution = 'drupal',
       ensure => 'present',
       require => Drush::Dl["drush-dl-${buildname}"],
       content => template('drupalsi/sites.php.erb'),
-      mode => '0644',
+      mode => '0664',
     }
 
   }
