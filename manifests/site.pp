@@ -233,7 +233,7 @@ define drupalsi::site ($profile,
     file {"drupalsi-{$name}-local-settings":
       path => "${site_root}/sites/${sitessubdir}/settings.local.php",
       ensure => 'present',
-      mode => '0444',
+      mode => '0664',
       content => template('drupalsi/settings.local.php.erb'),
       require => Drush::Si["drush-si-${name}"],
     }->
