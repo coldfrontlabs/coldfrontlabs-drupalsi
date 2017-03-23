@@ -115,7 +115,6 @@ define drupalsi::site ($profile,
     ensure => 'directory',
     mode => '0664',
     owner => $webserver_user,
-    group => $webserver_user,
     recurse => false,
     require => Drush::Si["drush-si-${name}"],
     checksum => 'none',
@@ -133,7 +132,6 @@ define drupalsi::site ($profile,
     ensure => 'present',
     mode => '0444',
     owner => $webserver_user,  #@todo determine the webserver user's name
-    group => $webserver_user,  #@todo determine the webserver user's name
     require => File["drupalsi-public-files-${name}"],
   }
 
@@ -163,7 +161,6 @@ define drupalsi::site ($profile,
       mode => '0444',
       content => template('drupalsi/htaccess-private.erb'),
       owner => $webserver_user,  #@todo determine the webserver user's name
-      group => $webserver_user,  #@todo determine the webserver user's name
       require => File["drupalsi-private-dir-${private_dir}"],
     }
   }
