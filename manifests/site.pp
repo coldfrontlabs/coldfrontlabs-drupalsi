@@ -199,7 +199,7 @@ define drupalsi::site ($profile,
     }
 
    # Build the command strings.
-   $command = "drush --quiet --yes --root=${site_root} -l ${sitessubdir} cron"
+   $command = "drush --quiet --yes --root=${site_root} cron"
    $run_command = "/usr/bin/env PATH=$path COLUMNS=72"
 
     cron {"drupalsi-site-cron-${name}":
