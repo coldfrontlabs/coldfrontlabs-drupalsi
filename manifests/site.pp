@@ -102,7 +102,7 @@ define drupalsi::site ($profile,
   else {
     # Check if absolute or relative.
     # We need this to start updating to newer puppet stdlib.
-    if validate_legacy("Stdlib::Absolutepath", 'is_absolute_path', $public_dir) {
+    if is_absolute_path($public_dir) {
       $pubdir = $public_dir
     }
     else {
