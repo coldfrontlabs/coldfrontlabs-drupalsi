@@ -95,7 +95,7 @@ define drupalsi::site ($profile,
   #  }
   }
 
-  # Build the files directories
+  # Build the public files directories
   if !$public_dir or empty($public_dir) {
     $pubdir = "${site_root}/sites/${sitessubdir}/files"
   }
@@ -107,6 +107,21 @@ define drupalsi::site ($profile,
     }
     else {
       $pubdir = "${site_root}/sites/${sitessubdir}/${public_dir}"
+    }
+  }
+
+  # Build the private file directories
+  if !$private_dir or empty($private_dir) {
+    $privdir = "${pubdir}/private"
+  }
+  else {
+    # Check if absolute or relative.
+    # We need this to start updating to newer puppet stdlib.
+    if is_absolute_path($public_dir) {
+      $privdir = $private_dir
+    }
+    else {
+      $privdir = "${pubdir}/${private_dir}"
     }
   }
 
@@ -135,12 +150,12 @@ define drupalsi::site ($profile,
     require => File["drupalsi-public-files-${name}"],
   }
 
-  if $private_dir {
+  if $privdir {
     # Fail on relative paths.
-    validate_absolute_path($private_dir)
+    validate_absolute_path($privdir)
 
-    file {"drupalsi-private-dir-${private_dir}":
-      path => "${private_dir}",
+    file {"drupalsi-private-dir-${privdir}":
+      path => "${privdir}",
       ensure => 'directory',
       mode => '0664',
       owner => $webserver_user,  #@todo determine the webserver user's name
@@ -149,14 +164,14 @@ define drupalsi::site ($profile,
       checksum => 'none',
     }
 
-    exec { "enforce drupalsi-private-dir-${private_dir} permissions":
-      command => "/bin/chown -R ${webserver_user}:${webserver_user} ${private_dir}",
-      require => File["drupalsi-private-dir-${private_dir}"],
+    exec { "enforce drupalsi-private-dir-${privdir} permissions":
+      command => "/bin/chown -R ${webserver_user}:${webserver_user} ${privdir}",
+      require => File["drupalsi-private-dir-${privdir}"],
     }
 
     # Make sure the file permissions on the htaccess file are different from the rest
-    file {"drupalsi-private-dir-${private_dir}-htaccess":
-      path => "${private_dir}/.htaccess",
+    file {"drupalsi-private-dir-${privdir}-htaccess":
+      path => "${privdir}/.htaccess",
       ensure => 'present',
       mode => '0444',
       content => template('drupalsi/htaccess-private.erb'),
