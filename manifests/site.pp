@@ -242,6 +242,12 @@ define drupalsi::site ($profile,
     }
   }
 
+  $localsettings = "
+    $conf['file_public_path'] = '${pubdir}';
+    $conf['file_private_path'] = '${privdir}';
+    ${local_settings}
+  ";
+
   # Create settings.local.php file
   file {"drupalsi-${name}-local-settings":
     path => "${site_root}/sites/${sitessubdir}/settings.local.php",
