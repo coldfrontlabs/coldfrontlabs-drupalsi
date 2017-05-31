@@ -241,19 +241,20 @@ define drupalsi::site ($profile,
       require => Drush::Si["drush-si-${name}"],
     }
   }
-  if $local_settings {
-    file {"drupalsi-{$name}-local-settings":
-      path => "${site_root}/sites/${sitessubdir}/settings.local.php",
-      ensure => 'present',
-      mode => '0664',
-      content => template('drupalsi/settings.local.php.erb'),
-      require => Drush::Si["drush-si-${name}"],
-    }->
-    file_line {"drupalsi-{$name}-settings-require}":
-      path => "${site_root}/sites/${sitessubdir}/settings.php",
-      line => "if (file_exists(__DIR__ . '/settings.local.php')) {include_once __DIR__ . '/settings.local.php';}",
-      require => Drush::Si["drush-si-${name}"],
-    }
+
+  # Create settings.local.php file
+  file {"drupalsi-${name}-local-settings":
+    path => "${site_root}/sites/${sitessubdir}/settings.local.php",
+    ensure => 'present',
+    mode => '0664',
+    content => template('drupalsi/settings.local.php.erb'),
+    require => Drush::Si["drush-si-${name}"],
+  }
+
+  file_line {"drupalsi-${name}-settings-require}":
+    path => "${site_root}/sites/${sitessubdir}/settings.php",
+    line => "if (file_exists(__DIR__ . '/settings.local.php')) {include_once __DIR__ . '/settings.local.php';}",
+    require => File["drupalsi-${name}-local-settings"],
   }
 
   # Add entries into sites.php
@@ -282,7 +283,7 @@ define drupalsi::site ($profile,
   if $site_aliases and is_hash($site_aliases) {
     create_resources(drupalsi::site::site_alias, $site_aliases, $site_alias_defaults)
   }
-}
+
 
 define drupalsi::site::site_alias($domain,
                                   $port = undef,
