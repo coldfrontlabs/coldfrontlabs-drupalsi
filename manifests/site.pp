@@ -176,7 +176,7 @@ define drupalsi::site ($profile,
       mode => '0444',
       content => template('drupalsi/htaccess-private.erb'),
       owner => $webserver_user,  #@todo determine the webserver user's name
-      require => File["drupalsi-private-dir-${private_dir}"],
+      require => File["drupalsi-private-dir-${privdir}"],
     }
   }
 
