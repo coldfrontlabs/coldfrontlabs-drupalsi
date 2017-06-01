@@ -289,7 +289,7 @@ define drupalsi::site ($profile,
   if $site_aliases and is_hash($site_aliases) {
     create_resources(drupalsi::site::site_alias, $site_aliases, $site_alias_defaults)
   }
-
+}
 
 define drupalsi::site::site_alias($domain,
                                   $port = undef,
