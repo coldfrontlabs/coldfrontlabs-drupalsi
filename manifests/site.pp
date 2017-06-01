@@ -117,7 +117,7 @@ define drupalsi::site ($profile,
   else {
     # Check if absolute or relative.
     # We need this to start updating to newer puppet stdlib.
-    if is_absolute_path($public_dir) {
+    if is_absolute_path($private_dir) {
       $privdir = $private_dir
     }
     else {
