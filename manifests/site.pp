@@ -243,8 +243,8 @@ define drupalsi::site ($profile,
   }
 
   $localsettings = "
-    $conf['file_public_path'] = '${pubdir}';
-    $conf['file_private_path'] = '${privdir}';
+    \$conf['file_public_path'] = '${pubdir}';
+    \$conf['file_private_path'] = '${privdir}';
     ${local_settings}
   "
 
