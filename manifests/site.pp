@@ -138,7 +138,7 @@ define drupalsi::site ($profile,
   file_line {"drupalsi-${name}-default-settings-public-dir}":
     path => "${site_root}/sites/${sitessubdir}/settings.local.php",
     line => "\$conf['file_public_path'] = '${pubdir}';",
-    require => File["drupalsi-${name}-local-settings"],
+    require => [File["drupalsi-public-files-${name}"], File["drupalsi-${name}-local-settings"]],
   }
 
   # Set the permissions in the files dir.
@@ -184,10 +184,11 @@ define drupalsi::site ($profile,
       owner => $webserver_user,  #@todo determine the webserver user's name
       require => File["drupalsi-private-dir-${privdir}"],
     }
+
     file_line {"drupalsi-${name}-default-settings-private-dir}":
       path => "${site_root}/sites/${sitessubdir}/settings.local.php",
       line => "\$conf['file_private_path'] = '${privdir}';",
-      require => File["drupalsi-${name}-local-settings"],
+      require => [File["drupalsi-private-dir-${privdir}"], File["drupalsi-${name}-local-settings"]],
     }
   }
 
