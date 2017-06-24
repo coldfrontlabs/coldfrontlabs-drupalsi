@@ -135,6 +135,12 @@ define drupalsi::site ($profile,
     checksum => 'none',
   }
 
+  file_line {"drupalsi-${name}-default-settings-public-dir}":
+    path => "${site_root}/sites/${sitessubdir}/settings.local.php",
+    line => "\$conf['file_public_path'] = '${pubdir}';",
+    require => File["drupalsi-${name}-local-settings"],
+  }
+
   # Set the permissions in the files dir.
   exec { "enforce drupalsi-public-files-${name} permissions":
     command => "/bin/chown -R ${webserver_user}:${webserver_user} ${pubdir}",
@@ -177,6 +183,11 @@ define drupalsi::site ($profile,
       content => template('drupalsi/htaccess-private.erb'),
       owner => $webserver_user,  #@todo determine the webserver user's name
       require => File["drupalsi-private-dir-${privdir}"],
+    }
+    file_line {"drupalsi-${name}-default-settings-private-dir}":
+      path => "${site_root}/sites/${sitessubdir}/settings.local.php",
+      line => "\$conf['file_private_path'] = '${privdir}';",
+      require => File["drupalsi-${name}-local-settings"],
     }
   }
 
