@@ -137,7 +137,7 @@ define drupalsi::site ($profile,
 
   # Set the permissions in the files dir.
   exec { "enforce drupalsi-public-files-${name} permissions":
-    command => "/bin/chown -R ${webserver_user}:${webserver_user} ${pubdir}",
+    command => "/bin/chown ${webserver_user}:${webserver_user} ${pubdir}",
     require => File["drupalsi-public-files-${name}"],
   }
 
@@ -165,7 +165,7 @@ define drupalsi::site ($profile,
     }
 
     exec { "enforce drupalsi-private-dir-${privdir} permissions":
-      command => "/bin/chown -R ${webserver_user}:${webserver_user} ${privdir}",
+      command => "/bin/chown ${webserver_user}:${webserver_user} ${privdir}",
       require => File["drupalsi-private-dir-${privdir}"],
     }
 
