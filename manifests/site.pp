@@ -103,10 +103,57 @@ define drupalsi::site ($profile,
     # Check if absolute or relative.
     # We need this to start updating to newer puppet stdlib.
     if is_absolute_path($public_dir) {
-      $pubdir = $public_dir
+      # Only create the directory.
+      # Absolute path assumes symlink to external
+      # file location managed by the admin.
+      # Don't set a value in settings.local or
+      # provision the dir within the
+      # Drupal root.
+      file {"drupalsi-public-files-${name}":
+        path => "${pubdir}",
+        ensure => 'directory',
+        mode => '0664',
+        owner => $webserver_user,
+        recurse => false,
+        require => Drush::Si["drush-si-${name}"],
+        checksum => 'none',
+      }
     }
     else {
-      $pubdir = "${site_root}/sites/${sitessubdir}/${public_dir}"
+      $pubdir = "${public_dir}"
+    }
+  }
+
+  if $pubdir {
+    file {"drupalsi-public-files-${name}":
+      path => "${pubdir}",
+      ensure => 'directory',
+      mode => '0664',
+      owner => $webserver_user,
+      recurse => false,
+      require => Drush::Si["drush-si-${name}"],
+      checksum => 'none',
+    }
+
+    # Set the permissions in the files dir.
+    exec { "enforce drupalsi-public-files-${name} permissions":
+      command => "/bin/chown ${webserver_user}:${webserver_user} ${pubdir}",
+      require => File["drupalsi-public-files-${name}"],
+    }
+
+    # Ensure there's an .htaccess file present.
+    file {"drupalsi-public-files-${name}-htaccess":
+      path => "${pubdir}/.htaccess",
+      ensure => 'present',
+      mode => '0444',
+      owner => $webserver_user,  #@todo determine the webserver user's name
+      require => File["drupalsi-public-files-${name}"],
+    }
+
+    file_line {"drupalsi-${name}-default-settings-public-dir}":
+     path => "${site_root}/sites/${sitessubdir}/settings.local.php",
+      line => "\$conf['file_public_path'] = '${pubdir}';",
+      require => [File["drupalsi-public-dir-${pubdir}"], File["drupalsi-${name}-local-settings"]],
     }
   }
 
@@ -123,31 +170,6 @@ define drupalsi::site ($profile,
     else {
       $privdir = "${pubdir}/${private_dir}"
     }
-  }
-
-  file {"drupalsi-public-files-${name}":
-    path => "${pubdir}",
-    ensure => 'directory',
-    mode => '0664',
-    owner => $webserver_user,
-    recurse => false,
-    require => Drush::Si["drush-si-${name}"],
-    checksum => 'none',
-  }
-
-  # Set the permissions in the files dir.
-  exec { "enforce drupalsi-public-files-${name} permissions":
-    command => "/bin/chown ${webserver_user}:${webserver_user} ${pubdir}",
-    require => File["drupalsi-public-files-${name}"],
-  }
-
-  # Ensure there's an .htaccess file present.
-  file {"drupalsi-public-files-${name}-htaccess":
-    path => "${pubdir}/.htaccess",
-    ensure => 'present',
-    mode => '0444',
-    owner => $webserver_user,  #@todo determine the webserver user's name
-    require => File["drupalsi-public-files-${name}"],
   }
 
   if $privdir {
