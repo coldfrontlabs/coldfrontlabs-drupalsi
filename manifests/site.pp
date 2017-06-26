@@ -153,7 +153,7 @@ define drupalsi::site ($profile,
     file_line {"drupalsi-${name}-default-settings-public-dir}":
      path => "${site_root}/sites/${sitessubdir}/settings.local.php",
       line => "\$conf['file_public_path'] = '${pubdir}';",
-      require => [File["drupalsi-public-dir-${pubdir}"], File["drupalsi-${name}-local-settings"]],
+      require => [File["drupalsi-public-files-${name}"], File["drupalsi-${name}-local-settings"]],
     }
   }
 
@@ -176,7 +176,7 @@ define drupalsi::site ($profile,
     # Fail on relative paths.
     validate_absolute_path($privdir)
 
-    file {"drupalsi-private-dir-${privdir}":
+    file {"drupalsi-private-dir-${name}":
       path => "${privdir}",
       ensure => 'directory',
       mode => '0664',
@@ -188,7 +188,7 @@ define drupalsi::site ($profile,
 
     exec { "enforce drupalsi-private-dir-${privdir} permissions":
       command => "/bin/chown ${webserver_user}:${webserver_user} ${privdir}",
-      require => File["drupalsi-private-dir-${privdir}"],
+      require => File["drupalsi-private-dir-${name}"],
     }
 
     # Make sure the file permissions on the htaccess file are different from the rest
@@ -198,13 +198,13 @@ define drupalsi::site ($profile,
       mode => '0444',
       content => template('drupalsi/htaccess-private.erb'),
       owner => $webserver_user,  #@todo determine the webserver user's name
-      require => File["drupalsi-private-dir-${privdir}"],
+      require => File["drupalsi-private-dir-${name}"],
     }
 
     file_line {"drupalsi-${name}-default-settings-private-dir}":
       path => "${site_root}/sites/${sitessubdir}/settings.local.php",
       line => "\$conf['file_private_path'] = '${privdir}';",
-      require => [File["drupalsi-private-dir-${privdir}"], File["drupalsi-${name}-local-settings"]],
+      require => [File["drupalsi-private-dir-${name}"], File["drupalsi-${name}-local-settings"]],
     }
   }
 
