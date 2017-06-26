@@ -97,7 +97,7 @@ define drupalsi::site ($profile,
 
   # Build the public files directories
   if !$public_dir or empty($public_dir) {
-    $pubdir = "${site_root}/sites/${sitessubdir}/files"
+    $pubdir = "sites/${sitessubdir}/files"
   }
   else {
     # Check if absolute or relative.
@@ -110,7 +110,7 @@ define drupalsi::site ($profile,
       # provision the dir within the
       # Drupal root.
       file {"drupalsi-public-files-${name}":
-        path => "${pubdir}",
+        path => "${public_dir}",
         ensure => 'directory',
         mode => '0664',
         owner => $webserver_user,
@@ -126,7 +126,7 @@ define drupalsi::site ($profile,
 
   if $pubdir {
     file {"drupalsi-public-files-${name}":
-      path => "${pubdir}",
+      path => "${site_root}/${pubdir}",
       ensure => 'directory',
       mode => '0664',
       owner => $webserver_user,
