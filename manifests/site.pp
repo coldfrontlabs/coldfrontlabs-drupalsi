@@ -135,12 +135,6 @@ define drupalsi::site ($profile,
     checksum => 'none',
   }
 
-  file_line {"drupalsi-${name}-default-settings-public-dir}":
-    path => "${site_root}/sites/${sitessubdir}/settings.local.php",
-    line => "\$conf['file_public_path'] = '${pubdir}';",
-    require => [File["drupalsi-public-files-${name}"], File["drupalsi-${name}-local-settings"]],
-  }
-
   # Set the permissions in the files dir.
   exec { "enforce drupalsi-public-files-${name} permissions":
     command => "/bin/chown ${webserver_user}:${webserver_user} ${pubdir}",
