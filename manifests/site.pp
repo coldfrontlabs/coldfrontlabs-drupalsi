@@ -137,13 +137,13 @@ define drupalsi::site ($profile,
 
     # Set the permissions in the files dir.
     exec { "enforce drupalsi-public-files-${name} permissions":
-      command => "/bin/chown ${webserver_user}:${webserver_user} ${pubdir}",
+      command => "/bin/chown ${webserver_user}:${webserver_user} ${site_root}/${pubdir}",
       require => File["drupalsi-public-files-${name}"],
     }
 
     # Ensure there's an .htaccess file present.
     file {"drupalsi-public-files-${name}-htaccess":
-      path => "${pubdir}/.htaccess",
+      path => "${site_root}/${pubdir}/.htaccess",
       ensure => 'present',
       mode => '0444',
       owner => $webserver_user,  #@todo determine the webserver user's name
