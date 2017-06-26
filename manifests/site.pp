@@ -159,7 +159,7 @@ define drupalsi::site ($profile,
 
   # Build the private file directories
   if !$private_dir or empty($private_dir) {
-    $privdir = "${pubdir}/private"
+    $privdir = "${site_root}/${pubdir}/private"
   }
   else {
     # Check if absolute or relative.
@@ -168,7 +168,7 @@ define drupalsi::site ($profile,
       $privdir = $private_dir
     }
     else {
-      $privdir = "${pubdir}/${private_dir}"
+      $privdir = "${site_root}/${pubdir}/${private_dir}"
     }
   }
 
