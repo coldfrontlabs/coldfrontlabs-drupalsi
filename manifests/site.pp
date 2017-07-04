@@ -186,13 +186,13 @@ define drupalsi::site ($profile,
       checksum => 'none',
     }
 
-    exec { "enforce drupalsi-private-dir-${privdir} permissions":
+    exec { "enforce drupalsi-private-dir-${name} permissions":
       command => "/bin/chown ${webserver_user}:${webserver_user} ${privdir}",
       require => File["drupalsi-private-dir-${name}"],
     }
 
     # Make sure the file permissions on the htaccess file are different from the rest
-    file {"drupalsi-private-dir-${privdir}-htaccess":
+    file {"drupalsi-private-dir-${name}-htaccess":
       path => "${privdir}/.htaccess",
       ensure => 'present',
       mode => '0444',
