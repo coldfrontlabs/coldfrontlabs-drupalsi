@@ -149,12 +149,6 @@ define drupalsi::site ($profile,
       owner => $webserver_user,  #@todo determine the webserver user's name
       require => File["drupalsi-public-files-${name}"],
     }
-
-    file_line {"drupalsi-${name}-default-settings-public-dir}":
-     path => "${site_root}/sites/${sitessubdir}/settings.local.php",
-      line => "\$conf['file_public_path'] = '${pubdir}';",
-      require => [File["drupalsi-public-files-${name}"], File["drupalsi-${name}-local-settings"]],
-    }
   }
 
   # Build the private file directories
@@ -199,12 +193,6 @@ define drupalsi::site ($profile,
       content => template('drupalsi/htaccess-private.erb'),
       owner => $webserver_user,  #@todo determine the webserver user's name
       require => File["drupalsi-private-dir-${name}"],
-    }
-
-    file_line {"drupalsi-${name}-default-settings-private-dir}":
-      path => "${site_root}/sites/${sitessubdir}/settings.local.php",
-      line => "\$conf['file_private_path'] = '${privdir}';",
-      require => [File["drupalsi-private-dir-${name}"], File["drupalsi-${name}-local-settings"]],
     }
   }
 
