@@ -118,6 +118,13 @@ define drupalsi::site ($profile,
         require => Drush::Si["drush-si-${name}"],
         checksum => 'none',
       }
+
+      file {"drupalsi-public-files-${name}-link":
+        path => "${site_root}/sites/${sitessubdir}/files",
+        ensure => 'link',
+        target => "${public_dir}",
+        require => File["drupalsi-public-files-${name}"],
+      }
     }
     else {
       $pubdir = "${public_dir}"
