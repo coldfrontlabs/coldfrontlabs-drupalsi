@@ -147,16 +147,17 @@ define drupalsi::site ($profile,
       command => "/bin/chown ${webserver_user}:${webserver_user} ${site_root}/${pubdir}",
       require => File["drupalsi-public-files-${name}"],
     }
-
-    # Ensure there's an .htaccess file present.
-    file {"drupalsi-public-files-${name}-htaccess":
-      path => "${site_root}/${pubdir}/.htaccess",
-      ensure => 'present',
-      mode => '0444',
-      owner => $webserver_user,  #@todo determine the webserver user's name
-      require => File["drupalsi-public-files-${name}"],
-    }
   }
+
+  # Ensure there's an .htaccess file present.
+  file {"drupalsi-public-files-${name}-htaccess":
+    path => "${site_root}/sites/${sitessubdir}/files/.htaccess",
+    ensure => 'present',
+    mode => '0444',
+    owner => $webserver_user,  #@todo determine the webserver user's name
+    require => File["drupalsi-public-files-${name}"],
+  }
+
 
   # Build the private file directories
   if !$private_dir or empty($private_dir) {
