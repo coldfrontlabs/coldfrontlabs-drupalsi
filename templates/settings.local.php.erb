@@ -3,11 +3,11 @@
 /**********************************************************
  * This file is managed by Puppet and should not be edited
  *********************************************************/
-<% if @pubdir != '' -%>
+<% if @pubdir != '' and @pubdir != nil -%>
 $conf['files_public_path'] = '<%= @pubdir %>';
 <% end -%>
 
-<% if @privdir != '' -%>
+<% if @privdir != '' and @privdir != nill -%>
 $conf['files_private_path'] = '<%= @privdir %>';
 <% end -%>
 
