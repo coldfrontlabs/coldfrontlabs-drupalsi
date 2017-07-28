@@ -148,6 +148,7 @@ define drupalsi::site ($profile,
       mode => '0444',
       owner => $webserver_user,  #@todo determine the webserver user's name
       require => File["drupalsi-public-files-${name}"],
+      content => template('drupalsi/htaccess-public.erb'),
     }
 
   }
