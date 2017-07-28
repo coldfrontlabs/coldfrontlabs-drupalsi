@@ -148,6 +148,7 @@ define drupalsi::site ($profile,
       mode => '0444',
       owner => $webserver_user,  #@todo determine the webserver user's name
       require => File["drupalsi-public-files-${name}"],
+      content => template('drupalsi/htaccess-public.erb'),
     }
 
   }
@@ -195,6 +196,46 @@ define drupalsi::site ($profile,
       owner => $webserver_user,  #@todo determine the webserver user's name
       require => File["drupalsi-private-dir-${name}"],
     }
+  }
+
+  # Set directory permissions within the files directory
+  exec {"enforce drupalsi-ctools-dir-${name} permissions":
+    command => "chown -R ${webserver_user} ${site_root}/sites/${sitessubdir}/files/ctools && chmod -R u+rwX ${site_root}/sites/${sitessubdir}/files/ctools",
+    onlyif => "test -d ${site_root}/sites/${sitessubdir}/files/ctools",
+    require => File["drupalsi-public-files-${name}"],
+    path => ['/bin', '/usr/bin'],
+  }
+
+  # Set directory permissions within the files directory
+  exec {"enforce drupalsi-styles-dir-${name} permissions":
+    command => "chown -R ${webserver_user} ${site_root}/sites/${sitessubdir}/files/styles && chmod -R u+rwX ${site_root}/sites/${sitessubdir}/files/styles",
+    onlyif => "test -d ${site_root}/sites/${sitessubdir}/files/styles",
+    require => File["drupalsi-public-files-${name}"],
+    path => ['/bin', '/usr/bin'],
+  }
+
+  # Set directory permissions within the files directory
+  exec {"enforce drupalsi-css-dir-${name} permissions":
+    command => "chown -R ${webserver_user} ${site_root}/sites/${sitessubdir}/files/css && chmod -R u+rwX ${site_root}/sites/${sitessubdir}/files/css",
+    onlyif => "test -d ${site_root}/sites/${sitessubdir}/files/css",
+    require => File["drupalsi-public-files-${name}"],
+    path => ['/bin', '/usr/bin'],
+  }
+
+  # Set directory permissions within the files directory
+  exec {"enforce drupalsi-js-dir-${name} permissions":
+    command => "chown -R ${webserver_user} ${site_root}/sites/${sitessubdir}/files/js && chmod -R u+rwX ${site_root}/sites/${sitessubdir}/files/js",
+    onlyif => "test -d ${site_root}/sites/${sitessubdir}/files/js",
+    require => File["drupalsi-public-files-${name}"],
+    path => ['/bin', '/usr/bin'],
+  }
+
+  # Set directory permissions within the files directory
+  exec {"enforce drupalsi-languages-dir-${name} permissions":
+    command => "chown -R ${webserver_user} ${site_root}/sites/${sitessubdir}/files/languages && chmod -R u+rwX ${site_root}/sites/${sitessubdir}/files/languages",
+    onlyif => "test -d ${site_root}/sites/${sitessubdir}/files/languages",
+    require => File["drupalsi-public-files-${name}"],
+    path => ['/bin', '/usr/bin'],
   }
 
   # Configure cron for the site
