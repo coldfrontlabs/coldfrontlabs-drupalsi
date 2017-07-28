@@ -208,7 +208,7 @@ define drupalsi::site ($profile,
 
   # Set directory permissions within the files directory
   exec {"enforce drupalsi-styles-dir-${name} permissions":
-    command => "chown -R ${webserver_user} ${site_root}/sites/${sitessubdir}/files/styles && chmod -R u+rwX ${site_root}/sites/${sitessubdir}/files/styles",
+    command => "chown ${webserver_user} ${site_root}/sites/${sitessubdir}/files/styles && chmod u+rwX ${site_root}/sites/${sitessubdir}/files/styles",
     onlyif => "test -d ${site_root}/sites/${sitessubdir}/files/styles",
     require => File["drupalsi-public-files-${name}"],
     path => ['/bin', '/usr/bin'],
