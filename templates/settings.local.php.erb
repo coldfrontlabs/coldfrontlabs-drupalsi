@@ -4,11 +4,11 @@
  * This file is managed by Puppet and should not be edited
  *********************************************************/
 <% if @pubdir != '' and @pubdir != nil -%>
-$conf['files_public_path'] = '<%= @pubdir %>';
+$conf['file_public_path'] = '<%= @pubdir %>';
 <% end -%>
 
 <% if @privdir != '' and @privdir != nil -%>
-$conf['files_private_path'] = '<%= @privdir %>';
+$conf['file_private_path'] = '<%= @privdir %>';
 <% end -%>
 
 <% @local_settings.each do |val| -%>
