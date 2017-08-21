@@ -1,8 +1,15 @@
 #**********************************************************
 # * This file is managed by Puppet and should not be edited
 #**********************************************************
+# Deny all requests from Apache 2.4+.
 
-Deny from all
+  Require all denied
+
+
+# Deny all requests from Apache 2.0-2.2.
+
+  Deny from all
+
 
 # Turn off all options we don't need.
 Options None
