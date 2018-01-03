@@ -69,7 +69,7 @@ define drupalsi::site ($profile,
   }
 
   # Set drush alias values
-  if $auto_drush_alias {
+  #if $auto_drush_alias {
   #  # Set the alias name
   #  if $drush_alias {
   #    $a = $drush_alias
@@ -93,7 +93,7 @@ define drupalsi::site ($profile,
   #    os => 'Linux', # @todo determine this with Facter
   #    # @todo everything else!
   #  }
-  }
+  #}
 
   # Build the public files directories
   if !$public_dir or empty($public_dir) {
