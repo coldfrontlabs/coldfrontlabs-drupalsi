@@ -25,8 +25,8 @@ define drupalsi::site ($profile,
                        $site_aliases = undef,
                        $auto_drush_alias = false,
                        $auto_alias = true,
-                       $local_settings = '',
-                       $additional_settings = undef # deprecated
+                       $local_settings = Array[String],
+                       $additional_settings = Array[String] # deprecated
 ) {
   include drush
   include stdlib
