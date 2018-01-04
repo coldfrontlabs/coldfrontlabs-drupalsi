@@ -23,10 +23,10 @@ define drupalsi::site ($profile,
                        $cron_schedule = undef,
                        $drush_alias = undef,
                        $site_aliases = undef,
-                       $auto_drush_alias = false,
+                       Boolean $auto_drush_alias = false,
                        $auto_alias = true,
-                       $local_settings = Array,
-                       $additional_settings = Array # deprecated
+                       Array[String] $local_settings,
+                       Array[String] $additional_settings # deprecated
 ) {
   include drush
   include stdlib
