@@ -8,7 +8,7 @@ class drupalsi () {
     content => template('drupalsi/drupal-fix-permissions.sh.erb'),
     path => '/usr/local/bin/drupal-fix-permissions.sh',
     ensure => 'file',
-    mode => '0644',
+    mode => '0755',
   }
 
   $distros = hiera_hash('drupalsi::distros', {})
