@@ -3,6 +3,14 @@
 class drupalsi () {
   include drush
 
+  # Add the script to set the Drupal directory permissions.
+  file {'drupal-fix-permissions-script':
+    content => template('drupalsi/drupal-fix-permissions.sh.erb'),
+    path => '/usr/local/bin/drupal-fix-permissions.sh',
+    ensure => 'file',
+    mode => '0644',
+  }
+
   $distros = hiera_hash('drupalsi::distros', {})
   create_resources(drupalsi::distro, $distros)
 
