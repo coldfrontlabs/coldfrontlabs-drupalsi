@@ -37,7 +37,7 @@ define drupalsi::distro ($distribution = 'drupal',
       ensure => 'present',
       require => Drush::Dl["drush-dl-${buildname}"],
       content => template('drupalsi/sites.php.erb'),
-      mode => '0664',
+      mode => '0640',
     }
 
   }
@@ -114,7 +114,7 @@ define drupalsi::distro ($distribution = 'drupal',
       ensure => 'present',
       require => Drush::Make["drush-make-${buildname}"],
       content => template('drupalsi/sites.php.erb'),
-      mode => '0644',
+      mode => '0640',
     }
 
     $buildaction = "Drush::Make[drush-make-${buildname}]"
@@ -167,7 +167,7 @@ define drupalsi::distro ($distribution = 'drupal',
     file {"${distro_root}/${name}/sites/sites.php":
       ensure => 'present',
       require => Drush::Arr["drush-arr-${buildname}"],
-      mode => '0644',
+      mode => '0640',
     }
   }
 
