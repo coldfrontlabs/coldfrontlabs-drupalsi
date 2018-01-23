@@ -35,7 +35,7 @@ define drupalsi::site ($profile,
   $distros = hiera("drupalsi::distros")
   $distro_root = $distros[$distro]['distro_root']
   if $distros[$distro]['api_version'] == "8" {
-    $site_root = "$distro_root/docroot"
+    $site_root = "$distro_root/$distro/docroot"
   }
   else {
     $site_root = "$distro_root/$distro"
