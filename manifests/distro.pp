@@ -16,7 +16,12 @@ define drupalsi::distro ($distribution = 'drupal',
 
   $buildname = md5("${distribution}-${api_version}-${distro_build_type}-${distro_root}-${distro_build_location}-${name}")
 
-  if ($distro_build_type == 'get') {
+  # Drupal 8 always uses Composer.
+  if ($distro_build_type == 'composer' or $api_version == 8) {
+    # Do nothing for now.
+    # @todo run composer install or just leave it be?
+  }
+  elsif ($distro_build_type == 'get') {
 
     # Set some defaults for the GET build type
     if !$distro_build_location {
@@ -40,9 +45,6 @@ define drupalsi::distro ($distribution = 'drupal',
       mode => '0640',
     }
 
-  }
-  elsif ($distro_build_type == 'composer') {
-    # Do nothing for now.
   }
   elsif ($distro_build_type == 'git') {
     include git
