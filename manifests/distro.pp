@@ -41,6 +41,9 @@ define drupalsi::distro ($distribution = 'drupal',
     }
 
   }
+  elsif ($distro_build_type == 'composer') {
+    # Do nothing for now.
+  }
   elsif ($distro_build_type == 'git') {
     include git
     if has_key($distro_build_args, 'git_branch') {
