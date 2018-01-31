@@ -71,7 +71,7 @@ printf "Changing ownership of all contents of "${drupal_path}":\n user => "${dru
 chown -R ${drupal_user}:${httpd_group} .
 
 printf "Changing permissions of all directories inside "${drupal_path}" to "rwxr-x---"...\n"
-find . -type d -exec chmod u=rwx,g=rx,o= '{}' \;
+find . -type d ! -name . -exec chmod u=rwx,g=rx,o= '{}' \;
 
 printf "Changing permissions of all files inside "${drupal_path}" to "rw-r-----"...\n"
 find . -type f -exec chmod u=rw,g=r,o= '{}' \;
