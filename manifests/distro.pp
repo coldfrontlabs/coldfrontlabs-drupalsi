@@ -36,10 +36,12 @@ define drupalsi::distro ($distribution = 'drupal',
     file {"${distro_root}/${name}/sites/sites.php":
       ensure => 'present',
       require => Drush::Dl["drush-dl-${buildname}"],
-      content => template('drupalsi/sites.php.erb'),
       mode => '0664',
+    }->
+    file_line{"${distro_root}/${name}/sites/sites.php-open":
+      path => "${distro_root}/${name}/sites/sites.php",
+      line => '<?php',
     }
-
   }
   elsif ($distro_build_type == 'git') {
     include git
