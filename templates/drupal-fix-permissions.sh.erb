@@ -50,10 +50,6 @@ while [ "$#" -gt 0 ]; do
   shift
 done
 
-if [ -z "${drupal_path}" ]; then 
-  drupal_path=$PWD
-fi
-
 if [ -z "${drupal_path}" ] || [ ! -d "${drupal_path}/sites" ] || [ ! -f "${drupal_path}/core/modules/system/system.module" ] && [ ! -f "${drupal_path}/modules/system/system.module" ]; then
   printf "*********************************************\n"
   printf "* Error: Please provide a valid Drupal path. *\n"
