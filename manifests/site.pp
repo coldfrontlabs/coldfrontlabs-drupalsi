@@ -4,6 +4,7 @@ define drupalsi::site ($profile,
                        $db_url,
                        $distro,
                        $webserver_user,
+                       $siteroot = undef,
                        $account_name = undef,
                        $account_pass = undef,
                        $account_mail = undef,
@@ -26,15 +27,19 @@ define drupalsi::site ($profile,
                        Boolean $auto_drush_alias = false,
                        $auto_alias = true,
                        Array[String] $local_settings = [],
-                       Array[String] $additional_settings = [] # deprecated
 ) {
   include drush
   include stdlib
 
-  # Build the site root based on the distro information
-  $distros = hiera("drupalsi::distros")
-  $distro_root = $distros[$distro]['distro_root']
-  $site_root = "$distro_root/$distro"
+  # Build the site root based on the distro information if siteroot is not specified.
+  if (empty($siteroot)) {
+    $distros = hiera("drupalsi::distros")
+    $distro_root = $distros[$distro]['distro_root']
+    $site_root = "$distro_root/$distro"  
+  }
+  else {
+    $site_root = $siteroot;
+  }
 
   if !$sites_subdir or empty($sites_subdir) {
     $sitessubdir = $name
