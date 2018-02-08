@@ -38,7 +38,7 @@ define drupalsi::site ($profile,
     $site_root = "$distro_root/$distro"  
   }
   else {
-    $site_root = $siteroot;
+    $site_root = $siteroot
   }
 
   if !$sites_subdir or empty($sites_subdir) {
