@@ -80,6 +80,10 @@ printf "Changing permissions of "files" directories in "${drupal_path}/sites" to
 cd sites
 find . -type d -name files -exec chmod ug=rwx,o= '{}' \;
 
+
+printf "Changing permissions of "vendor/bin" directories in "${drupal_path}/sites/all/vendor/bin" to "rwxr-----"...\n"
+chmod u+x all/vendor/bin/* || true
+
 printf "Changing permissions of all files inside all "files" directories in "${drupal_path}/sites" to "rw-rw----"...\n"
 printf "Changing permissions of all directories inside all "files" directories in "${drupal_path}/sites" to "rwxrwx---"...\n"
 for x in ./*/files; do
