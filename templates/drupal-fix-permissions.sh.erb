@@ -16,6 +16,12 @@ HELP
 exit 0
 }
 
+# Tests the existance of commands on server.
+# Used to check if restorecon is available.
+command_exists () {
+    command -v $1 >/dev/null 2>&1;
+}
+
 if [ $(id -u) != 0 ]; then
   printf "**************************************\n"
   printf "* Error: You must run this with sudo or root*\n"
@@ -90,4 +96,15 @@ for x in ./*/files; do
   find ${x} -type d -exec chmod ug=rwx,o= '{}' \;
   find ${x} -type f -exec chmod ug=rw,o= '{}' \;
 done
-echo "Done setting proper permissions on files and directories"
+
+if ! command_exists restorecon ; then
+	# Nothing further to do.
+        printf "The restorecon command is not installed on this system. Skipping..."
+else
+	# We have an SeLinux system with restorecon, run it.
+	printf "Restoring SeLinux file contexts, please wait..."
+        restorecon -RFv $drupal_path
+fi
+
+echo "Done setting proper permissions on files and directories."
+
