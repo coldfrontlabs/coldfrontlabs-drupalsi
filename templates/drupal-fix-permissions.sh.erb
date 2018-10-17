@@ -103,7 +103,7 @@ if ! command_exists restorecon ; then
 else
 	# We have an SeLinux system with restorecon, run it.
 	printf "Restoring SeLinux file contexts, please wait..."
-        restorecon -RFv $drupal_path
+        restorecon -RF $drupal_path
 fi
 
 echo "Done setting proper permissions on files and directories."
