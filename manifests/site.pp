@@ -305,13 +305,6 @@ define drupalsi::site ($profile,
     }
   }
 
-  # Ensure $local_settings is an array
-  if is_array($local_settings) {
-    $local_settings_array = $local_settings
-  } else {
-    $local_settings_array = [$local_settings]
-  }
-
   # Create settings.local.php file
   file {"drupalsi-${name}-local-settings":
     path => "${site_root}/sites/${sitessubdir}/settings.local.php",
