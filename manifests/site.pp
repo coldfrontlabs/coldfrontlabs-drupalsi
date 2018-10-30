@@ -26,7 +26,7 @@ define drupalsi::site ($profile,
                        $site_aliases = undef,
                        Boolean $auto_drush_alias = false,
                        $auto_alias = true,
-                       Array[String] $local_settings = [],
+                       Variant[Array[String], String] $local_settings = [],
 ) {
   include drush
   include stdlib
