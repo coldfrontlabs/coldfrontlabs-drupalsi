@@ -11,6 +11,9 @@ $conf['file_public_path'] = '<%= @pubdir %>';
 $conf['file_private_path'] = '<%= @privdir %>';
 <% end -%>
 
-<% @local_settings_array.each do |key,val| -%>
-<%= val %>
-<% end -%>
+<% if @local_settings.is_a? String -%>
+  <%= @local_settings %>
+<% else -%>
+  <% @local_settings.each do |key,val| -%>
+  <%= val %>
+<% end %>
