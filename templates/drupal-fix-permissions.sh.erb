@@ -74,15 +74,12 @@ if [ -z "${drupal_user}" ] || [[ $(id -un "${drupal_user}" 2> /dev/null) != "${d
   exit 1
 fi
 
-# Test if this is a drupal 8 site.
-drupal8_root=${drupal_path%/*} #/syntax highlight bugfix.
-printf "Checking for Drupal 8 at "${drupal8_root}"... ";
-
-# call drush then run
+printf "Checking Drupal version at "${drupal_path}"... ";
 drupal_version=$(drush status --root=${drupal_path} | grep 'Drupal version' | awk -F: '{print $2}' | awk -F. '{print $1}' | tr -d [:space:])  
 
 if [[ "$drupal_version" -eq 8 ]]; then
   # Set paths to operate on.
+  drupal8_root=${drupal_path%/*} #/syntax highlight bugfix.
   d8_config=${drupal8_root}/config
   d8_scripts=${drupal8_root}/scripts
   d8_vendor=${drupal8_root}/vendor
