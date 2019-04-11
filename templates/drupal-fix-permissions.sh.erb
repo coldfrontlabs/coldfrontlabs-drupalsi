@@ -77,17 +77,19 @@ fi
 # Test if this is a drupal 8 site.
 drupal_1up=${drupal_path%/*} #/ comment
 if [ -f ${drupal_1up}/config ] && [ -f ${drupal_1up}/scripts ] && [ -f ${drupal_1up}/vendor ] && [ -f ${drupal_1up}/web ] then
+  # Set drupal version.
   drupal_version=8
+  # Set paths to operate on.
   d8_config=${drupal_1up}/config
   d8_scripts=${drupal_1up}/scripts
   d8_vendor=${drupal_1up}/vendor
 fi
 
-# Operate on Drupal 7 sites at exact drupal dir path, or Drupal 8 at one level up.
-if [[ "$drupal_version" -eq 8 ]]; then
-  cd $drupal_1up
-else
+# Operate on D7 sites at drupal dir path, or D8 at one level up.
+if [[ "$drupal_version" -eq 7 ]]; then
   cd $drupal_path
+else
+  cd $drupal_1up
 fi
 
 printf "Changing ownership of all contents of "${drupal_path}":\n user => "${drupal_user}" \t group => "${httpd_group}"\n"
