@@ -75,21 +75,21 @@ if [ -z "${drupal_user}" ] || [[ $(id -un "${drupal_user}" 2> /dev/null) != "${d
 fi
 
 # Test if this is a drupal 8 site.
-drupal_1up=${drupal_path%/*} #/ comment
-if [ -f ${drupal_1up}/config ] && [ -f ${drupal_1up}/scripts ] && [ -f ${drupal_1up}/vendor ] && [ -f ${drupal_1up}/web ] then
+drupal8_root=${drupal_path%/*} #/syntax highlight bugfix.
+if [ -f ${drupal8_root}/config ] && [ -f ${drupal8_root}/scripts ] && [ -f ${drupal8_root}/vendor ] && [ -f ${drupal8_root}/web ] then
   # Set drupal version.
   drupal_version=8
   # Set paths to operate on.
-  d8_config=${drupal_1up}/config
-  d8_scripts=${drupal_1up}/scripts
-  d8_vendor=${drupal_1up}/vendor
+  d8_config=${drupal8_root}/config
+  d8_scripts=${drupal8_root}/scripts
+  d8_vendor=${drupal8_root}/vendor
 fi
 
 # Operate on D7 sites at drupal dir path, or D8 at one level up.
 if [[ "$drupal_version" -eq 7 ]]; then
   cd $drupal_path
 else
-  cd $drupal_1up
+  cd $drupal8_root
 fi
 
 printf "Changing ownership of all contents of "${drupal_path}":\n user => "${drupal_user}" \t group => "${httpd_group}"\n"
@@ -131,7 +131,7 @@ else
 	# We have an SeLinux system with restorecon, run it.
   printf "Restoring SeLinux file contexts, please wait..."
     if [[ "$drupal_version" -eq 8 ]]; then
-      restorecon -RF $drupal_1up
+      restorecon -RF $drupal8_root
     else
       restorecon -RF $drupal_path
     fi
