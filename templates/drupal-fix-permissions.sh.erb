@@ -76,13 +76,17 @@ fi
 
 # Test if this is a drupal 8 site.
 drupal8_root=${drupal_path%/*} #/syntax highlight bugfix.
-if [ -f ${drupal8_root}/config ] && [ -f ${drupal8_root}/scripts ] && [ -f ${drupal8_root}/vendor ] && [ -f ${drupal8_root}/web ] then
+printf "Checking for Drupal 8 at "${drupal8_root}"... ";
+if [ -e ${drupal8_root}/config ] && [ -e ${drupal8_root}/scripts ] && [ -e ${drupal8_root}/vendor ] && [ -e ${drupal8_root}/web ]; then
   # Set drupal version.
   drupal_version=8
   # Set paths to operate on.
   d8_config=${drupal8_root}/config
   d8_scripts=${drupal8_root}/scripts
   d8_vendor=${drupal8_root}/vendor
+  printf "Drupal 8 was detected.\n";
+else
+  printf "Drupal 8 was not detected.\n"
 fi
 
 # Operate on D7 sites at drupal dir path, or D8 at one level up.
@@ -129,7 +133,7 @@ if ! command_exists restorecon ; then
         printf "The restorecon command is not installed on this system. Skipping..."
 else
 	# We have an SeLinux system with restorecon, run it.
-  printf "Restoring SeLinux file contexts, please wait..."
+  printf "Restoring SeLinux file contexts, please wait...\n"
     if [[ "$drupal_version" -eq 8 ]]; then
       restorecon -RF $drupal8_root
     else
