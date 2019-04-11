@@ -94,7 +94,7 @@ fi
 # Operate on D7 sites at drupal dir path, or D8 at one level up.
 if [[ "$drupal_version" -eq 7 ]]; then
   cd $drupal_path
-else
+elif [[ "$drupal_version" -eq 8 ]]; then
   cd $drupal8_root
 fi
 
