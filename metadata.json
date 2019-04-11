@@ -11,7 +11,7 @@
     {"name":"puppetlabs/stdlib","version_requirement":">= 4.15.0"},
     {"name":"coldfrontlabs/drush", "version_requirement":">= 0.4.3"},
     {"name":"maestrodev/wget", "version_requirement":">= 1.7.0"},
-    {"name": "stahnma/epel", "version": ">=1.3.1"}
+    {"name": "stahnma/epel", "version": ">= 1.3.1"}
   ]
 }
 
