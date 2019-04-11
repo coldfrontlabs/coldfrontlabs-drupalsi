@@ -33,6 +33,8 @@ fi
 drupal_path=$PWD
 drupal_user=${2}
 httpd_group="${3:-www-data}"
+# Assume drupal 7
+drupal_version=7
 
 # Parse Command Line Arguments
 while [ "$#" -gt 0 ]; do
@@ -72,7 +74,22 @@ if [ -z "${drupal_user}" ] || [[ $(id -un "${drupal_user}" 2> /dev/null) != "${d
   exit 1
 fi
 
-cd $drupal_path
+# Test if this is a drupal 8 site.
+drupal_1up=${drupal_path%/*} #/ comment
+if [ -f ${drupal_1up}/config ] && [ -f ${drupal_1up}/scripts ] && [ -f ${drupal_1up}/vendor ] && [ -f ${drupal_1up}/web ] then
+  drupal_version=8
+  d8_config=${drupal_1up}/config
+  d8_scripts=${drupal_1up}/scripts
+  d8_vendor=${drupal_1up}/vendor
+fi
+
+# Operate on Drupal 7 sites at exact drupal dir path, or Drupal 8 at one level up.
+if [[ "$drupal_version" -eq 8 ]]; then
+  cd $drupal_1up
+else
+  cd $drupal_path
+fi
+
 printf "Changing ownership of all contents of "${drupal_path}":\n user => "${drupal_user}" \t group => "${httpd_group}"\n"
 chown -R ${drupal_user}:${httpd_group} .
 
@@ -82,10 +99,18 @@ find . -type d ! -name . -exec chmod u=rwx,g=rx,o= '{}' \;
 printf "Changing permissions of all files inside "${drupal_path}" to "rw-r-----"...\n"
 find . -type f -exec chmod u=rw,g=r,o= '{}' \;
 
+# D8 Specific vendor/bin permissions
+if [[ "$drupal_version" -eq 8 ]]; then
+  printf "Changing permissions of "vendor/bin" directories in "${d8_vendor}" to "rwxr-----"...\n"
+  chmod u+x ${d8_vendor}/bin/* || true
+fi
+
+# For D7 or D8 ensure we are now operating within the actual drupal dir.
+cd $drupal_path
+
 printf "Changing permissions of "files" directories in "${drupal_path}/sites" to "rwxrwx---"...\n"
 cd sites
 find . -type d -name files -exec chmod ug=rwx,o= '{}' \;
-
 
 printf "Changing permissions of "vendor/bin" directories in "${drupal_path}/sites/all/vendor/bin" to "rwxr-----"...\n"
 chmod u+x all/vendor/bin/* || true
@@ -102,8 +127,12 @@ if ! command_exists restorecon ; then
         printf "The restorecon command is not installed on this system. Skipping..."
 else
 	# We have an SeLinux system with restorecon, run it.
-	printf "Restoring SeLinux file contexts, please wait..."
-        restorecon -RF $drupal_path
+  printf "Restoring SeLinux file contexts, please wait..."
+    if [[ "$drupal_version" -eq 8 ]]; then
+      restorecon -RF $drupal_1up
+    else
+      restorecon -RF $drupal_path
+    fi
 fi
 
 echo "Done setting proper permissions on files and directories."
