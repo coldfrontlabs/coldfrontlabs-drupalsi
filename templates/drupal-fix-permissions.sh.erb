@@ -75,7 +75,8 @@ if [ -z "${drupal_user}" ] || [[ $(id -un "${drupal_user}" 2> /dev/null) != "${d
 fi
 
 printf "Checking Drupal version at "${drupal_path}"... ";
-drupal_version=$(drush status --root=${drupal_path} | grep 'Drupal version' | awk -F: '{print $2}' | awk -F. '{print $1}' | tr -d [:space:])  
+drupal_version=$(drush core-status --format=json --root=${drupal_path} | jq '."drupal-version"' --raw-output | awk -F. '{print $1}')
+printf "drupal_version: "${drupal_version}
 
 if [[ "$drupal_version" -eq 8 ]]; then
   # Set paths to operate on.
