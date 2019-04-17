@@ -3,6 +3,14 @@
 class drupalsi () {
   include drush
 
+  if $osfamily == 'RedHat' {
+    include ::epel
+    ensure_packages('jq', {'ensure' => 'present', 'require' => Class['epel']})
+  }
+  else {
+    ensure_packages('jq', {'ensure' => 'present'})
+  }
+
   # Add the script to set the Drupal directory permissions.
   file {'drupal-fix-permissions-script':
     content => template('drupalsi/drupal-fix-permissions.sh.erb'),
