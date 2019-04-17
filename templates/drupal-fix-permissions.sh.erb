@@ -76,7 +76,7 @@ fi
 
 printf "Checking Drupal version at "${drupal_path}"... ";
 drupal_version=$(drush core-status --format=json --root=${drupal_path} | jq '."drupal-version"' --raw-output | awk -F. '{print $1}')
-printf "drupal_version: "${drupal_version}
+printf "Detected: "
 
 if [[ "$drupal_version" -eq 8 ]]; then
   # Set paths to operate on.
@@ -84,9 +84,9 @@ if [[ "$drupal_version" -eq 8 ]]; then
   d8_config=${drupal8_root}/config
   d8_scripts=${drupal8_root}/scripts
   d8_vendor=${drupal8_root}/vendor
-  printf "Drupal 8 was detected.\n";
+  printf "Drupal 8.\n";
 elif [[ "$drupal_version" -eq 7 ]]; then
-  printf "Drupal 7 was detected.\n"
+  printf "Drupal 7.\n"
 else
   printf "Drupal version was not detected.\n"
   exit 1
@@ -121,8 +121,10 @@ printf "Changing permissions of "files" directories in "${drupal_path}/sites" to
 cd sites
 find . -type d -name files -exec chmod ug=rwx,o= '{}' \;
 
-printf "Changing permissions of "vendor/bin" directories in "${drupal_path}/sites/all/vendor/bin" to "rwxr-----"...\n"
-chmod u+x all/vendor/bin/* || true
+if [[ "$drupal_version" -eq 7 ]]; then
+  printf "Changing permissions of "vendor/bin" directories in "${drupal_path}/sites/all/vendor/bin" to "rwxr-----"...\n"
+  chmod u+x all/vendor/bin/* || true
+fi
 
 printf "Changing permissions of all files inside all "files" directories in "${drupal_path}/sites" to "rw-rw----"...\n"
 printf "Changing permissions of all directories inside all "files" directories in "${drupal_path}/sites" to "rwxrwx---"...\n"
