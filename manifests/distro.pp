@@ -16,7 +16,12 @@ define drupalsi::distro ($distribution = 'drupal',
 
   $buildname = md5("${distribution}-${api_version}-${distro_build_type}-${distro_root}-${distro_build_location}-${name}")
 
-  if ($distro_build_type == 'get') {
+  # Drupal 8 always uses Composer.
+  if ($distro_build_type == 'composer' or $api_version == 8) {
+    # Do nothing for now.
+    # @todo run composer install or just leave it be?
+  }
+  elsif ($distro_build_type == 'get') {
 
     # Set some defaults for the GET build type
     if !$distro_build_location {
@@ -36,11 +41,8 @@ define drupalsi::distro ($distribution = 'drupal',
     file {"${distro_root}/${name}/sites/sites.php":
       ensure => 'present',
       require => Drush::Dl["drush-dl-${buildname}"],
-      mode => '0664',
-    }->
-    file_line{"${distro_root}/${name}/sites/sites.php-open":
-      path => "${distro_root}/${name}/sites/sites.php",
-      line => '<?php',
+      content => template('drupalsi/sites.php.erb'),
+      mode => '0640',
     }
   }
   elsif ($distro_build_type == 'git') {
@@ -116,7 +118,7 @@ define drupalsi::distro ($distribution = 'drupal',
       ensure => 'present',
       require => Drush::Make["drush-make-${buildname}"],
       content => template('drupalsi/sites.php.erb'),
-      mode => '0644',
+      mode => '0640',
     }
 
     $buildaction = "Drush::Make[drush-make-${buildname}]"
@@ -169,7 +171,7 @@ define drupalsi::distro ($distribution = 'drupal',
     file {"${distro_root}/${name}/sites/sites.php":
       ensure => 'present',
       require => Drush::Arr["drush-arr-${buildname}"],
-      mode => '0644',
+      mode => '0640',
     }
   }
 
