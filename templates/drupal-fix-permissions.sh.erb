@@ -33,6 +33,8 @@ fi
 drupal_path=$PWD
 drupal_user=${2}
 httpd_group="${3:-www-data}"
+# Assume drupal 7
+drupal_version=7
 
 # Parse Command Line Arguments
 while [ "$#" -gt 0 ]; do
@@ -72,7 +74,31 @@ if [ -z "${drupal_user}" ] || [[ $(id -un "${drupal_user}" 2> /dev/null) != "${d
   exit 1
 fi
 
-cd $drupal_path
+printf "Checking Drupal version at "${drupal_path}"... ";
+drupal_version=$(drush core-status --format=json --root=${drupal_path} | jq '."drupal-version"' --raw-output | awk -F. '{print $1}')
+printf "Detected: "
+
+if [[ "$drupal_version" -eq 8 ]]; then
+  # Set paths to operate on.
+  drupal8_root=${drupal_path%/*} #/syntax highlight bugfix.
+  d8_config=${drupal8_root}/config
+  d8_scripts=${drupal8_root}/scripts
+  d8_vendor=${drupal8_root}/vendor
+  printf "Drupal 8.\n";
+elif [[ "$drupal_version" -eq 7 ]]; then
+  printf "Drupal 7.\n"
+else
+  printf "Drupal version was not detected.\n"
+  exit 1
+fi
+
+# Operate on D7 sites at drupal dir path, or D8 at one level up.
+if [[ "$drupal_version" -eq 7 ]]; then
+  cd $drupal_path
+elif [[ "$drupal_version" -eq 8 ]]; then
+  cd $drupal8_root
+fi
+
 printf "Changing ownership of all contents of "${drupal_path}":\n user => "${drupal_user}" \t group => "${httpd_group}"\n"
 chown -R ${drupal_user}:${httpd_group} .
 
@@ -82,13 +108,23 @@ find . -type d ! -name . -exec chmod u=rwx,g=rx,o= '{}' \;
 printf "Changing permissions of all files inside "${drupal_path}" to "rw-r-----"...\n"
 find . -type f -exec chmod u=rw,g=r,o= '{}' \;
 
+# D8 Specific vendor/bin permissions
+if [[ "$drupal_version" -eq 8 ]]; then
+  printf "Changing permissions of "vendor/bin" directories in "${d8_vendor}" to "rwxr-----"...\n"
+  chmod u+x ${d8_vendor}/bin/* || true
+fi
+
+# For D7 or D8 ensure we are now operating within the actual drupal dir.
+cd $drupal_path
+
 printf "Changing permissions of "files" directories in "${drupal_path}/sites" to "rwxrwx---"...\n"
 cd sites
 find . -type d -name files -exec chmod ug=rwx,o= '{}' \;
 
-
-printf "Changing permissions of "vendor/bin" directories in "${drupal_path}/sites/all/vendor/bin" to "rwxr-----"...\n"
-chmod u+x all/vendor/bin/* || true
+if [[ "$drupal_version" -eq 7 ]]; then
+  printf "Changing permissions of "vendor/bin" directories in "${drupal_path}/sites/all/vendor/bin" to "rwxr-----"...\n"
+  chmod u+x all/vendor/bin/* || true
+fi
 
 printf "Changing permissions of all files inside all "files" directories in "${drupal_path}/sites" to "rw-rw----"...\n"
 printf "Changing permissions of all directories inside all "files" directories in "${drupal_path}/sites" to "rwxrwx---"...\n"
@@ -102,8 +138,12 @@ if ! command_exists restorecon ; then
         printf "The restorecon command is not installed on this system. Skipping..."
 else
 	# We have an SeLinux system with restorecon, run it.
-	printf "Restoring SeLinux file contexts, please wait..."
-        restorecon -RF $drupal_path
+  printf "Restoring SeLinux file contexts, please wait...\n"
+    if [[ "$drupal_version" -eq 8 ]]; then
+      restorecon -RF $drupal8_root
+    else
+      restorecon -RF $drupal_path
+    fi
 fi
 
 echo "Done setting proper permissions on files and directories."
