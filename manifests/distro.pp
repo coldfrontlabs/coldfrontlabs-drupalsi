@@ -44,7 +44,6 @@ define drupalsi::distro ($distribution = 'drupal',
       content => template('drupalsi/sites.php.erb'),
       mode => '0640',
     }
-
   }
   elsif ($distro_build_type == 'git') {
     include git
