@@ -2,14 +2,9 @@
 # @todo Add Drupal site installation verification (ex: onlyif to check the install profile used).
 class drupalsi () {
   include drush
-
-  if $osfamily == 'RedHat' {
-    include ::epel
-    ensure_packages('jq', {'ensure' => 'present', 'require' => Class['epel']})
-  }
-  else {
-    ensure_packages('jq', {'ensure' => 'present'})
-  }
+  
+  # Assume jq is available. If other modules want to fix deps go for it.
+  ensure_packages('jq', {'ensure' => 'present'})
 
   # Add the script to set the Drupal directory permissions.
   file {'drupal-fix-permissions-script':
