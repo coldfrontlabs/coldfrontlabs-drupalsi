@@ -112,6 +112,11 @@ find . -type f -exec chmod u=rw,g=r,o= '{}' \;
 if [[ "$drupal_version" -eq 8 ]]; then
   printf "Changing permissions of "vendor/bin" directories in "${d8_vendor}" to "rwxr-----"...\n"
   chmod u+x ${d8_vendor}/bin/* || true
+
+  # Other exceptions if they exist.
+  if [ -f ${d8_vendor}/drupal/console/bin/drupal ]; then
+    chmod u+x ${d8_vendor}/drupal/console/bin/drupal
+  fi
 fi
 
 # For D7 or D8 ensure we are now operating within the actual drupal dir.
