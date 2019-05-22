@@ -102,7 +102,7 @@ define drupalsi::site ($profile,
         require => [
           Exec["create-drupalsi-public-dir-${name}"],
           Drush::Si["drush-si-${name}"],
-        ]
+        ],
         checksum => 'none',
       }
     }
