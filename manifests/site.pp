@@ -167,7 +167,7 @@ define drupalsi::site ($profile,
       recurse => false,
       require => [
         Exec["create-drupalsi-private-dir-${name}"],
-        Drush::Si["drush-si-${name}"
+        Drush::Si["drush-si-${name}"],
       ],
       checksum => 'none',
     }
