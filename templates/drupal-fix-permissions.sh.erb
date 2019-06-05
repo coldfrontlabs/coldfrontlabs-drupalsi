@@ -126,7 +126,7 @@ find . -type d -name files -exec chmod ug=rwx,o= '{}' \;
 
 if [[ "$dversion" -eq 7 ]]; then
   printf "Changing permissions of "vendor/bin" directories in "${drupal_path}/sites/all/vendor/bin" to "rwxr-----"...\n"
-  chmod u+x all/vendor/bin/* || true
+  chmod -R u+x all/vendor/bin || true
 fi
 
 printf "Changing permissions of all files inside all "files" directories in "${drupal_path}/sites" to "rw-rw----"...\n"
