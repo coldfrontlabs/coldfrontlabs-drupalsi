@@ -95,6 +95,7 @@ chown -R ${drupal_user}:${httpd_group} .
 
 printf "Changing permissions of all directories inside "${drupal_path}" to "rwxr-x---"...\n"
 find . -type d ! -name . -exec chmod u=rwx,g=rx,o= '{}' \;
+chmod u=rwx,g=rx,o= $drupal_path
 
 printf "Changing permissions of all files inside "${drupal_path}" to "rw-r-----"...\n"
 find . -type f -exec chmod u=rw,g=r,o= '{}' \;
@@ -158,6 +159,21 @@ if [ "$dversion" -eq 8 ] && [ -d "${drupal_path}/../config" ]; then
   command_exists restorecon && \
     printf "Restoring SeLinux file contexts, please wait...\n" && \
     restorecon -RF ${drupal_path}/../config
+fi
+
+# Drush directories.
+if [ -d "${drupal_path}/../drush" ]; then
+  chown -R ${drupal_user}:${httpd_group} ${drupal_path}/../drush
+  
+  printf "Changing permissions of all directories inside "${drupal_path}/../drush" to "rwxr-x---"...\n"
+  find ${drupal_path}/../drush -type d ! -name . -exec chmod u=rwx,g=rx,o= '{}' \;
+
+  printf "Changing permissions of all files inside "${drupal_path}/../drush" to "rw-r-----"...\n"
+  find ${drupal_path}/../drush -type f -exec chmod u=rw,g=r,o= '{}' \;
+
+  command_exists restorecon && \
+    printf "Restoring SeLinux file contexts, please wait...\n" && \
+    restorecon -RF ${drupal_path}/../drush
 fi
 
 command_exists restorecon && \
