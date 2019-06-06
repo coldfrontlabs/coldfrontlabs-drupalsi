@@ -93,19 +93,19 @@ cd $drupal_path
 printf "Changing ownership of all contents of "${drupal_path}":\n user => "${drupal_user}" \t group => "${httpd_group}"\n"
 chown -R ${drupal_user}:${httpd_group} .
 
-printf "Changing permissions of all directories inside "${drupal_path}" to "rwXr-X---"...\n"
-find . -type d ! -name . -exec chmod u=rwX,g=rX,o= '{}' \;
+printf "Changing permissions of all directories inside "${drupal_path}" to "rwxr-x---"...\n"
+find . -type d ! -name . -exec chmod u=rwx,g=rx,o= '{}' \;
 
 printf "Changing permissions of all files inside "${drupal_path}" to "rw-r-----"...\n"
 find . -type f -exec chmod u=rw,g=r,o= '{}' \;
 
-printf "Changing permissions of "files" directories in "${drupal_path}/sites" to "rwXrwX---"...\n"
+printf "Changing permissions of "files" directories in "${drupal_path}/sites" to "rwxrwx---"...\n"
 cd sites
-find . -type d -name files -exec chmod ug=rwX,o= '{}' \;
+find . -type d -name files -exec chmod ug=rwx,o= '{}' \;
 printf "Changing permissions of all files inside all "files" directories in "${drupal_path}/sites" to "rw-rw----"...\n"
-printf "Changing permissions of all directories inside all "files" directories in "${drupal_path}/sites" to "rwXrwX---"...\n"
+printf "Changing permissions of all directories inside all "files" directories in "${drupal_path}/sites" to "rwxrwx---"...\n"
 for x in ./*/files; do
-  find ${x} -type d -exec chmod ug=rwX,o= '{}' \;
+  find ${x} -type d -exec chmod ug=rwx,o= '{}' \;
   find ${x} -type f -exec chmod ug=rw,o= '{}' \;
 done
 
@@ -149,8 +149,8 @@ fi
 if [ "$dversion" -eq 8 ] && [ -d "${drupal_path}/../config" ]; then
   chown -R ${drupal_user}:${httpd_group} ${drupal_path}/../config
   
-  printf "Changing permissions of all directories inside "${drupal_path}/../config" to "rwXr-X---"...\n"
-  find ${drupal_path}/../config -type d ! -name . -exec chmod u=rwX,g=rX,o= '{}' \;
+  printf "Changing permissions of all directories inside "${drupal_path}/../config" to "rwxr-x---"...\n"
+  find ${drupal_path}/../config -type d ! -name . -exec chmod u=rwx,g=rx,o= '{}' \;
 
   printf "Changing permissions of all files inside "${drupal_path}/../config" to "rw-r-----"...\n"
   find ${drupal_path}/../config -type f -exec chmod u=rw,g=r,o= '{}' \;
