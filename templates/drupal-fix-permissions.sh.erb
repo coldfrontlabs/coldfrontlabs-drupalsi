@@ -113,6 +113,10 @@ done
 
 # Composer vendor.
 if [ -d "${drupal_path}/../vendor" ]; then
+  # Since there's a parent folder, revoke other's privileges.
+  printf "Revoking 'other' user access to parent directory "${drupal_path}/.." \n"
+  chmod -R o-rwx ${drupal_path}/..
+
   printf "Changing ownership of "vendor" directories in "${drupal_path}/../vendor" \n"
   chown -R ${drupal_user}:${httpd_group} ${drupal_path}/../vendor
 
