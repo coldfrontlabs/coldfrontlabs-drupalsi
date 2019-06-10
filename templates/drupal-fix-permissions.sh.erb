@@ -120,6 +120,8 @@ if [ -d "${drupal_path}/../vendor" ]; then
 
   printf "Changing ownership of "vendor" directories in "${drupal_path}/../vendor" \n"
   chown -R ${drupal_user}:${httpd_group} ${drupal_path}/../vendor
+  find ${drupal_path}/../vendor -type d ! -name . -exec chmod g=rx '{}' \;
+  chmod g=rx ${drupal_path}/../vendor
 
   if [ -d "${drupal_path}/../vendor/bin" ]; then
     printf "Changing permissions of "vendor/bin" directories in "${drupal_path}/../vendor/bin" to "u+x"...\n"
