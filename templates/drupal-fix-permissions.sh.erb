@@ -148,6 +148,13 @@ if [ -d "${drupal_path}/../bin" ]; then
     restorecon -RF ${drupal_path}/../bin
 fi
 
+# Load environment file.
+if [ -f "${drupal_path}/../load.environment.php" ]; then
+  printf "Changing permissions of "load.environment.php" in "${drupal_path}/../" to "rw-r-----"...\n"
+  chmod 640 ${drupal_path}/../load.environment.php
+  chown ${drupal_user}:${httpd_group} ${drupal_path}/../load.environment.php
+fi
+
 # Configuration directories.
 if [ "$dversion" -eq 8 ] && [ -d "${drupal_path}/../config" ]; then
   chown -R ${drupal_user}:${httpd_group} ${drupal_path}/../config
