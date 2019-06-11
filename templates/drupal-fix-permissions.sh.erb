@@ -153,6 +153,10 @@ if [ -f "${drupal_path}/../load.environment.php" ]; then
   printf "Changing permissions of "load.environment.php" in "${drupal_path}/../" to "rw-r-----"...\n"
   chmod 640 ${drupal_path}/../load.environment.php
   chown ${drupal_user}:${httpd_group} ${drupal_path}/../load.environment.php
+  if [ -f "${drupal_path}/../.env" ]; then
+    chmod 640 ${drupal_path}/../.env
+    chown ${drupal_user}:${httpd_group} ${drupal_path}/../.env
+  fi
 fi
 
 # Configuration directories.
