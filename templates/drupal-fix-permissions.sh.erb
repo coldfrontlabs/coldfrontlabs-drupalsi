@@ -156,6 +156,22 @@ if [ -d "${drupal_path}/../bin" ]; then
     restorecon -RF ${drupal_path}/../bin
 fi
 
+# Composer.json file.
+if [ -f "${drupal_path}/../composer.json" ]; then
+  printf "Changing permissions of "composer.json" in "${drupal_path}/../" to "rw-r-----"...\n"
+  chmod 640 ${drupal_path}/../composer.json
+  chown ${drupal_user}:${httpd_group} ${drupal_path}/../composer.json
+  # Set the right permissions.
+  printf "Grant access to apache to parent folder "${drupal_path}/.." \n"
+  chown ${drupal_user}:${httpd_group} ${drupal_path}/..
+  chmod u=rwx,g=rx,o= ${drupal_path}/..
+
+  if [ -f "${drupal_path}/../.env" ]; then
+    chmod 640 ${drupal_path}/../.env
+    chown ${drupal_user}:${httpd_group} ${drupal_path}/../.env
+  fi
+fi
+
 # Load environment file.
 if [ -f "${drupal_path}/../load.environment.php" ]; then
   printf "Changing permissions of "load.environment.php" in "${drupal_path}/../" to "rw-r-----"...\n"
