@@ -31,9 +31,10 @@ define drupalsi::site ($profile,
   include drush
   include stdlib
 
+  $distros = lookup("drupalsi::distros")
+
   # Build the site root based on the distro information if siteroot is not specified.
   if (empty($siteroot)) {
-    $distros = hiera("drupalsi::distros")
     $distro_root = $distros[$distro]['distro_root']
     $site_root = "$distro_root/$distro"  
   }
@@ -46,6 +47,17 @@ define drupalsi::site ($profile,
   }
   else {
     $sitessubdir = $sites_subdir
+  }
+
+  $confvar_name_d7 = 'conf'
+  $confvar_name_d8 = 'settings'
+
+  # Set the var name based on the api version.
+  if $distros[$distro]['api_version'] == '8' {
+    $confvar_name = $confvar_name_d8  
+  }
+  else {
+    $confvar_name = $confvar_name_d7
   }
 
   # @todo create checks for other db types.
