@@ -50,7 +50,7 @@ define drupalsi::site ($profile,
   }
 
   $confvar_name_d7 = 'conf'
-  $confvar_name_d8 = 'config'
+  $confvar_name_d8 = 'settings'
 
   # Set the var name based on the api version.
   if $distros[$distro]['api_version'] == '8' {
