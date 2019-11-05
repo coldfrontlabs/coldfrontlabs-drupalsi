@@ -226,6 +226,26 @@ if [ -d "${drupal_path}/../drush" ]; then
     restorecon -RF ${drupal_path}/../drush
 fi
 
+# Saml directories.
+if [ -d "${drupal_path}/../samlconf" ]; then
+  chown -R ${drupal_user}:${httpd_group} ${drupal_path}/../samlconf
+  # Set the right permissions.
+  printf "Grant access to apache to parent folder "${drupal_path}/.." \n"
+  chown ${drupal_user}:${httpd_group} ${drupal_path}/..
+  chmod u=rwx,g=rx,o= ${drupal_path}/..
+  
+  printf "Changing permissions of all directories inside "${drupal_path}/../samlconf" to "rwxr-x---"...\n"
+  find ${drupal_path}/../samlconf -type d ! -name . -exec chmod u=rwx,g=rx,o= '{}' \;
+
+  printf "Changing permissions of all files inside "${drupal_path}/../samlconf" to "rw-r-----"...\n"
+  find ${drupal_path}/../samlconf -type f -exec chmod u=rw,g=r,o= '{}' \;
+
+  command_exists restorecon && \
+    printf "Restoring SeLinux file contexts, please wait...\n" && \
+    restorecon -RF ${drupal_path}/../samlconf
+fi
+
+
 command_exists restorecon && \
   printf "Restoring SeLinux file contexts, please wait...\n" && \
   restorecon -RF ${drupal_path}
