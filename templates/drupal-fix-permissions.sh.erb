@@ -90,14 +90,14 @@ fi
 
 cd $drupal_path
 
-printf "Changing ownership of all contents of "${drupal_path}":\n user => "${drupal_user}" \t group => "${httpd_group}"\n"
-chown -R ${drupal_user}:${httpd_group} .
+printf "Changing ownership of all contents of "${drupal_path}":\n user => "${drupal_user}" \t group => "${httpd_group}"\n" &
+chown -R ${drupal_user}:${httpd_group} . &
 
-printf "Changing permissions of all directories inside "${drupal_path}" to "rwxr-x---"...\n"
-find . -type d ! -name . -exec chmod u=rwx,g=rx,o= '{}' \;
+printf "Changing permissions of all directories inside "${drupal_path}" to "rwxr-x---"...\n" &
+find . -type d ! -name . -exec chmod u=rwx,g=rx,o= '{}' \; &
 chmod u=rwx,g=rx,o= $drupal_path
 
-printf "Changing permissions of all files inside "${drupal_path}" to "rw-r-----"...\n"
+printf "Changing permissions of all files inside "${drupal_path}" to "rw-r-----"...\n" &
 find . -type f -exec chmod u=rw,g=r,o= '{}' \;
 
 printf "Changing permissions of "files" directories in "${drupal_path}/sites" to "rwxrwx---"...\n"
@@ -106,8 +106,8 @@ find . -type d -name files -exec chmod ug=rwx,o= '{}' \;
 printf "Changing permissions of all files inside all "files" directories in "${drupal_path}/sites" to "rw-rw----"...\n"
 printf "Changing permissions of all directories inside all "files" directories in "${drupal_path}/sites" to "rwxrwx---"...\n"
 for x in ./*/files; do
-  find ${x} -type d -exec chmod ug=rwx,o= '{}' \;
-  find ${x} -type f -exec chmod ug=rw,o= '{}' \;
+  find ${x} -type d -exec chmod ug=rwx,o= '{}' \; &
+  find ${x} -type f -exec chmod ug=rw,o= '{}' \; &
 done
 
 # Check permissions for supporting directories.
@@ -116,16 +116,16 @@ done
 if [ -d "${drupal_path}/../vendor" ]; then
   # Since there's a parent folder, revoke other's privileges.
   printf "Revoking 'other' user access to parent directory "${drupal_path}/.." \n"
-  chmod -R o-rwx ${drupal_path}/..
+  chmod -R o-rwx ${drupal_path}/.. &
   # Set the right permissions.
   printf "Grant access to apache to parent folder "${drupal_path}/.." \n"
   chown ${drupal_user}:${httpd_group} ${drupal_path}/..
   chmod u=rwx,g=rx,o= ${drupal_path}/..
 
   printf "Changing ownership of "vendor" directories in "${drupal_path}/../vendor" \n"
-  chown -R ${drupal_user}:${httpd_group} ${drupal_path}/../vendor
-  find ${drupal_path}/../vendor -type d ! -name . -exec chmod g=rx '{}' \;
-  chmod g=rx ${drupal_path}/../vendor
+  chown -R ${drupal_user}:${httpd_group} ${drupal_path}/../vendor &
+  find ${drupal_path}/../vendor -type d ! -name . -exec chmod g=rx '{}' \; &
+  chmod g=rx ${drupal_path}/../vendor &
 
   if [ -d "${drupal_path}/../vendor/bin" ]; then
     printf "Changing permissions of "vendor/bin" directories in "${drupal_path}/../vendor/bin" to "u+x"...\n"
@@ -134,7 +134,7 @@ if [ -d "${drupal_path}/../vendor" ]; then
 
   command_exists restorecon && \
     printf "Restoring SeLinux file contexts, please wait...\n" && \
-    restorecon -RF ${drupal_path}/../vendor
+    restorecon -RF ${drupal_path}/../vendor &
 fi
 
 if [ "$dversion" -eq 7 ] && [ -d "${drupal_path}/sites/all/vendor/bin" ]; then
@@ -189,18 +189,18 @@ if [ -f "${drupal_path}/../load.environment.php" ]; then
 fi
 
 # Configuration directories.
-if [ "$dversion" -eq 8 ] && [ -d "${drupal_path}/../config" ]; then
-  chown -R ${drupal_user}:${httpd_group} ${drupal_path}/../config
+if [ "$dversion" -ge 8 ] && [ -d "${drupal_path}/../config" ]; then
+  chown -R ${drupal_user}:${httpd_group} ${drupal_path}/../config &
   # Set the right permissions.
   printf "Grant access to apache to parent folder "${drupal_path}/.." \n"
   chown ${drupal_user}:${httpd_group} ${drupal_path}/..
   chmod u=rwx,g=rx,o= ${drupal_path}/..
   
-  printf "Changing permissions of all directories inside "${drupal_path}/../config" to "rwxr-x---"...\n"
-  find ${drupal_path}/../config -type d ! -name . -exec chmod u=rwx,g=rx,o= '{}' \;
+  printf "Changing permissions of all directories inside "${drupal_path}/../config" to "rwxr-x---"...\n" &
+  find ${drupal_path}/../config -type d ! -name . -exec chmod u=rwx,g=rx,o= '{}' \; &
 
-  printf "Changing permissions of all files inside "${drupal_path}/../config" to "rw-r-----"...\n"
-  find ${drupal_path}/../config -type f -exec chmod u=rw,g=r,o= '{}' \;
+  printf "Changing permissions of all files inside "${drupal_path}/../config" to "rw-r-----"...\n" &
+  find ${drupal_path}/../config -type f -exec chmod u=rw,g=r,o= '{}' \; &
 
   command_exists restorecon && \
     printf "Restoring SeLinux file contexts, please wait...\n" && \
