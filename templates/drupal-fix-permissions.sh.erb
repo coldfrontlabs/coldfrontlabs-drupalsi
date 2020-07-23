@@ -132,9 +132,6 @@ if [ -d "${drupal_path}/../vendor" ]; then
     chmod -R u+x ${drupal_path}/../bin
   fi
 
-  command_exists restorecon && \
-    printf "Restoring SeLinux file contexts, please wait...\n" && \
-    restorecon -RF ${drupal_path}/../vendor &
 fi
 
 if [ "$dversion" -eq 7 ] && [ -d "${drupal_path}/sites/all/vendor/bin" ]; then
@@ -151,9 +148,6 @@ if [ -d "${drupal_path}/../bin" ]; then
   chown ${drupal_user}:${httpd_group} ${drupal_path}/..
   chmod u=rwx,g=rx,o= ${drupal_path}/..
 
-  command_exists restorecon && \
-    printf "Restoring SeLinux file contexts, please wait...\n" && \
-    restorecon -RF ${drupal_path}/../bin
 fi
 
 # Composer.json file.
@@ -202,9 +196,6 @@ if [ "$dversion" -ge 8 ] && [ -d "${drupal_path}/../config" ]; then
   printf "Changing permissions of all files inside "${drupal_path}/../config" to "rw-r-----"...\n" &
   find ${drupal_path}/../config -type f -exec chmod u=rw,g=r,o= '{}' \; &
 
-  command_exists restorecon && \
-    printf "Restoring SeLinux file contexts, please wait...\n" && \
-    restorecon -RF ${drupal_path}/../config
 fi
 
 # Drush directories.
@@ -221,9 +212,6 @@ if [ -d "${drupal_path}/../drush" ]; then
   printf "Changing permissions of all files inside "${drupal_path}/../drush" to "rw-r-----"...\n"
   find ${drupal_path}/../drush -type f -exec chmod u=rw,g=r,o= '{}' \;
 
-  command_exists restorecon && \
-    printf "Restoring SeLinux file contexts, please wait...\n" && \
-    restorecon -RF ${drupal_path}/../drush
 fi
 
 # Saml directories.
@@ -240,15 +228,12 @@ if [ -d "${drupal_path}/../samlconf" ]; then
   printf "Changing permissions of all files inside "${drupal_path}/../samlconf" to "rw-r-----"...\n"
   find ${drupal_path}/../samlconf -type f -exec chmod u=rw,g=r,o= '{}' \;
 
-  command_exists restorecon && \
-    printf "Restoring SeLinux file contexts, please wait...\n" && \
-    restorecon -RF ${drupal_path}/../samlconf
 fi
 
-
+# Restore SELinux modes for all directories.
 command_exists restorecon && \
   printf "Restoring SeLinux file contexts, please wait...\n" && \
-  restorecon -RF ${drupal_path}
+  restorecon -RF ${drupal_path}/..
 
 echo "Done setting proper permissions on files and directories."
 exit 0
