@@ -83,6 +83,8 @@ if [[ "$dversion" -eq 8 ]]; then
   printf "Drupal 8.\n";
 elif [[ "$dversion" -eq 7 ]]; then
   printf "Drupal 7.\n"
+elif [[ "$dversion" -eq 9 ]]; then
+  printf "Drupal 9.\n";
 else
   printf "Drupal version was not detected.\n"
   exit 1
@@ -90,79 +92,48 @@ fi
 
 cd $drupal_path
 
-printf "Changing ownership of all contents of "${drupal_path}":\n user => "${drupal_user}" \t group => "${httpd_group}"\n"
-chown -R ${drupal_user}:${httpd_group} .
-
-printf "Changing permissions of all directories inside "${drupal_path}" to "rwxr-x---"...\n"
-find . -type d ! -name . -exec chmod u=rwx,g=rx,o= '{}' \;
-chmod u=rwx,g=rx,o= $drupal_path
-
-printf "Changing permissions of all files inside "${drupal_path}" to "rw-r-----"...\n"
-find . -type f -exec chmod u=rw,g=r,o= '{}' \;
-
-printf "Changing permissions of "files" directories in "${drupal_path}/sites" to "rwxrwx---"...\n"
-cd sites
-find . -type d -name files -exec chmod ug=rwx,o= '{}' \;
-printf "Changing permissions of all files inside all "files" directories in "${drupal_path}/sites" to "rw-rw----"...\n"
-printf "Changing permissions of all directories inside all "files" directories in "${drupal_path}/sites" to "rwxrwx---"...\n"
-for x in ./*/files; do
-  find ${x} -type d -exec chmod ug=rwx,o= '{}' \;
-  find ${x} -type f -exec chmod ug=rw,o= '{}' \;
-done
-
-# Check permissions for supporting directories.
-
 # Composer vendor.
 if [ -d "${drupal_path}/../vendor" ]; then
   # Since there's a parent folder, revoke other's privileges.
-  printf "Revoking 'other' user access to parent directory "${drupal_path}/.." \n"
-  chmod -R o-rwx ${drupal_path}/..
+  printf "Revoking 'other' user access to parent directory "${drupal_path}/.." \n" && \
+  chmod -R o-rwx ${drupal_path}/.. &
   # Set the right permissions.
-  printf "Grant access to apache to parent folder "${drupal_path}/.." \n"
+  printf "Grant access to apache to parent folder "${drupal_path}/.." \n" && \
+  chown ${drupal_user}:${drupal_user} ${drupal_path}/../*
   chown ${drupal_user}:${httpd_group} ${drupal_path}/..
   chmod u=rwx,g=rx,o= ${drupal_path}/..
+  chmod u=rwx,g=rx,o= ${drupal_path}/../*
 
-  printf "Changing ownership of "vendor" directories in "${drupal_path}/../vendor" \n"
+  printf "Changing ownership of "vendor" directories in "${drupal_path}/../vendor" \n" && \
   chown -R ${drupal_user}:${httpd_group} ${drupal_path}/../vendor
-  find ${drupal_path}/../vendor -type d ! -name . -exec chmod g=rx '{}' \;
+  find ${drupal_path}/../vendor -type d ! -name . -exec chmod g=rx '{}' +
   chmod g=rx ${drupal_path}/../vendor
 
   if [ -d "${drupal_path}/../vendor/bin" ]; then
-    printf "Changing permissions of "vendor/bin" directories in "${drupal_path}/../vendor/bin" to "u+x"...\n"
-    chmod -R u+x ${drupal_path}/../bin
+    printf "Changing permissions of "vendor/bin" directories in "${drupal_path}/../vendor/bin" to "u+x"...\n" && \
+    chmod -R u+x ${drupal_path}/../bin &
   fi
 
-  command_exists restorecon && \
-    printf "Restoring SeLinux file contexts, please wait...\n" && \
-    restorecon -RF ${drupal_path}/../vendor
-fi
-
-if [ "$dversion" -eq 7 ] && [ -d "${drupal_path}/sites/all/vendor/bin" ]; then
-  printf "Changing permissions of "vendor/bin" directories in "${drupal_path}/sites/all/vendor/bin" to "u+x"...\n"
-  chmod -R u+x ${drupal_path}/sites/all/vendor/bin
 fi
 
 # Bin directories.
 if [ -d "${drupal_path}/../bin" ]; then
-  printf "Changing permissions of "bin" directories in "${drupal_path}/../bin" to "u+x"...\n"
-  chmod -R u+x ${drupal_path}/../bin
+  printf "Changing permissions of "bin" directories in "${drupal_path}/../bin" to "u+x"...\n" && \
+  chmod -R u+x ${drupal_path}/../bin &
   # Set the right permissions.
-  printf "Grant access to apache to parent folder "${drupal_path}/.." \n"
+  printf "Grant access to apache to parent folder "${drupal_path}/.." \n" && \
   chown ${drupal_user}:${httpd_group} ${drupal_path}/..
   chmod u=rwx,g=rx,o= ${drupal_path}/..
 
-  command_exists restorecon && \
-    printf "Restoring SeLinux file contexts, please wait...\n" && \
-    restorecon -RF ${drupal_path}/../bin
 fi
 
 # Composer.json file.
 if [ -f "${drupal_path}/../composer.json" ]; then
-  printf "Changing permissions of "composer.json" in "${drupal_path}/../" to "rw-r-----"...\n"
+  printf "Changing permissions of "composer.json" in "${drupal_path}/../" to "rw-r-----"...\n" && \
   chmod 640 ${drupal_path}/../composer.json
   chown ${drupal_user}:${httpd_group} ${drupal_path}/../composer.json
   # Set the right permissions.
-  printf "Grant access to apache to parent folder "${drupal_path}/.." \n"
+  printf "Grant access to apache to parent folder "${drupal_path}/.." \n" && \
   chown ${drupal_user}:${httpd_group} ${drupal_path}/..
   chmod u=rwx,g=rx,o= ${drupal_path}/..
 
@@ -174,11 +145,11 @@ fi
 
 # Load environment file.
 if [ -f "${drupal_path}/../load.environment.php" ]; then
-  printf "Changing permissions of "load.environment.php" in "${drupal_path}/../" to "rw-r-----"...\n"
+  printf "Changing permissions of "load.environment.php" in "${drupal_path}/../" to "rw-r-----"...\n" && \
   chmod 640 ${drupal_path}/../load.environment.php
   chown ${drupal_user}:${httpd_group} ${drupal_path}/../load.environment.php
   # Set the right permissions.
-  printf "Grant access to apache to parent folder "${drupal_path}/.." \n"
+  printf "Grant access to apache to parent folder "${drupal_path}/.." \n" && \
   chown ${drupal_user}:${httpd_group} ${drupal_path}/..
   chmod u=rwx,g=rx,o= ${drupal_path}/..
 
@@ -189,66 +160,89 @@ if [ -f "${drupal_path}/../load.environment.php" ]; then
 fi
 
 # Configuration directories.
-if [ "$dversion" -eq 8 ] && [ -d "${drupal_path}/../config" ]; then
-  chown -R ${drupal_user}:${httpd_group} ${drupal_path}/../config
+if [ "$dversion" -ge 8 ] && [ -d "${drupal_path}/../config" ]; then
+  chown -R ${drupal_user}:${httpd_group} ${drupal_path}/../config &
   # Set the right permissions.
-  printf "Grant access to apache to parent folder "${drupal_path}/.." \n"
+  printf "Grant access to apache to parent folder "${drupal_path}/.." \n" && \
   chown ${drupal_user}:${httpd_group} ${drupal_path}/..
   chmod u=rwx,g=rx,o= ${drupal_path}/..
   
-  printf "Changing permissions of all directories inside "${drupal_path}/../config" to "rwxr-x---"...\n"
-  find ${drupal_path}/../config -type d ! -name . -exec chmod u=rwx,g=rx,o= '{}' \;
+  printf "Changing permissions of all directories inside "${drupal_path}/../config" to "rwxr-x---"...\n"  && \
+  find ${drupal_path}/../config -type d ! -name . -exec chmod u=rwx,g=rx,o= '{}' +
 
-  printf "Changing permissions of all files inside "${drupal_path}/../config" to "rw-r-----"...\n"
-  find ${drupal_path}/../config -type f -exec chmod u=rw,g=r,o= '{}' \;
+  printf "Changing permissions of all files inside "${drupal_path}/../config" to "rw-r-----"...\n"  && \
+  find ${drupal_path}/../config -type f -exec chmod u=rw,g=r,o= '{}' +
 
-  command_exists restorecon && \
-    printf "Restoring SeLinux file contexts, please wait...\n" && \
-    restorecon -RF ${drupal_path}/../config
 fi
 
 # Drush directories.
 if [ -d "${drupal_path}/../drush" ]; then
-  chown -R ${drupal_user}:${httpd_group} ${drupal_path}/../drush
+  chown -R ${drupal_user}:${httpd_group} ${drupal_path}/../drush &
   # Set the right permissions.
   printf "Grant access to apache to parent folder "${drupal_path}/.." \n"
   chown ${drupal_user}:${httpd_group} ${drupal_path}/..
   chmod u=rwx,g=rx,o= ${drupal_path}/..
   
   printf "Changing permissions of all directories inside "${drupal_path}/../drush" to "rwxr-x---"...\n"
-  find ${drupal_path}/../drush -type d ! -name . -exec chmod u=rwx,g=rx,o= '{}' \;
+  find ${drupal_path}/../drush -type d ! -name . -exec chmod u=rwx,g=rx,o= '{}' +
 
   printf "Changing permissions of all files inside "${drupal_path}/../drush" to "rw-r-----"...\n"
-  find ${drupal_path}/../drush -type f -exec chmod u=rw,g=r,o= '{}' \;
+  find ${drupal_path}/../drush -type f -exec chmod u=rw,g=r,o= '{}' +
 
-  command_exists restorecon && \
-    printf "Restoring SeLinux file contexts, please wait...\n" && \
-    restorecon -RF ${drupal_path}/../drush
 fi
 
 # Saml directories.
 if [ -d "${drupal_path}/../samlconf" ]; then
-  chown -R ${drupal_user}:${httpd_group} ${drupal_path}/../samlconf
+  chown -R ${drupal_user}:${httpd_group} ${drupal_path}/../samlconf &
   # Set the right permissions.
   printf "Grant access to apache to parent folder "${drupal_path}/.." \n"
   chown ${drupal_user}:${httpd_group} ${drupal_path}/..
   chmod u=rwx,g=rx,o= ${drupal_path}/..
   
   printf "Changing permissions of all directories inside "${drupal_path}/../samlconf" to "rwxr-x---"...\n"
-  find ${drupal_path}/../samlconf -type d ! -name . -exec chmod u=rwx,g=rx,o= '{}' \;
+  find ${drupal_path}/../samlconf -type d ! -name . -exec chmod u=rwx,g=rx,o= '{}' +
 
   printf "Changing permissions of all files inside "${drupal_path}/../samlconf" to "rw-r-----"...\n"
-  find ${drupal_path}/../samlconf -type f -exec chmod u=rw,g=r,o= '{}' \;
+  find ${drupal_path}/../samlconf -type f -exec chmod u=rw,g=r,o= '{}' +
 
-  command_exists restorecon && \
-    printf "Restoring SeLinux file contexts, please wait...\n" && \
-    restorecon -RF ${drupal_path}/../samlconf
 fi
 
 
+# Restore SELinux modes for all directories.
 command_exists restorecon && \
   printf "Restoring SeLinux file contexts, please wait...\n" && \
-  restorecon -RF ${drupal_path}
+  restorecon -RF ${drupal_path}/..
 
+printf "Changing ownership of all contents of "${drupal_path}":\n user => "${drupal_user}" \t group => "${httpd_group}"\n" && \
+chown -R ${drupal_user}:${httpd_group} . &
+
+printf "Changing permissions of all files inside "${drupal_path}" to "rw-r-----"...\n"  && \
+find . -type f -exec chmod u=rw,g=r,o= '{}' +
+
+# We pause parallel running here because the permissions need to set first before we move on to the sites directories.
+printf "Changing permissions of all directories inside "${drupal_path}" to "rwxr-x---"...\n" && \
+find . -type d -not -path "./sites/*/files" ! -name . -exec chmod u=rwx,g=rx,o= '{}' +
+chmod u=rwx,g=rx,o= $drupal_path
+
+printf "Changing permissions of "files" directories in "${drupal_path}/sites" to "rwxrwx---"...\n"
+
+cd sites
+
+# Todo: Ask drush where the files are and set the perms there.
+printf "Changing permissions of all files inside all "files" directories in "${drupal_path}/sites" to "rw-rw----"...\n" && \
+printf "Changing permissions of all directories inside all "files" directories in "${drupal_path}/sites" to "rwxrwx---"...\n" && \
+for x in ./*/files; do
+  find ${x} -type d -exec chmod ug=rwx,o= '{}' +
+  # Don't need to set non-directory perms as they're already set above.
+done
+
+# Check permissions for supporting directories.
+if [ "$dversion" -eq 7 ] && [ -d "${drupal_path}/sites/all/vendor/bin" ]; then
+  printf "Changing permissions of "vendor/bin" directories in "${drupal_path}/sites/all/vendor/bin" to "u+x"...\n" && \
+  chmod -R u+x ${drupal_path}/sites/all/vendor/bin &
+fi
+
+# Wait for subprocesses to finish.
+wait
 echo "Done setting proper permissions on files and directories."
 exit 0
