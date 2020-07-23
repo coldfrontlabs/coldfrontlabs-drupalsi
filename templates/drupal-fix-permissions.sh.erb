@@ -242,5 +242,7 @@ if [ "$dversion" -eq 7 ] && [ -d "${drupal_path}/sites/all/vendor/bin" ]; then
   chmod -R u+x ${drupal_path}/sites/all/vendor/bin &
 fi
 
+# Wait for subprocesses to finish.
+wait
 echo "Done setting proper permissions on files and directories."
 exit 0
