@@ -211,7 +211,7 @@ fi
 # Restore SELinux modes for all directories.
 command_exists restorecon && \
   printf "Restoring SeLinux file contexts, please wait...\n" && \
-  restorecon -RF ${drupal_path}/..
+  restorecon -RF ${drupal_path}/../
 
 printf "Changing ownership of all contents of "${drupal_path}":\n user => "${drupal_user}" \t group => "${httpd_group}"\n" && \
 chown -R ${drupal_user}:${httpd_group} . &
