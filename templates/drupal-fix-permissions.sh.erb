@@ -236,6 +236,25 @@ for x in ./*/files; do
   # Don't need to set non-directory perms as they're already set above.
 done
 
+
+# Set permissions on private files path.
+# Ask drush where the files directories are.
+cd $drupal_path
+private_files_path="$(drush status | grep Private | grep -oP '[:][ ]+\K([^: ]*)')"
+if [ "$private_files_path" ] && [ -d "$private_files_path" ]; then
+  chown -R ${drupal_user}:${httpd_group} ${private_files_path} &
+  printf "Changing permissions of all files inside private files directory ${private_files_path} to rw-rw----...\n" && \
+  printf "Changing permissions of private files directory and all directories inside ${private_files_path} to rwxrwx---...\n" && \
+  chmod u=rwx,g=rwx,o= ${private_files_path}
+  find ${private_files_path} -type d -exec chmod u=rwx,g=rwx,o= '{}' +
+  find ${private_files_path} -not -type d -exec chmod u=rw,g=rw,o= '{}' +
+  # Restore SELinux modes for private files directory.
+  command_exists restorecon && \
+    printf "Restoring SeLinux file contexts for ${private_files_path}, please wait...\n" && \
+    restorecon -RF ${private_files_path} &
+fi
+
+
 # Check permissions for supporting directories.
 if [ "$dversion" -eq 7 ] && [ -d "${drupal_path}/sites/all/vendor/bin" ]; then
   printf "Changing permissions of "vendor/bin" directories in "${drupal_path}/sites/all/vendor/bin" to "u+x"...\n" && \
