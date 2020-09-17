@@ -95,7 +95,7 @@ cd $drupal_path
 # Composer vendor.
 if [ -d "${drupal_path}/../vendor" ]; then
   # Since there's a parent folder, revoke other's privileges.
-  printf "Revoking 'other' user access to parent directory "${drupal_path}/.." \n" && \
+  printf "Revoking other user access to parent directory "${drupal_path}/.." \n" && \
   chmod -R o-rwx ${drupal_path}/.. &
   # Set the right permissions.
   printf "Grant access to apache to parent folder "${drupal_path}/.." \n" && \
@@ -104,13 +104,13 @@ if [ -d "${drupal_path}/../vendor" ]; then
   chmod u=rwx,g=rx,o= ${drupal_path}/..
   chmod u=rwx,g=rx,o= ${drupal_path}/../*
 
-  printf "Changing ownership of "vendor" directories in "${drupal_path}/../vendor" \n" && \
+  printf "Changing ownership of vendor directories in "${drupal_path}/../vendor" \n" && \
   chown -R ${drupal_user}:${httpd_group} ${drupal_path}/../vendor
   find ${drupal_path}/../vendor -type d ! -name . -exec chmod g=rx '{}' +
   chmod g=rx ${drupal_path}/../vendor
 
   if [ -d "${drupal_path}/../vendor/bin" ]; then
-    printf "Changing permissions of "vendor/bin" directories in "${drupal_path}/../vendor/bin" to "u+x"...\n" && \
+    printf "Changing permissions of vendor/bin directories in "${drupal_path}/../vendor/bin" to "u+x"...\n" && \
     chmod -R u+x ${drupal_path}/../bin &
   fi
 
@@ -118,7 +118,7 @@ fi
 
 # Bin directories.
 if [ -d "${drupal_path}/../bin" ]; then
-  printf "Changing permissions of "bin" directories in "${drupal_path}/../bin" to "u+x"...\n" && \
+  printf "Changing permissions of bin directories in "${drupal_path}/../bin" to "u+x"...\n" && \
   chmod -R u+x ${drupal_path}/../bin &
   # Set the right permissions.
   printf "Grant access to apache to parent folder "${drupal_path}/.." \n" && \
@@ -129,7 +129,7 @@ fi
 
 # Composer.json file.
 if [ -f "${drupal_path}/../composer.json" ]; then
-  printf "Changing permissions of "composer.json" in "${drupal_path}/../" to "rw-r-----"...\n" && \
+  printf "Changing permissions of composer.json in "${drupal_path}/../" to "rw-r-----"...\n" && \
   chmod 640 ${drupal_path}/../composer.json
   chown ${drupal_user}:${httpd_group} ${drupal_path}/../composer.json
   # Set the right permissions.
@@ -145,7 +145,7 @@ fi
 
 # Load environment file.
 if [ -f "${drupal_path}/../load.environment.php" ]; then
-  printf "Changing permissions of "load.environment.php" in "${drupal_path}/../" to "rw-r-----"...\n" && \
+  printf "Changing permissions of load.environment.php in "${drupal_path}/../" to "rw-r-----"...\n" && \
   chmod 640 ${drupal_path}/../load.environment.php
   chown ${drupal_user}:${httpd_group} ${drupal_path}/../load.environment.php
   # Set the right permissions.
@@ -224,13 +224,13 @@ printf "Changing permissions of all directories inside "${drupal_path}" to "rwxr
 find . -type d -not -path "./sites/*/files" ! -name . -exec chmod u=rwx,g=rx,o= '{}' +
 chmod u=rwx,g=rx,o= $drupal_path
 
-printf "Changing permissions of "files" directories in "${drupal_path}/sites" to "rwxrwx---"...\n"
+printf "Changing permissions of files directories in "${drupal_path}/sites" to "rwxrwx---"...\n"
 
 cd sites
 
 # Todo: Ask drush where the files are and set the perms there.
-printf "Changing permissions of all files inside all "files" directories in "${drupal_path}/sites" to "rw-rw----"...\n" && \
-printf "Changing permissions of all directories inside all "files" directories in "${drupal_path}/sites" to "rwxrwx---"...\n" && \
+printf "Changing permissions of all files inside all files directories in "${drupal_path}/sites" to "rw-rw----"...\n" && \
+printf "Changing permissions of all directories inside all files directories in "${drupal_path}/sites" to "rwxrwx---"...\n" && \
 for x in ./*/files; do
   find ${x} -type d -exec chmod ug=rwx,o= '{}' +
   # Don't need to set non-directory perms as they're already set above.
@@ -238,7 +238,7 @@ done
 
 # Check permissions for supporting directories.
 if [ "$dversion" -eq 7 ] && [ -d "${drupal_path}/sites/all/vendor/bin" ]; then
-  printf "Changing permissions of "vendor/bin" directories in "${drupal_path}/sites/all/vendor/bin" to "u+x"...\n" && \
+  printf "Changing permissions of vendor/bin directories in "${drupal_path}/sites/all/vendor/bin" to "u+x"...\n" && \
   chmod -R u+x ${drupal_path}/sites/all/vendor/bin &
 fi
 
