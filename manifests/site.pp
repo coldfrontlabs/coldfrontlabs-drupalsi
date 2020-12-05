@@ -1,31 +1,19 @@
 # Defines a drupalsi::site resource
 
-define drupalsi::site ($profile,
-                       $db_url,
-                       $distro,
-                       $webserver_user,
-                       $siteroot = undef,
-                       $account_name = undef,
-                       $account_pass = undef,
-                       $account_mail = undef,
-                       $clean_url = undef,
-                       $db_prefix = undef,
-                       $db_su = undef,
-                       $db_su_pw = undef,
-                       $locale = undef,
-                       $site_mail = undef,
-                       $site_name = undef,
-                       $sites_subdir = undef,
-                       $base_url = undef,
-                       $keyvalue = undef,
-                       $public_dir = undef,
-                       $private_dir = undef,
-                       $tmp_dir = undef,
-                       $cron_schedule = undef,
-                       $drush_alias = undef,
-                       $site_aliases = undef,
-                       Boolean $auto_drush_alias = false,
-                       $auto_alias = true,
+define drupalsi::site (String $distro,
+                       String $webserver_user,
+                       String $siteroot = '',
+                       String $db_user = '';
+                       String $db_password = '';
+                       String $db_name = '';
+                       String $sites_subdir = '',
+                       String $base_url = '',
+                       String $public_dir = '',
+                       String $private_dir = '',
+                       String $tmp_dir = '',
+                       String $cron_schedule,
+                       Hash $site_aliases = {},
+                       Boolean $auto_alias = true,
                        Variant[Array[String], String] $local_settings = [],
 ) {
   include drush
@@ -60,31 +48,6 @@ define drupalsi::site ($profile,
     $confvar_name = $confvar_name_d7
   }
 
-  # @todo create checks for other db types.
-  $db_exists_check = "test ! \$(drush sqlq --db-url=${db_url} 'SELECT COUNT(DISTINCT table_name) FROM information_schema.columns WHERE table_schema = (SELECT DATABASE());' --extra='-r -s') -gt 0"
-
-  drush::si {"drush-si-${name}":
-    profile => $profile,
-    db_url => $db_url,
-    site_root => $site_root,
-    account_name => $account_name,
-    account_pass => $account_pass,
-    account_mail => $account_mail,
-    clean_url => $clean_url,
-    db_prefix => $db_prefix,
-    db_su => $db_su,
-    db_su_pw => $db_su_pw,
-    locale => $locale,
-    site_mail => $site_mail,
-    site_name => $site_name,
-    sites_subdir => $sitessubdir,
-    settings => $keyvalue,
-    onlyif => ["test ! -f ${site_root}/sites/${sitessubdir}/settings.php -a -f ${site_root}/index.php", "${db_exists_check}"],
-    require => [
-      Drupalsi::Distro[$distro],
-    ]
-  }
-
   # Build the public files directories
   if !$public_dir or empty($public_dir) {
     $pubdir = "sites/${sitessubdir}/files"
@@ -113,7 +76,6 @@ define drupalsi::site ($profile,
         recurse => false,
         require => [
           Exec["create-drupalsi-public-dir-${name}"],
-          Drush::Si["drush-si-${name}"],
         ],
         checksum => 'none',
       }
@@ -130,7 +92,6 @@ define drupalsi::site ($profile,
       mode => '0770',
       #owner => $webserver_user,
       recurse => false,
-      require => Drush::Si["drush-si-${name}"],
       checksum => 'none',
     }
 
@@ -179,7 +140,6 @@ define drupalsi::site ($profile,
       recurse => false,
       require => [
         Exec["create-drupalsi-private-dir-${name}"],
-        Drush::Si["drush-si-${name}"],
       ],
       checksum => 'none',
     }
@@ -241,19 +201,6 @@ define drupalsi::site ($profile,
       monthday => $monthday,
       month    => $month,
       weekday  => $weekday,
-      require  => Drush::Si["drush-si-${name}"],
-    }
-  }
-
-  # Add local settings to settings.php
-  if $additional_settings {
-    # Do nothing, remove the file
-    warning('additional_settings is deprecated. User local_settings instead. Your additional_settings will NOT be applied.')
-    file {"drupalsi-{$name}-additional-settings":
-      path => "${site_root}/sites/${sitessubdir}/additional_settings.php",
-      ensure => 'absent',
-      mode => '0640',
-      require => Drush::Si["drush-si-${name}"],
     }
   }
 
@@ -263,7 +210,6 @@ define drupalsi::site ($profile,
     ensure => 'present',
     mode => '0640',
     content => template('drupalsi/settings.local.php.erb'),
-    require => Drush::Si["drush-si-${name}"],
   }
 
   file_line {"drupalsi-${name}-settings-require}":
