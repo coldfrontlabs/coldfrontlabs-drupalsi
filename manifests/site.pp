@@ -17,7 +17,7 @@ define drupalsi::site (
   Boolean $auto_alias = true,
   Variant[Array[String], String] $local_settings = [],
   # Deprecated arguments
-  String $clean_url = '',
+  Boolean $clean_url = false,
   String $profile = '',
   String $site_mail = '',
   String $account_pass = '',
