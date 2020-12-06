@@ -12,12 +12,11 @@ define drupalsi::site (
   String $public_dir = '',
   String $private_dir = '',
   String $tmp_dir = '',
-  String $cron_schedule,
+  String $cron_schedule = '* */1 * * *',
   Hash $site_aliases = {},
   Boolean $auto_alias = true,
   Variant[Array[String], String] $local_settings = [],
 ) {
-  include ::drush
   include ::stdlib
 
   $distros = lookup('drupalsi::distros')
@@ -189,9 +188,9 @@ define drupalsi::site (
       $weekday = '*'
     }
 
-   # Build the command strings.
-   $command = "drush --quiet --yes --root=${site_root} cron"
-   $run_command = "/usr/bin/env PATH=${path} COLUMNS=72"
+    # Build the command strings.
+    $command = "drush --quiet --yes --root=${site_root} cron"
+    $run_command = "/usr/bin/env PATH=${path} COLUMNS=72"
 
     cron {"drupalsi-site-cron-${name}":
       ensure   => 'present',
@@ -244,30 +243,5 @@ define drupalsi::site (
   # Add manually defined resources
   if $site_aliases and is_hash($site_aliases) {
     create_resources(drupalsi::site::site_alias, $site_aliases, $site_alias_defaults)
-  }
-}
-
-define drupalsi::site::site_alias($domain,
-                                  $port = undef,
-                                  $path = undef,
-                                  $directory,
-                                  $sites_file
-) {
-
-  # Build the site alias entry
-  if $port {
-    $p = "${port}."
-  }
-
-  if $path {
-    $pth = ".${path}"
-  }
-
-  $parsed_alias = "\$sites['${p}${domain}${pth}'] = '${directory}';"
-  file_line{$name:
-    ensure  => 'present',
-    line    => $parsed_alias,
-    require => File[$sites_file],
-    path    => $sites_file,
   }
 }

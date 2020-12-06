@@ -7,7 +7,7 @@ define drupalsi::distro (
   $distro_build_location = 'https://updates.drupal.org/release-history',
   $distro_build_args = {},
   $omit_files = {}
-                         )
+)
 {
   include drush
 
@@ -180,19 +180,5 @@ define drupalsi::distro (
     # See below why we're doing this
     $omitfiles = prefix($omit_files, "${buildaction}||${distro_root}/${name}/")
     drupalsi::distro::omitfiles{$omitfiles:}
-  }
-}
-
-# Remove files
-define drupalsi::distro::omitfiles() {
-  # Since I can't loop or pass other arguments, we have to build data into the string
-  # Not ideal but it works. If anyone has a better idea please submit a patch
-  $parts = split($name, '\|\|')
-
-  validate_absolute_path($parts[1])
-
-  file{$parts[1]:
-    ensure  => 'absent',
-    require => $parts[0],
   }
 }

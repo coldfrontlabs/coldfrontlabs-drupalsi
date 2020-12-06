@@ -1,7 +1,9 @@
 # @todo Add documentation block here
 # @todo Add Drupal site installation verification (ex: onlyif to check the install profile used).
 class drupalsi () {
-  include drush
+  include ::drush
+  include ::drupalsi::sites
+  include ::drupalsi::distros
 
   # Assume jq is available. If other modules want to fix deps go for it.
   ensure_packages('jq', {'ensure' => 'present'})
@@ -13,10 +15,4 @@ class drupalsi () {
     content => template('drupalsi/drupal-fix-permissions.sh.erb'),
     mode    => '0755',
   }
-
-  $distros = lookup('drupalsi::distros', {default_value => {}})
-  create_resources(drupalsi::distro, $distros)
-
-  $sites = lookup('drupalsi::sites', {default_value => {}})
-  create_resources(drupalsi::site, $sites)
 }
