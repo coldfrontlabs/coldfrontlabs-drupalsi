@@ -16,6 +16,14 @@ define drupalsi::site (
   Hash $site_aliases = {},
   Boolean $auto_alias = true,
   Variant[Array[String], String] $local_settings = [],
+  # Deprecated arguments
+  String $clean_url = '',
+  String $profile = '',
+  String $site_mail = '',
+  String $account_pass = '',
+  String $account_mail = '',
+  String $site_name = '',
+  String $account_name = '',
 ) {
   include ::stdlib
 
