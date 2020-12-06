@@ -2,24 +2,21 @@
 # @todo Add Drupal site installation verification (ex: onlyif to check the install profile used).
 class drupalsi () {
   include drush
-  
+
   # Assume jq is available. If other modules want to fix deps go for it.
   ensure_packages('jq', {'ensure' => 'present'})
 
   # Add the script to set the Drupal directory permissions.
   file {'drupal-fix-permissions-script':
+    ensure  => 'file',
+    path    => '/usr/local/bin/drupal-fix-permissions.sh',
     content => template('drupalsi/drupal-fix-permissions.sh.erb'),
-    path => '/usr/local/bin/drupal-fix-permissions.sh',
-    ensure => 'file',
-    mode => '0755',
+    mode    => '0755',
   }
 
-  $distros = hiera_hash('drupalsi::distros', {})
+  $distros = lookup('drupalsi::distros', {default_value => {}})
   create_resources(drupalsi::distro, $distros)
 
-  $profiles = hiera_hash('drupalsi::profiles', {})
-  create_resources(drupalsi::profile, $profiles)
-
-  $sites = hiera_hash('drupalsi::sites', {})
+  $sites = lookup('drupalsi::sites', {default_value => {}})
   create_resources(drupalsi::site, $sites)
 }

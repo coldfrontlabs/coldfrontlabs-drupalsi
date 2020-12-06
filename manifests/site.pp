@@ -1,30 +1,31 @@
 # Defines a drupalsi::site resource
 
-define drupalsi::site (String $distro,
-                       String $webserver_user,
-                       String $siteroot = '',
-                       String $db_user = '';
-                       String $db_password = '';
-                       String $db_name = '';
-                       String $sites_subdir = '',
-                       String $base_url = '',
-                       String $public_dir = '',
-                       String $private_dir = '',
-                       String $tmp_dir = '',
-                       String $cron_schedule,
-                       Hash $site_aliases = {},
-                       Boolean $auto_alias = true,
-                       Variant[Array[String], String] $local_settings = [],
+define drupalsi::site (
+  String $distro,
+  String $webserver_user,
+  String $siteroot = '',
+  String $db_user = '',
+  String $db_password = '',
+  String $db_name = '',
+  String $sites_subdir = '',
+  String $base_url = '',
+  String $public_dir = '',
+  String $private_dir = '',
+  String $tmp_dir = '',
+  String $cron_schedule,
+  Hash $site_aliases = {},
+  Boolean $auto_alias = true,
+  Variant[Array[String], String] $local_settings = [],
 ) {
-  include drush
-  include stdlib
+  include ::drush
+  include ::stdlib
 
-  $distros = lookup("drupalsi::distros")
+  $distros = lookup('drupalsi::distros')
 
   # Build the site root based on the distro information if siteroot is not specified.
   if (empty($siteroot)) {
     $distro_root = $distros[$distro]['distro_root']
-    $site_root = "$distro_root/$distro"  
+    $site_root = "${distro_root}/${distro}"
   }
   else {
     $site_root = $siteroot
@@ -42,7 +43,7 @@ define drupalsi::site (String $distro,
 
   # Set the var name based on the api version.
   if $distros[$distro]['api_version'] == '8' {
-    $confvar_name = $confvar_name_d8  
+    $confvar_name = $confvar_name_d8
   }
   else {
     $confvar_name = $confvar_name_d7
@@ -65,41 +66,41 @@ define drupalsi::site (String $distro,
       exec {"create-drupalsi-public-dir-${name}":
         command => "mkdir -p ${public_dir}",
         creates => $public_dir,
-        path => ['/bin', '/usr/bin'],
+        path    => ['/bin', '/usr/bin'],
       }
-      
+
       file {"drupalsi-public-files-${name}":
-        path => "${public_dir}",
-        ensure => 'directory',
-        mode => '0770',
+        ensure   => 'directory',
+        path     => $public_dir,
+        mode     => '0770',
         #owner => $webserver_user,
-        recurse => false,
-        require => [
+        recurse  => false,
+        require  => [
           Exec["create-drupalsi-public-dir-${name}"],
         ],
         checksum => 'none',
       }
     }
     else {
-      $pubdir = "${public_dir}"
+      $pubdir = $public_dir
     }
   }
 
   if $pubdir {
     file {"drupalsi-public-files-${name}":
-      path => "${site_root}/${pubdir}",
-      ensure => 'directory',
-      mode => '0770',
+      ensure   => 'directory',
+      path     => "${site_root}/${pubdir}",
+      mode     => '0770',
       #owner => $webserver_user,
-      recurse => false,
+      recurse  => false,
       checksum => 'none',
     }
 
     # Ensure there's an .htaccess file present.
     file {"drupalsi-public-files-${name}-htaccess":
-      path => "${site_root}/sites/${sitessubdir}/files/.htaccess",
-      ensure => 'present',
-      mode => '0440',
+      ensure  => 'present',
+      path    => "${site_root}/sites/${sitessubdir}/files/.htaccess",
+      mode    => '0440',
       #owner => $webserver_user,  #@todo determine the webserver user's name
       require => File["drupalsi-public-files-${name}"],
       content => template('drupalsi/htaccess-public.erb'),
@@ -129,16 +130,16 @@ define drupalsi::site (String $distro,
     exec {"create-drupalsi-private-dir-${name}":
       command => "mkdir -p ${privdir}",
       creates => $privdir,
-      path => ['/bin', '/usr/bin'],
+      path    => ['/bin', '/usr/bin'],
     }
 
     file {"drupalsi-private-dir-${name}":
-      path => "${privdir}",
-      ensure => 'directory',
-      mode => '0770',
+      ensure   => 'directory',
+      path     => $privdir,
+      mode     => '0770',
       #owner => $webserver_user,  #@todo determine the webserver user's name
-      recurse => false,
-      require => [
+      recurse  => false,
+      require  => [
         Exec["create-drupalsi-private-dir-${name}"],
       ],
       checksum => 'none',
@@ -146,9 +147,9 @@ define drupalsi::site (String $distro,
 
     # Make sure the file permissions on the htaccess file are different from the rest
     file {"drupalsi-private-dir-${name}-htaccess":
-      path => "${privdir}/.htaccess",
-      ensure => 'present',
-      mode => '0440',
+      ensure  => 'present',
+      path    => "${privdir}/.htaccess",
+      mode    => '0440',
       content => template('drupalsi/htaccess-private.erb'),
       #owner => $webserver_user,  #@todo determine the webserver user's name
       require => File["drupalsi-private-dir-${name}"],
@@ -190,7 +191,7 @@ define drupalsi::site (String $distro,
 
    # Build the command strings.
    $command = "drush --quiet --yes --root=${site_root} cron"
-   $run_command = "/usr/bin/env PATH=$path COLUMNS=72"
+   $run_command = "/usr/bin/env PATH=${path} COLUMNS=72"
 
     cron {"drupalsi-site-cron-${name}":
       ensure   => 'present',
@@ -206,15 +207,15 @@ define drupalsi::site (String $distro,
 
   # Create settings.local.php file
   file {"drupalsi-${name}-local-settings":
-    path => "${site_root}/sites/${sitessubdir}/settings.local.php",
-    ensure => 'present',
-    mode => '0640',
+    ensure  => 'present',
+    path    => "${site_root}/sites/${sitessubdir}/settings.local.php",
+    mode    => '0640',
     content => template('drupalsi/settings.local.php.erb'),
   }
 
   file_line {"drupalsi-${name}-settings-require}":
-    path => "${site_root}/sites/${sitessubdir}/settings.php",
-    line => "if (file_exists(__DIR__ . '/settings.local.php')) {include_once __DIR__ . '/settings.local.php';}",
+    path    => "${site_root}/sites/${sitessubdir}/settings.php",
+    line    => "if (file_exists(__DIR__ . '/settings.local.php')) {include_once __DIR__ . '/settings.local.php';}",
     require => File["drupalsi-${name}-local-settings"],
   }
 
@@ -263,10 +264,10 @@ define drupalsi::site::site_alias($domain,
   }
 
   $parsed_alias = "\$sites['${p}${domain}${pth}'] = '${directory}';"
-  file_line{"${name}":
-    path => $sites_file,
-    line => $parsed_alias,
+  file_line{$name:
+    ensure  => 'present',
+    line    => $parsed_alias,
     require => File[$sites_file],
-    ensure => 'present',
+    path    => $sites_file,
   }
 }
