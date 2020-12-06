@@ -12,7 +12,7 @@ define drupalsi::site (
   String $public_dir = '',
   String $private_dir = '',
   String $tmp_dir = '',
-  String $cron_schedule = '* */1 * * *',
+  Hash $cron_schedule = {},
   Hash $site_aliases = {},
   Boolean $auto_alias = true,
   Variant[Array[String], String] $local_settings = [],
