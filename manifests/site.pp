@@ -40,7 +40,7 @@ define drupalsi::site (
       false => $distros[$distro]['distro_docroot']
     }
 
-    $site_root = "${distro_root}/${distro}/${distro_docroot}"
+    $site_root = "${distro_root}/${distro_docroot}"
   }
   else {
     $site_root = $siteroot

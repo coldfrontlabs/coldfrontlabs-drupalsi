@@ -24,13 +24,21 @@ define drupalsi::distro (
     # @todo run composer install or just leave it be?
 
     exec {"create-${buildname}-sites.php":
-      creates => "${distro_root}/${name}/${distro_docroot}/sites.php",
-      command => "/bin/cp ${distro_root}/${name}/${distro_docroot}/sites/example.sites.php ${distro_root}/${name}/${distro_docroot}/sites/sites.php"
+      creates => "${distro_root}/${distro_docroot}/sites.php",
+      command => "/bin/cp ${distro_root}/${distro_docroot}/sites/example.sites.php ${distro_root}/${distro_docroot}/sites/sites.php"
     }
 
-    concat {"${distro_root}/${name}/${distro_docroot}/sites.php":
+    concat {"${distro_root}/.env":
+      ensure_newline => true,
+      replace        => false,
+      backup         => false,
+      show_diff      => false,
+      group          => 'apache', # @todo use def modififier collector to fix this to webserver user.
+    }
+
+    concat {"${distro_root}/${distro_docroot}/sites.php":
       ensure         => 'present',
-      path           => "${distro_root}/${name}/${distro_docroot}/sites/sites.php",
+      path           => "${distro_root}/${distro_docroot}/sites/sites.php",
       mode           => '0640',
       ensure_newline => true,
       replace        => false,
