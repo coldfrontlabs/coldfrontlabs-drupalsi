@@ -24,7 +24,7 @@ define drupalsi::distro (
     # @todo run composer install or just leave it be?
 
     exec {"create-${buildname}-sites.php":
-      creates => "${distro_root}/${distro_docroot}/sites.php",
+      creates => "${distro_root}/${distro_docroot}/sites/sites.php",
       command => "/bin/cp ${distro_root}/${distro_docroot}/sites/example.sites.php ${distro_root}/${distro_docroot}/sites/sites.php"
     }
 
