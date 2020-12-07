@@ -267,7 +267,7 @@ define drupalsi::site (
         'key' => 'trusted_host_patterns',
         'value' => "^${trusted_regex}\$",
         'append' => true,
-        'target' => "${site_root}/sites/settings.local.php"
+        'target' => "${site_root}/sites/${sitessubdir}/settings.local.php"
       }
     }
 
