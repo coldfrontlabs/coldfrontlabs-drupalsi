@@ -25,7 +25,6 @@ define drupalsi::site::site_alias(
   $parsed_alias = "\$sites['${p}${domain}${pth}'] = '${directory}';"
 
   concat::fragment {$name:
-    ensure  => 'present',
     content => $parsed_alias,
     target  => $target,
     order   => '10'
