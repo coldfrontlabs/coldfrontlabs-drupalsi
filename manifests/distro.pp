@@ -37,7 +37,7 @@ define drupalsi::distro (
       backup         => false,
       show_diff      => true,
       group          => 'apache', # @todo use def modififier collector to fix this to webserver user.
-      require => Exec["create-${buildname}-sites.php"],
+      require        => Exec["create-${buildname}-sites.php"],
     }
   }
 

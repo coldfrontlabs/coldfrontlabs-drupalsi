@@ -28,6 +28,6 @@ define drupalsi::site::site_alias(
     ensure  => 'present',
     content => $parsed_alias,
     target  => $sites_file,
-    order   => '2'
+    order   => '10'
   }
 }
