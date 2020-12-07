@@ -10,7 +10,7 @@
       String $collation = 'utf8mb4_general_ci',
       Hash $settings = {},
 | -%>
-$databases = array_merge($databases, [<%= "'${database}'" -%>][<%= "'${replica}'" -%>][
+$databases[<%= "'${database}'" -%>][<%= "'${replica}'" -%>] = [
   'database' => <%= "'${dbname}'" -%>,
   'driver' = <%= "'${driver}'" -%>,
 <% if !empty($dbuser) { -%>
@@ -31,5 +31,6 @@ $databases = array_merge($databases, [<%= "'${database}'" -%>][<%= "'${replica}'
 <% if !empty($collation) { -%>
   'collation' = <%= "'${collation}'" -%>,
 <% } -%>
-<%# @todo add support for additiona db options. -%>
-]);
+<%# @todo add support for additional db options. -%>
+];
+
