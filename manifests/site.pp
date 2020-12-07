@@ -221,11 +221,22 @@ define drupalsi::site (
   }
 
   # Create settings.local.php file
-  file {"drupalsi-${name}-local-settings":
-    ensure  => 'present',
-    path    => "${site_root}/sites/${sitessubdir}/settings.local.php",
-    mode    => '0640',
+  # @todo replace with calls to the setting defined type.
+  concat::fragment {"drupalsi-${name}-local-settings":
+    target  => "${site_root}/sites/${sitessubdir}/settings.local.php",
     content => template('drupalsi/settings.local.php.erb'),
+    order   =>'0',
+  }
+
+  concat {"${site_root}/sites/${sitessubdir}/settings.local.php":
+    ensure         => 'present',
+    path           => "${site_root}/sites/${sitessubdir}/settings.local.php",
+    ensure_newline => true,
+    mode           => '0440',
+    replace        => true,
+    backup         => false,
+    show_diff      => false,
+    group          => $webserver_user # @todo use def modififier collector to fix this to webserver user.
   }
 
   file_line {"drupalsi-${name}-settings-require}":
