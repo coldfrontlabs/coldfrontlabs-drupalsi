@@ -9,11 +9,11 @@ define drupalsi::site::setting(
   # @todo support nested key values and values.
 
   $settingname = md5("${target}-${key}-${value}-${append}")
-  $setting = "\$settings[${key}]"
+  $setting = "\$settings['${key}']"
 
   $content = $append ? {
-    true => "${setting}[] = ${value};",
-    false => "${setting} = ${value};",
+    true => "${setting}[] = '${value}';",
+    false => "${setting} = '${value}';",
   }
   concat::fragment {$settingname:
     target  => $target,
