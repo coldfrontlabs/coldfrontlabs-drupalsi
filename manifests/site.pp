@@ -8,7 +8,6 @@ define drupalsi::site (
   String $db_password = '',
   String $db_name = '',
   String $sites_subdir = '',
-  String $base_url = '',
   String $public_dir = '',
   String $private_dir = '',
   String $tmp_dir = '',
@@ -16,7 +15,9 @@ define drupalsi::site (
   Hash $site_aliases = {},
   Boolean $auto_alias = true,
   Variant[Array[String], String] $local_settings = [],
+  Array[String] $domain_names = [],
   # Deprecated arguments
+  String $base_url = '',
   Boolean $clean_url = false,
   String $profile = '',
   String $site_mail = '',
@@ -32,8 +33,14 @@ define drupalsi::site (
 
   # Build the site root based on the distro information if siteroot is not specified.
   if (empty($siteroot)) {
+
     $distro_root = $distros[$distro]['distro_root']
-    $site_root = "${distro_root}/${distro}"
+    $distro_docroot = empty($distros[$distro]['distro_docroot']) ? {
+      true => 'web',
+      false => $distros[$distro]['distro_docroot']
+    }
+
+    $site_root = "${distro_root}/${distro}/${distro_docroot}"
   }
   else {
     $site_root = $siteroot
@@ -230,27 +237,29 @@ define drupalsi::site (
   # Add entries into sites.php
   $site_alias_defaults = {
     'directory' => $sitessubdir,
-    'sites_file' => "${site_root}/sites/sites.php",
+    'sites_file' => "${site_root}/sites/sites.php-settings",
   }
 
-  # @todo add automatic entry if required
-  if $auto_alias and $base_url {
-    $url_parts = split($base_url, '://')
-    # @todo Add support for ports in base_url (ex: http://mydomain.com:8080)
-    # @todo Add support for paths in base_url (ex: http://mydomain.com:8080/subdir)
-    if is_domain_name($url_parts[1]) {
-      $generated_alias = {
-        "${base_url}" => {
-          domain => $url_parts[1],
-        },
+  # Create the sites.php entries.
+  $domain_names.each |$domain_name| {
+    validate_domain_name($domain_name)
+
+    $trusted_regex = regsubst($domain_name, '(\.)', '\.', 'G')
+
+    $site_alias = {
+      "${name}-${domain_name}" => {
+        'domain' => $domain_name,
       }
-      create_resources(drupalsi::site::site_alias, $generated_alias, $site_alias_defaults)
-
     }
-  }
+    $trusted_host = {
+      "${name}-${domain_name}" => {
+        'key' => 'trusted_host_patterns',
+        'value' => "^${trusted_regex}\$",
+        'append' => true,
+      }
+    }
 
-  # Add manually defined resources
-  if $site_aliases and is_hash($site_aliases) {
-    create_resources(drupalsi::site::site_alias, $site_aliases, $site_alias_defaults)
+    create_resources(drupalsi::site::site_alias, $site_alias, $site_alias_defaults)
+    create_resources(drupalsi::site::setting, $trusted_host)
   }
 }

@@ -1,26 +1,33 @@
 # Generate list of site aliases in site.php
 define drupalsi::site::site_alias(
-  $domain,
-  $port = undef,
-  $path = undef,
-  $directory,
-  $sites_file
+  String $directory,
+  String $sites_file,
+  String $domain,
+  Variant[Integer, String] $port = '',
+  String $path = '',
 ) {
 
   # Build the site alias entry
-  if $port {
+  if !empty($port) {
     $p = "${port}."
   }
+  else {
+    $p = ''
+  }
 
-  if $path {
+  if !empty($path) {
     $pth = ".${path}"
+  }
+  else {
+    $pth = ''
   }
 
   $parsed_alias = "\$sites['${p}${domain}${pth}'] = '${directory}';"
-  file_line{$name:
+
+  concat::fragment {$name:
     ensure  => 'present',
-    line    => $parsed_alias,
-    require => File[$sites_file],
-    path    => $sites_file,
+    content => $parsed_alias,
+    target  => $sites_file,
+    order   => '2'
   }
 }
