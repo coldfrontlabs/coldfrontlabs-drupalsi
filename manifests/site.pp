@@ -237,7 +237,7 @@ define drupalsi::site (
   # Add entries into sites.php
   $site_alias_defaults = {
     'directory' => $sitessubdir,
-    'sites_file' => "${site_root}/sites/sites.php-settings",
+    'target' => "${site_root}/sites/sites.php-settings",
   }
 
   # Create the sites.php entries.
@@ -251,11 +251,13 @@ define drupalsi::site (
         'domain' => $domain_name,
       }
     }
+
     $trusted_host = {
       "${name}-${domain_name}" => {
         'key' => 'trusted_host_patterns',
         'value' => "^${trusted_regex}\$",
         'append' => true,
+        'target' => "${site_root}/sites/settings.local.php"
       }
     }
 

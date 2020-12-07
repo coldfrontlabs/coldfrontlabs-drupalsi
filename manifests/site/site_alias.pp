@@ -1,7 +1,7 @@
 # Generate list of site aliases in site.php
 define drupalsi::site::site_alias(
   String $directory,
-  String $sites_file,
+  String $target,
   String $domain,
   Variant[Integer, String] $port = '',
   String $path = '',
@@ -27,7 +27,7 @@ define drupalsi::site::site_alias(
   concat::fragment {$name:
     ensure  => 'present',
     content => $parsed_alias,
-    target  => $sites_file,
+    target  => $target,
     order   => '10'
   }
 }
