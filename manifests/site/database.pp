@@ -1,5 +1,5 @@
 # Generate Drupal databases file entry.
-define drupalsi::database(
+define drupalsi::site::database(
   String $target,
   String $dbname,
   String $database = 'default',
