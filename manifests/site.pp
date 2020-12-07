@@ -248,7 +248,7 @@ define drupalsi::site (
   # Add entries into sites.php
   $site_alias_defaults = {
     'directory' => $sitessubdir,
-    'target' => "${site_root}/sites/sites.php-settings",
+    'target' => "${site_root}/sites/sites.php",
   }
 
   # Create the sites.php entries.

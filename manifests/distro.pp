@@ -28,7 +28,7 @@ define drupalsi::distro (
       command => "/bin/cp ${distro_root}/${name}/${distro_docroot}/sites/example.sites.php ${distro_root}/${name}/${distro_docroot}/sites/sites.php"
     }
 
-    concat {"${distro_root}/${name}/${distro_docroot}/sites.php-settings":
+    concat {"${distro_root}/${name}/${distro_docroot}/sites.php":
       ensure         => 'present',
       path           => "${distro_root}/${name}/${distro_docroot}/sites/sites.php",
       mode           => '0640',
