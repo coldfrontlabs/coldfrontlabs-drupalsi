@@ -24,6 +24,7 @@ define drupalsi::site (
   String $account_mail = '',
   String $site_name = '',
   String $account_name = '',
+  String $db_url = '',
 ) {
   include ::stdlib
 
