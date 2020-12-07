@@ -25,7 +25,7 @@ define drupalsi::distro (
 
     exec {"create-${buildname}-sites.php":
       creates => "${distro_root}/${name}/${distro_docroot}/sites.php",
-      command => "/bin/cp ${distro_root}/${name}/${distro_docroot}/example.sites.php cp ${distro_root}/${name}/${distro_docroot}/sites.php"
+      command => "/bin/cp ${distro_root}/${name}/${distro_docroot}/sites/example.sites.php ${distro_root}/${name}/${distro_docroot}/sites/sites.php"
     }
 
     concat {"${distro_root}/${name}/${distro_docroot}/sites.php-settings":
