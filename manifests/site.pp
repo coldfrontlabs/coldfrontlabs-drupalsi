@@ -228,6 +228,17 @@ define drupalsi::site (
     order   =>'0',
   }
 
+  concat {"${site_root}/sites/${sitessubdir}/settings.php":
+    ensure         => 'present',
+    path           => "${site_root}/sites/${sitessubdir}/settings.php",
+    ensure_newline => true,
+    mode           => '0440',
+    replace        => false,
+    backup         => false,
+    show_diff      => false,
+    group          => $webserver_user # @todo use def modififier collector to fix this to webserver user.
+  }
+
   concat {"${site_root}/sites/${sitessubdir}/settings.local.php":
     ensure         => 'present',
     path           => "${site_root}/sites/${sitessubdir}/settings.local.php",
@@ -239,9 +250,10 @@ define drupalsi::site (
     group          => $webserver_user # @todo use def modififier collector to fix this to webserver user.
   }
 
-  file_line {"drupalsi-${name}-settings-require}":
-    path => "${site_root}/sites/${sitessubdir}/settings.php",
-    line => "if (file_exists(__DIR__ . '/settings.local.php')) {include_once __DIR__ . '/settings.local.php';}",
+  concat::fragment {"drupalsi-${name}-settings-require}":
+    target  => "${site_root}/sites/${sitessubdir}/settings.php",
+    content => "if (file_exists(__DIR__ . '/settings.local.php')) {include_once __DIR__ . '/settings.local.php';}",
+    order   => '100',
   }
 
   # Add entries into sites.php
