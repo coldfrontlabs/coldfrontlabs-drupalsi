@@ -75,7 +75,9 @@ if [ -z "${drupal_user}" ] || [[ $(id -un "${drupal_user}" 2> /dev/null) != "${d
 fi
 
 printf "Checking Drupal version at "${drupal_path}"... ";
-dversion=$(drush core-status --format=json --root=${drupal_path} | jq '."drupal-version"' --raw-output | awk -F. '{print $1}')
+dstatus=$(drush core-status --format=json --root=${drupal_path})
+dversion=$(echo $dstatus | jq '."drupal-version"' --raw-output | awk -F. '{print $1}')
+private_files_path=$(echo $dstatus | jq '."private"' --raw-output)
 printf "Detected: "
 
 # Check which version we have.
@@ -240,8 +242,7 @@ done
 # Set permissions on private files path.
 # Ask drush where the files directories are.
 cd $drupal_path
-private_files_path="$(drush status | grep Private | grep -oP '[:][ ]+\K([^: ]*)')"
-if [ "$private_files_path" ] && [ -d "$private_files_path" ] && [ "$private_files_path" != "/" ]; then
+if [ "$private_files_path" ] && [ -d "$private_files_path" ] && [ "$private_files_path" == /var/www* ]; then
   chown -R ${drupal_user}:${httpd_group} ${private_files_path} &
   printf "Changing permissions of all files inside private files directory ${private_files_path} to rw-rw----...\n" && \
   printf "Changing permissions of private files directory and all directories inside ${private_files_path} to rwxrwx---...\n" && \
