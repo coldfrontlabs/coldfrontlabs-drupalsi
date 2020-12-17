@@ -242,7 +242,7 @@ done
 # Set permissions on private files path.
 # Ask drush where the files directories are.
 cd $drupal_path
-if [ "$private_files_path" ] && [ -d "$private_files_path" ] && [ "$private_files_path" == /var/www* ]; then
+if [ "$private_files_path" ] && [ -d "$private_files_path" ] && [[ "$private_files_path" == /var/www/* ]]; then
   chown -R ${drupal_user}:${httpd_group} ${private_files_path} &
   printf "Changing permissions of all files inside private files directory ${private_files_path} to rw-rw----...\n" && \
   printf "Changing permissions of private files directory and all directories inside ${private_files_path} to rwxrwx---...\n" && \
