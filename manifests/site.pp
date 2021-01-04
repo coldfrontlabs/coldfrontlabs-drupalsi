@@ -66,7 +66,7 @@ define drupalsi::site (
 
   # Build the public files directories
   if !$public_dir or empty($public_dir) {
-    $pubdir = "sites/${sitessubdir}/files"
+    $pubdir = "${site_root}/sites/${sitessubdir}/files"
   }
   else {
     # Check if absolute or relative.
@@ -82,29 +82,28 @@ define drupalsi::site (
         command => "mkdir -p ${public_dir}",
         creates => $public_dir,
         path    => ['/bin', '/usr/bin'],
+        before  => File["drupalsi-public-files-${name}"],
       }
 
-      file {"drupalsi-public-files-${name}":
-        ensure   => 'directory',
-        path     => $public_dir,
-        mode     => '0770',
-        #owner => $webserver_user,
-        recurse  => false,
-        require  => [
-          Exec["create-drupalsi-public-dir-${name}"],
-        ],
-        checksum => 'none',
+      # If the absolute path to the public files dir is outside the siteroot
+      # create a symlink to the directory.
+      if (!($site_root in $public_dir)) {
+        file {"create-drupalsi-public-dir-link-${name}":
+          ensure  => 'link',
+          target  => $public_dir,
+          require => File["drupalsi-public-files-${name}"],
+          path    => "${site_root}/sites/${sitessubdir}/files",
+        }
       }
     }
-    else {
-      $pubdir = $public_dir
-    }
+
+    $pubdir = $public_dir
   }
 
   if $pubdir {
     file {"drupalsi-public-files-${name}":
       ensure   => 'directory',
-      path     => "${site_root}/${pubdir}",
+      path     => $pubdir,
       mode     => '0770',
       #owner => $webserver_user,
       recurse  => false,
