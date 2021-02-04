@@ -10,7 +10,15 @@ define drupalsi::distro (
   $omit_files = {}
 )
 {
+
   include drush
+
+  if  $::osfamily == 'RedHat' {
+    $web_user = 'apache'
+  }
+  elsif $::osfamily == 'Debian' {
+    $web_user = 'www-data'
+  }
 
   # Steps:
   # 1. Check if the distro is already there
@@ -33,7 +41,7 @@ define drupalsi::distro (
       replace        => false,
       backup         => false,
       show_diff      => false,
-      group          => 'apache', # @todo use def modififier collector to fix this to webserver user.
+      group          => $web_user, # @todo use def modififier collector to fix this to webserver user.
     }
 
     concat {"${distro_root}/${distro_docroot}/sites.php":
@@ -44,7 +52,7 @@ define drupalsi::distro (
       replace        => false,
       backup         => false,
       show_diff      => true,
-      group          => 'apache', # @todo use def modififier collector to fix this to webserver user.
+      group          => $web_user, # @todo use def modififier collector to fix this to webserver user.
       require        => Exec["create-${buildname}-sites.php"],
     }
   }
