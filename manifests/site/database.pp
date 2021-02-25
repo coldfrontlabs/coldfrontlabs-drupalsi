@@ -10,7 +10,7 @@ define drupalsi::site::database(
   String $dbhost = 'localhost',
   Integer $port = 3306,
   Enum['mysql', 'pgsql', 'sqlite'] $driver = 'mysql',
-  String $collation = 'utf8mb4_general_ci',
+  String $collation = '',
   Hash $settings = {},
 ) {
 

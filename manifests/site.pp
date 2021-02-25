@@ -99,7 +99,7 @@ define drupalsi::site (
 
     # Build the command strings.
     $command = "drush --quiet --yes --root=${site_root} cron"
-    $run_command = '/usr/bin/env PATH=$path COLUMNS=72'
+    $run_command = '/usr/bin/env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin COLUMNS=72'
 
     cron {"drupalsi-site-cron-${name}":
       ensure   => 'present',
