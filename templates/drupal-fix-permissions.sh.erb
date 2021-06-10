@@ -209,6 +209,21 @@ if [ -d "${drupal_path}/../samlconf" ]; then
 
 fi
 
+# Static HTML directories.
+if [ -d "${drupal_path}/../static" ]; then
+  chown -R ${drupal_user}:${httpd_group} ${drupal_path}/../static &
+  # Set the right permissions.
+  printf "Grant access to apache to parent folder "${drupal_path}/.." \n"
+  chown ${drupal_user}:${httpd_group} ${drupal_path}/..
+  chmod u=rwx,g=rx,o= ${drupal_path}/..
+  
+  printf "Changing permissions of all directories inside "${drupal_path}/../static" to "rwxr-x---"...\n"
+  find ${drupal_path}/../static -type d ! -name . -exec chmod u=rwx,g=rx,o= '{}' +
+
+  printf "Changing permissions of all files inside "${drupal_path}/../static" to "rw-r-----"...\n"
+  find ${drupal_path}/../static -type f -exec chmod u=rw,g=r,o= '{}' +
+
+fi
 
 # Restore SELinux modes for all directories.
 command_exists restorecon && \
