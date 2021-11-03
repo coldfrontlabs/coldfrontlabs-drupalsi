@@ -4,7 +4,7 @@ class drupalsi () {
   include drush
   
   # Assume jq is available. If other modules want to fix deps go for it.
-  ensure_packages('jq', {'ensure' => 'present'})
+  ensure_packages('jq', {'ensure' => 'latest'})
 
   # Add the script to set the Drupal directory permissions.
   file {'drupal-fix-permissions-script':
@@ -16,9 +16,6 @@ class drupalsi () {
 
   $distros = hiera_hash('drupalsi::distros', {})
   create_resources(drupalsi::distro, $distros)
-
-  $profiles = hiera_hash('drupalsi::profiles', {})
-  create_resources(drupalsi::profile, $profiles)
 
   $sites = hiera_hash('drupalsi::sites', {})
   create_resources(drupalsi::site, $sites)
