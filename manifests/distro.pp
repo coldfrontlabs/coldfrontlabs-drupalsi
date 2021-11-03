@@ -20,6 +20,12 @@ define drupalsi::distro ($distribution = 'drupal',
   if ($distro_build_type == 'composer' or $api_version == 8) {
     # Do nothing for now.
     # @todo run composer install or just leave it be?
+    exec {"composer-install-drush-${buildname}":
+       command => "composer create-project drupal/recommended-project ${name} -y",
+       cwd => $distro_root,
+       path => ['/usr/local/bin', '/usr/bin'],
+       creates => "${distro_root}/${name}",
+    }
   }
   elsif ($distro_build_type == 'get') {
 
