@@ -75,7 +75,9 @@ if [ -z "${drupal_user}" ] || [[ $(id -un "${drupal_user}" 2> /dev/null) != "${d
 fi
 
 printf "Checking Drupal version at "${drupal_path}"... ";
-dversion=$(drush core-status --format=json --root=${drupal_path} | jq '."drupal-version"' --raw-output | awk -F. '{print $1}')
+dstatus=$(drush core-status --format=json --root=${drupal_path})
+dversion=$(echo $dstatus | jq '."drupal-version"' --raw-output | awk -F. '{print $1}')
+private_files_path=$(echo $dstatus | jq '."private"' --raw-output)
 printf "Detected: "
 
 # Check which version we have.
@@ -207,6 +209,21 @@ if [ -d "${drupal_path}/../samlconf" ]; then
 
 fi
 
+# Static HTML directories.
+if [ -d "${drupal_path}/../static" ]; then
+  chown -R ${drupal_user}:${httpd_group} ${drupal_path}/../static &
+  # Set the right permissions.
+  printf "Grant access to apache to parent folder "${drupal_path}/.." \n"
+  chown ${drupal_user}:${httpd_group} ${drupal_path}/..
+  chmod u=rwx,g=rx,o= ${drupal_path}/..
+  
+  printf "Changing permissions of all directories inside "${drupal_path}/../static" to "rwxr-x---"...\n"
+  find ${drupal_path}/../static -type d ! -name . -exec chmod u=rwx,g=rx,o= '{}' +
+
+  printf "Changing permissions of all files inside "${drupal_path}/../static" to "rw-r-----"...\n"
+  find ${drupal_path}/../static -type f -exec chmod u=rw,g=r,o= '{}' +
+
+fi
 
 # Restore SELinux modes for all directories.
 command_exists restorecon && \
@@ -235,6 +252,24 @@ for x in ./*/files; do
   find ${x} -type d -exec chmod ug=rwx,o= '{}' +
   # Don't need to set non-directory perms as they're already set above.
 done
+
+
+# Set permissions on private files path.
+# Ask drush where the files directories are.
+cd $drupal_path
+if [ "$private_files_path" ] && [ -d "$private_files_path" ] && [[ "$private_files_path" == /var/www/* ]]; then
+  chown -R ${drupal_user}:${httpd_group} ${private_files_path} &
+  printf "Changing permissions of all files inside private files directory ${private_files_path} to rw-rw----...\n" && \
+  printf "Changing permissions of private files directory and all directories inside ${private_files_path} to rwxrwx---...\n" && \
+  chmod u=rwx,g=rwx,o= ${private_files_path}
+  find ${private_files_path} -type d -exec chmod u=rwx,g=rwx,o= '{}' +
+  find ${private_files_path} -not -type d -exec chmod u=rw,g=rw,o= '{}' +
+  # Restore SELinux modes for private files directory.
+  command_exists restorecon && \
+    printf "Restoring SeLinux file contexts for ${private_files_path}, please wait...\n" && \
+    restorecon -RF ${private_files_path} &
+fi
+
 
 # Check permissions for supporting directories.
 if [ "$dversion" -eq 7 ] && [ -d "${drupal_path}/sites/all/vendor/bin" ]; then

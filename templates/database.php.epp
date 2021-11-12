@@ -1,0 +1,37 @@
+<%- | String $dbname,
+      String $database = 'default',
+      String $replica = 'default',
+      String $dbuser = '',
+      String $dbpass = '',
+      String $prefix = '',
+      String $dbhost = 'localhost',
+      Integer $port = 3306,
+      Enum['mysql', 'pgsql', 'sqlite'] $driver = 'mysql',
+      String $collation = 'utf8mb4_general_ci',
+      Hash $settings = {},
+      Boolean $use_env = false,
+| -%>
+$databases[<%= "'${database}'" -%>][<%= "'${replica}'" -%>] = [
+  'database' => <%= "'${dbname}'" -%>,
+  'driver' => <%= "'${driver}'" -%>,
+<% if !empty($dbuser) { -%>
+  'username' => <%= "'${dbuser}'" -%>,
+<% } -%>
+<% if !empty($dbpass) { -%>
+  'password' => <%= "'${dbpass}'" -%>,
+<% } -%>
+<% if !empty($prefix) { -%>
+  'prefix' => <%= "'${prefix}'" -%>,
+<% } -%>
+<% if !empty($port) { -%>
+  'port' => <%= $port -%>,
+<% } -%>
+<% if !empty($dbhost) { -%>
+  'host' => <%= "'${dbhost}'" -%>,
+<% } -%>
+<% if !empty($collation) { -%>
+  'collation' => <%= "'${collation}'" -%>,
+<% } -%>
+<%# @todo add support for additional db options. -%>
+];
+
