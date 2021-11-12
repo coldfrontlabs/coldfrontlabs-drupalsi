@@ -7,7 +7,8 @@ define drupalsi::distro (
   $distro_build_type = 'composer',
   $distro_build_location = 'https://updates.drupal.org/release-history', # deprecated.
   $distro_build_args = {},
-  $omit_files = {} #deprecated.
+  $omit_files = {}, #deprecated
+  $owner = 'apache',
 ) {
   include ::drush
 
@@ -32,6 +33,7 @@ define drupalsi::distro (
       command => "composer create-project drupal/recommended-project ${distro_root} --remove-vcs -y",
       path    => ['/usr/local/bin', '/usr/bin'],
       creates => $distro_root,
+      user    => $owner,
     }
 
     exec {"composer-require-drush-${buildname}":
@@ -40,6 +42,7 @@ define drupalsi::distro (
       path        => ['/usr/local/bin', '/usr/bin'],
       subscribe   => Exec["composer-install-drupal-${buildname}"],
       refreshonly => true,
+      user        => $owner
     }
   }
   elsif ($distro_build_type == 'git') {
