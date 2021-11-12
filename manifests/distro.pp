@@ -30,10 +30,11 @@ define drupalsi::distro (
     # Do nothing for now.
     # @todo run composer install or just leave it be?
     exec {"composer-install-drupal-${buildname}":
-      command => "composer create-project drupal/recommended-project ${distro_root} --remove-vcs",
-      path    => ['/usr/local/bin', '/usr/bin'],
-      creates => $distro_root,
-      user    => $owner,
+      command     => "composer create-project drupal/recommended-project ${distro_root} --remove-vcs",
+      path        => ['/usr/local/bin', '/usr/bin'],
+      creates     => $distro_root,
+      user        => $owner,
+      environment => ['HOME=/var/www'],
     }
 
     exec {"composer-require-drush-${buildname}":
@@ -42,7 +43,8 @@ define drupalsi::distro (
       path        => ['/usr/local/bin', '/usr/bin'],
       subscribe   => Exec["composer-install-drupal-${buildname}"],
       refreshonly => true,
-      user        => $owner
+      user        => $owner,
+      environment => ['HOME=/var/www'],
     }
   }
   elsif ($distro_build_type == 'git') {
