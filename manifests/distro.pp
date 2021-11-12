@@ -30,14 +30,14 @@ define drupalsi::distro (
     # Do nothing for now.
     # @todo run composer install or just leave it be?
     exec {"composer-install-drupal-${buildname}":
-      command => "composer create-project drupal/recommended-project ${distro_root} --remove-vcs -y",
+      command => "composer create-project drupal/recommended-project ${distro_root} --remove-vcs",
       path    => ['/usr/local/bin', '/usr/bin'],
       creates => $distro_root,
       user    => $owner,
     }
 
     exec {"composer-require-drush-${buildname}":
-      command     => 'composer require drush/drush -y',
+      command     => 'composer require drush/drush',
       cwd         => $distro_root,
       path        => ['/usr/local/bin', '/usr/bin'],
       subscribe   => Exec["composer-install-drupal-${buildname}"],
