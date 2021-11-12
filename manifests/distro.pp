@@ -20,17 +20,17 @@ define drupalsi::distro ($distribution = 'drupal',
   if ($distro_build_type == 'composer' or $api_version == 8) {
     # Do nothing for now.
     # @todo run composer install or just leave it be?
-    exec {"composer-install-drush-${buildname}":
+    exec {"composer-install-drupal-${buildname}":
        command => "composer create-project drupal/recommended-project ${name} -y",
        cwd => $distro_root,
        path => ['/usr/local/bin', '/usr/bin'],
-       creates => "${distro_root}/${name}",
+       creates => "${distro_root}/${name}/index.php",
     }
     exec {"composer-require-drush-${buildname}":
       command => "composer require drush/drush",
       cwd => "${distro_root}/${name}",
        path => ['/usr/local/bin', '/usr/bin'],
-       subscribe   => Exec["composer-install-drush-${buildname}"],
+       subscribe   => Exec["composer-install-drupal-${buildname}"],
        refreshonly => true,
     }
   }
