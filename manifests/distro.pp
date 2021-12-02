@@ -26,7 +26,7 @@ define drupalsi::distro (
   $buildname = md5("${distribution}-${api_version}-${distro_build_type}-${distro_root}-${distro_build_location}-${name}")
 
   # Drupal 8 always uses Composer.
-  if ($distro_build_type == 'composer' or $api_version >= 8) {
+  if ($distro_build_type == 'composer' or Integer($api_version) >= 8) {
     # Do nothing for now.
     # @todo run composer install or just leave it be?
     exec {"composer-install-drupal-${buildname}":
