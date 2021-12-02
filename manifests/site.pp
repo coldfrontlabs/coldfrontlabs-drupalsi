@@ -176,7 +176,7 @@ define drupalsi::site (
       }
     }
 
-    create_resources(drupalsi::site::site_alias, $site_alias, $site_alias_defaults)
-    create_resources(drupalsi::site::setting, $trusted_host)
+    ensure_resources(drupalsi::site::site_alias, $site_alias, $site_alias_defaults)
+    ensure_resources(drupalsi::site::setting, $trusted_host)
   }
 }
