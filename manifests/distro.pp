@@ -1,6 +1,7 @@
 # Defines a drupalsi::distro resource
 define drupalsi::distro (
   $distribution = 'drupal',
+  $dotenv = {},
   $api_version = 8,
   $distro_root = '/var/www/html/drupal',
   $distro_docroot = 'web',
@@ -80,12 +81,20 @@ define drupalsi::distro (
     command => "/bin/cp ${distro_root}/${distro_docroot}/sites/example.sites.php ${distro_root}/${distro_docroot}/sites/sites.php"
   }
 
+  # Add an env file.
   concat {"${distro_root}/.env":
     ensure_newline => true,
     replace        => false,
     backup         => false,
     show_diff      => false,
     group          => $web_user, # @todo use def modififier collector to fix this to webserver user.
+  }
+
+  # Add require env varialbes.
+  concat::fragment {"${distro_root}-envvars":
+    target  => "${distro_root}/.env",
+    content => dotenv($dotenv),
+    order   => '01'
   }
 
   concat {"${distro_root}/${distro_docroot}/sites.php":
