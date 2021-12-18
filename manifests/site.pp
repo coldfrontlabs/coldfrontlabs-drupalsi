@@ -13,6 +13,7 @@ define drupalsi::site (
   String $tmp_dir = '',
   Hash $cron_schedule = {},
   Hash $site_aliases = {},
+  Hash $dotenv = {},
   Boolean $auto_alias = true,
   Variant[Array[String], String] $local_settings = [],
   Array[String] $domain_names = [],
@@ -30,11 +31,10 @@ define drupalsi::site (
   include ::stdlib
 
   $distros = lookup('drupalsi::distros')
+  $distro_root = $distros[$distro]['distro_root']
 
   # Build the site root based on the distro information if siteroot is not specified.
   if (empty($siteroot)) {
-
-    $distro_root = $distros[$distro]['distro_root']
     $distro_docroot = empty($distros[$distro]['distro_docroot']) ? {
       true => 'web',
       false => $distros[$distro]['distro_docroot']
@@ -153,6 +153,13 @@ define drupalsi::site (
   $site_alias_defaults = {
     'directory' => $sitessubdir,
     'target' => "${site_root}/sites/sites.php",
+  }
+
+  # Add require env varialbes to the distro env file.
+  concat::fragment {"${name}-envvars":
+    target  => "${distro_root}/.env",
+    content => dotenv($dotenv),
+    order   => '05'
   }
 
   # Create the sites.php entries.
