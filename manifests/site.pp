@@ -132,6 +132,20 @@ define drupalsi::site (
     group          => $webserver_user # @todo use def modififier collector to fix this to webserver user.
   }
 
+  # Populate the settings.php file with the default values.
+  concat::fragment {"drupalsi-${name}-default-settings-php":
+    target => "${site_root}/sites/${sitessubdir}/settings.php",
+    source => "${site_root}/sites/${sitessubdir}/default.settings.php",
+    order  => '0'
+  }
+
+  # Add reference to settings.local.php
+  concat::fragment {"drupalsi-${name}-settings-require}":
+    target  => "${site_root}/sites/${sitessubdir}/settings.php",
+    content => "if (file_exists(__DIR__ . '/settings.local.php')) {include_once __DIR__ . '/settings.local.php';}",
+    order   => '100',
+  }
+
   concat {"${site_root}/sites/${sitessubdir}/settings.local.php":
     ensure         => 'present',
     path           => "${site_root}/sites/${sitessubdir}/settings.local.php",
@@ -141,12 +155,6 @@ define drupalsi::site (
     backup         => false,
     show_diff      => false,
     group          => $webserver_user # @todo use def modififier collector to fix this to webserver user.
-  }
-
-  concat::fragment {"drupalsi-${name}-settings-require}":
-    target  => "${site_root}/sites/${sitessubdir}/settings.php",
-    content => "if (file_exists(__DIR__ . '/settings.local.php')) {include_once __DIR__ . '/settings.local.php';}",
-    order   => '100',
   }
 
   # Add entries into sites.php
