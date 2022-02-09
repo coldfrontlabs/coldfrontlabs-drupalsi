@@ -36,7 +36,7 @@ define drupalsi::distro (
       creates     => $distro_root,
       user        => $web_user,
       environment => ['HOME=/var/www'],
-      require => Class['::php'],
+      require     => Class['::php'],
     }
 
     exec {"composer-require-drush-${buildname}":
