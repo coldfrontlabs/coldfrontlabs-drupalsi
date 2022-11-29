@@ -30,6 +30,15 @@ define drupalsi::distro (
   if ($distro_build_type == 'composer' or Integer($api_version) >= 8) {
     # Do nothing for now.
     # @todo run composer install or just leave it be?
+    exec {"composer-require-cleanenv-${buildname}":
+      command     => 'rm -f .env',
+      cwd         => $distro_root,
+      path        => ['/usr/local/bin', '/usr/bin', '/bin'],
+      refreshonly => true,
+      environment => ['HOME=/var/www'],
+      before      => Exec["composer-install-drupal-${buildname}"],
+    }
+
     exec {"composer-install-drupal-${buildname}":
       command     => "composer create-project drupal/recommended-project ${distro_root} --remove-vcs",
       path        => ['/usr/local/bin', '/usr/bin'],
@@ -50,13 +59,6 @@ define drupalsi::distro (
       environment => ['HOME=/var/www'],
     }
 
-    exec {"composer-require-cleanenv-${buildname}":
-      command     => 'rm -f .env',
-      cwd         => $distro_root,
-      path        => ['/usr/local/bin', '/usr/bin', '/bin'],
-      refreshonly => true,
-      environment => ['HOME=/var/www'],
-    }
   }
   elsif ($distro_build_type == 'git') {
     include ::git
