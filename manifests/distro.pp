@@ -51,7 +51,7 @@ define drupalsi::distro (
     }
 
     exec {"composer-require-cleanenv-${buildname}":
-      command     => 'rm .env',
+      command     => 'rm -f .env',
       cwd         => $distro_root,
       path        => ['/usr/local/bin', '/usr/bin', '/bin'],
       refreshonly => true,
