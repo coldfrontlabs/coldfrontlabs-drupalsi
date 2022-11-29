@@ -33,7 +33,7 @@ define drupalsi::distro (
     exec {"composer-install-drupal-${buildname}":
       command     => "composer create-project drupal/recommended-project ${distro_root} --remove-vcs",
       path        => ['/usr/local/bin', '/usr/bin'],
-      creates     => $distro_root,
+      creates     => "${distro_root}/composer.json",
       user        => $web_user,
       environment => ['HOME=/var/www'],
       require     => Class['php']
