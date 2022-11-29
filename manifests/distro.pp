@@ -36,7 +36,8 @@ define drupalsi::distro (
       creates     => "${distro_root}/composer.json",
       user        => $web_user,
       environment => ['HOME=/var/www'],
-      require     => Class['php']
+      require     => Class['php'],
+      notify      => Exec["composer-require-cleanenv-${buildname}"],
     }
 
     exec {"composer-require-drush-${buildname}":
@@ -46,6 +47,14 @@ define drupalsi::distro (
       subscribe   => Exec["composer-install-drupal-${buildname}"],
       refreshonly => true,
       user        => $web_user,
+      environment => ['HOME=/var/www'],
+    }
+
+    exec {"composer-require-cleanenv-${buildname}":
+      command     => 'rm .env',
+      cwd         => $distro_root,
+      path        => ['/usr/local/bin', '/usr/bin', '/bin'],
+      refreshonly => true,
       environment => ['HOME=/var/www'],
     }
   }
