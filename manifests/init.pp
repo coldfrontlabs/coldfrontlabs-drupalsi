@@ -6,7 +6,7 @@ class drupalsi () {
   include ::drupalsi::distros
 
   # Assume jq is available. If other modules want to fix deps go for it.
-  ensure_packages('jq', {'ensure' => 'present'})
+  ensure_packages('jq')
 
   # Add the script to set the Drupal directory permissions.
   file {'drupal-fix-permissions-script':

@@ -13,6 +13,7 @@ define drupalsi::site (
   String $tmp_dir = '',
   Hash $cron_schedule = {},
   Hash $site_aliases = {},
+  Hash $dotenv = {},
   Boolean $auto_alias = true,
   Variant[Array[String], String] $local_settings = [],
   Array[String] $domain_names = [],
@@ -30,11 +31,10 @@ define drupalsi::site (
   include ::stdlib
 
   $distros = lookup('drupalsi::distros')
+  $distro_root = $distros[$distro]['distro_root']
 
   # Build the site root based on the distro information if siteroot is not specified.
   if (empty($siteroot)) {
-
-    $distro_root = $distros[$distro]['distro_root']
     $distro_docroot = empty($distros[$distro]['distro_docroot']) ? {
       true => 'web',
       false => $distros[$distro]['distro_docroot']
@@ -132,6 +132,20 @@ define drupalsi::site (
     group          => $webserver_user # @todo use def modififier collector to fix this to webserver user.
   }
 
+  # Populate the settings.php file with the default values.
+  concat::fragment {"drupalsi-${name}-default-settings-php":
+    target => "${site_root}/sites/${sitessubdir}/settings.php",
+    source => "${site_root}/sites/${sitessubdir}/default.settings.php",
+    order  => '0'
+  }
+
+  # Add reference to settings.local.php
+  concat::fragment {"drupalsi-${name}-settings-require}":
+    target  => "${site_root}/sites/${sitessubdir}/settings.php",
+    content => "if (file_exists(__DIR__ . '/settings.local.php')) {include_once __DIR__ . '/settings.local.php';}",
+    order   => '100',
+  }
+
   concat {"${site_root}/sites/${sitessubdir}/settings.local.php":
     ensure         => 'present',
     path           => "${site_root}/sites/${sitessubdir}/settings.local.php",
@@ -143,16 +157,17 @@ define drupalsi::site (
     group          => $webserver_user # @todo use def modififier collector to fix this to webserver user.
   }
 
-  concat::fragment {"drupalsi-${name}-settings-require}":
-    target  => "${site_root}/sites/${sitessubdir}/settings.php",
-    content => "if (file_exists(__DIR__ . '/settings.local.php')) {include_once __DIR__ . '/settings.local.php';}",
-    order   => '100',
-  }
-
   # Add entries into sites.php
   $site_alias_defaults = {
     'directory' => $sitessubdir,
     'target' => "${site_root}/sites/sites.php",
+  }
+
+  # Add require env varialbes to the distro env file.
+  concat::fragment {"${name}-envvars":
+    target  => "${distro_root}/.env",
+    content => dotenv($dotenv),
+    order   => '05'
   }
 
   # Create the sites.php entries.
@@ -176,7 +191,7 @@ define drupalsi::site (
       }
     }
 
-    create_resources(drupalsi::site::site_alias, $site_alias, $site_alias_defaults)
-    create_resources(drupalsi::site::setting, $trusted_host)
+    ensure_resources(drupalsi::site::site_alias, $site_alias, $site_alias_defaults)
+    ensure_resources(drupalsi::site::setting, $trusted_host)
   }
 }
