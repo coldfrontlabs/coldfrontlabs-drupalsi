@@ -41,7 +41,7 @@ define drupalsi::distro (
       command     => "composer create-project drupal/recommended-project ${distro_root} --remove-vcs",
       path        => ['/usr/local/bin', '/usr/bin'],
       creates     => "${distro_root}/composer.json",
-      user        => $web_user,
+      user        => $owner,
       environment => ['HOME=/var/www'],
       require     => Class['php'],
     }
@@ -52,7 +52,7 @@ define drupalsi::distro (
       path        => ['/usr/local/bin', '/usr/bin'],
       subscribe   => Exec["composer-install-drupal-${buildname}"],
       refreshonly => true,
-      user        => $web_user,
+      user        => $owner,
       environment => ['HOME=/var/www'],
     }
 
