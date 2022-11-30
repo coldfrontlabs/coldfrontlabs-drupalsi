@@ -30,13 +30,21 @@ define drupalsi::distro (
   if ($distro_build_type == 'composer' or Integer($api_version) >= 8) {
     # Do nothing for now.
     # @todo run composer install or just leave it be?
-    exec {"composer-install-drupal-${buildname}":
+    exec {"composer-require-cleanenv-${buildname}":
+      command     => 'rm -f .env',
+      cwd         => $distro_root,
+      path        => ['/usr/local/bin', '/usr/bin', '/bin'],
+      creates     => "${distro_root}/composer.json",
+      environment => ['HOME=/var/www'],
+    }
+    ~> exec {"composer-install-drupal-${buildname}":
       command     => "rm -f .env && composer create-project drupal/recommended-project ${distro_root} --remove-vcs",
       path        => ['/usr/local/bin', '/usr/bin'],
       creates     => "${distro_root}/composer.json",
       user        => $web_user,
       environment => ['HOME=/var/www'],
       require     => Class['php'],
+      notify      => Exec["composer-require-cleanenv-${buildname}"],
     }
 
     exec {"composer-require-drush-${buildname}":
