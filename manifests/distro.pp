@@ -97,6 +97,7 @@ define drupalsi::distro (
     backup         => false,
     show_diff      => false,
     group          => $web_user, # @todo use def modififier collector to fix this to webserver user.
+    require        => Exec["composer-install-drupal-${buildname}"] #@todo generalize to work with git clone too.
   }
 
   # Add require env varialbes.
