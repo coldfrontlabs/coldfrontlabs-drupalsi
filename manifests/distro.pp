@@ -44,7 +44,6 @@ define drupalsi::distro (
       user        => $web_user,
       environment => ['HOME=/var/www'],
       require     => Class['php'],
-      notify      => Exec["composer-require-cleanenv-${buildname}"],
     }
 
     exec {"composer-require-drush-${buildname}":
