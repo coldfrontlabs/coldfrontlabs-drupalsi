@@ -1,7 +1,7 @@
 # Defines a drupalsi::distro resource
 define drupalsi::distro (
   $distribution = 'drupal',
-  $dotenv = {},
+  $env = {},
   $api_version = 8,
   $distro_root = '/var/www/html/drupal',
   $distro_docroot = 'web',
@@ -103,7 +103,7 @@ define drupalsi::distro (
   # Add require env varialbes.
   concat::fragment {"${distro_root}-envvars":
     target  => "${distro_root}/.env",
-    content => dotenv($dotenv),
+    content => dotenv($env),
     order   => '01'
   }
 
