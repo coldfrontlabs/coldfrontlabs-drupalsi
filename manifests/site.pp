@@ -13,7 +13,7 @@ define drupalsi::site (
   String $tmp_dir = '',
   Hash $cron_schedule = {},
   Hash $site_aliases = {},
-  Hash $dotenv = {},
+  Hash $env = {},
   Boolean $auto_alias = true,
   Variant[Array[String], String] $local_settings = [],
   Array[String] $domain_names = [],
@@ -166,7 +166,7 @@ define drupalsi::site (
   # Add require env varialbes to the distro env file.
   concat::fragment {"${name}-envvars":
     target  => "${distro_root}/.env",
-    content => dotenv($dotenv),
+    content => dotenv($env),
     order   => '05'
   }
 
