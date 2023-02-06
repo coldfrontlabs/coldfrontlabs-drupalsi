@@ -7,7 +7,8 @@ define drupalsi::distro (
   $distro_build_type = 'get',
   $distro_build_location = 'https://updates.drupal.org/release-history',
   $distro_build_args = {},
-  $omit_files = {}
+  $omit_files = {},
+  $env = {}
 )
 {
 
@@ -42,6 +43,12 @@ define drupalsi::distro (
       backup         => false,
       show_diff      => false,
       group          => $web_user, # @todo use def modififier collector to fix this to webserver user.
+    }
+
+    concat::fragment {"${buildname}-env":
+      target  => "${distro_root}/.env",
+      content => dotenv($env),
+      order   => '01'
     }
 
     concat {"${distro_root}/${distro_docroot}/sites.php":
