@@ -81,12 +81,16 @@ private_files_path=$(echo $dstatus | jq '."private"' --raw-output)
 printf "Detected: "
 
 # Check which version we have.
-if [[ "$dversion" -eq 8 ]]; then
-  printf "Drupal 8.\n";
-elif [[ "$dversion" -eq 7 ]]; then
+if [[ "$dversion" -eq 7 ]]; then
   printf "Drupal 7.\n"
+elif [[ "$dversion" -eq 8 ]]; then
+  printf "Drupal 8.\n";
 elif [[ "$dversion" -eq 9 ]]; then
   printf "Drupal 9.\n";
+elif [[ "$dversion" -eq 10 ]]; then
+  printf "Drupal 10.\n";
+elif [[ "$dversion" -eq 11 ]]; then
+  printf "Drupal 11.\n";
 else
   printf "Drupal version was not detected.\n"
   exit 1
