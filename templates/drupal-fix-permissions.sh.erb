@@ -75,7 +75,7 @@ if [ -z "${drupal_user}" ] || [[ $(id -un "${drupal_user}" 2> /dev/null) != "${d
 fi
 
 printf "Checking Drupal version at "${drupal_path}"... ";
-dstatus=$(drush core-status --format=json --root=${drupal_path})
+dstatus=$(drush core-status --format=json --root=${drupal_path} 2>/dev/null)
 dversion=$(echo $dstatus | jq '."drupal-version"' --raw-output | awk -F. '{print $1}')
 private_files_path=$(echo $dstatus | jq '."private"' --raw-output)
 printf "Detected: "
