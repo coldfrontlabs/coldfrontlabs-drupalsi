@@ -4,6 +4,7 @@ define drupalsi::site::setting(
   Variant[Array[String], String] $key,
   Variant[Hash, String] $value,
   Boolean $append = false,
+  Integer $order = 10,
 ) {
 
   # @todo support nested key values and values.
@@ -18,6 +19,6 @@ define drupalsi::site::setting(
   concat::fragment {$settingname:
     target  => $target,
     content => $content,
-    order   => 10,
+    order   => $order,
   }
 }
