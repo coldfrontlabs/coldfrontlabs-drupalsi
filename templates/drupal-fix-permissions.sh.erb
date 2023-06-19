@@ -181,6 +181,22 @@ if [ "$dversion" -ge 8 ] && [ -d "${drupal_path}/../config" ]; then
 
 fi
 
+# Service directories.
+if [ "$dversion" -ge 8 ] && [ -d "${drupal_path}/../services" ]; then
+  chown -R ${drupal_user}:${httpd_group} ${drupal_path}/../services &
+  # Set the right permissions.
+  printf "Grant access to apache to parent folder "${drupal_path}/.." \n" && \
+  chown ${drupal_user}:${httpd_group} ${drupal_path}/..
+  chmod u=rwx,g=rx,o= ${drupal_path}/..
+  
+  printf "Changing permissions of all directories inside "${drupal_path}/../services" to "rwxr-x---"...\n"  && \
+  find ${drupal_path}/../services -type d ! -name . -exec chmod u=rwx,g=rx,o= '{}' +
+
+  printf "Changing permissions of all files inside "${drupal_path}/../services" to "rw-r-----"...\n"  && \
+  find ${drupal_path}/../services -type f -exec chmod u=rw,g=r,o= '{}' +
+
+fi
+
 # Drush directories.
 if [ -d "${drupal_path}/../drush" ]; then
   chown -R ${drupal_user}:${httpd_group} ${drupal_path}/../drush &
