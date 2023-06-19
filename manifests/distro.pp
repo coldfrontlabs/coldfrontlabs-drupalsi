@@ -95,6 +95,7 @@ define drupalsi::distro (
     ensure_newline => true,
     replace        => false,
     backup         => false,
+    order          => 'numeric',
     show_diff      => false,
     group          => $web_user, # @todo use def modififier collector to fix this to webserver user.
     require        => Exec["composer-install-drupal-${buildname}"] #@todo generalize to work with git clone too.
@@ -104,7 +105,7 @@ define drupalsi::distro (
   concat::fragment {"${distro_root}-envvars":
     target  => "${distro_root}/.env",
     content => dotenv($env),
-    order   => '01'
+    order   => 1
   }
 
   concat {"${distro_root}/${distro_docroot}/sites.php":
@@ -112,6 +113,7 @@ define drupalsi::distro (
     path           => "${distro_root}/${distro_docroot}/sites/sites.php",
     mode           => '0640',
     ensure_newline => true,
+    order          => 'numeric',
     replace        => false,
     backup         => false,
     show_diff      => true,
