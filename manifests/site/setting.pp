@@ -18,6 +18,6 @@ define drupalsi::site::setting(
   concat::fragment {$settingname:
     target  => $target,
     content => $content,
-    order   => '10',
+    order   => 10,
   }
 }
