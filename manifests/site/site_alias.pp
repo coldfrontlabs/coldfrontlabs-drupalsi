@@ -27,6 +27,6 @@ define drupalsi::site::site_alias(
   concat::fragment {$name:
     content => $parsed_alias,
     target  => $target,
-    order   => '10'
+    order   => 10
   }
 }
