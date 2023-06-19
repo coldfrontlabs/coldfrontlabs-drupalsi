@@ -28,7 +28,7 @@ define drupalsi::site::database(
       'driver'   => $driver,
     }),
     target  => $target,
-    order   => '10',
+    order   => 10,
   }
 
 }

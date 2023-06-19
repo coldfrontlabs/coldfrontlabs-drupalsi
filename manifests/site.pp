@@ -118,7 +118,7 @@ define drupalsi::site (
   concat::fragment {"drupalsi-${name}-local-settings":
     target  => "${site_root}/sites/${sitessubdir}/settings.local.php",
     content => template('drupalsi/settings.local.php.erb'),
-    order   =>'0',
+    order   => 0,
   }
 
   concat {"${site_root}/sites/${sitessubdir}/settings.php":
@@ -126,6 +126,7 @@ define drupalsi::site (
     path           => "${site_root}/sites/${sitessubdir}/settings.php",
     ensure_newline => true,
     mode           => '0440',
+    order          => 'numeric',
     replace        => false,
     backup         => false,
     show_diff      => false,
@@ -136,14 +137,14 @@ define drupalsi::site (
   concat::fragment {"drupalsi-${name}-default-settings-php":
     target => "${site_root}/sites/${sitessubdir}/settings.php",
     source => "${site_root}/sites/${sitessubdir}/default.settings.php",
-    order  => '0'
+    order  => 0
   }
 
   # Add reference to settings.local.php
   concat::fragment {"drupalsi-${name}-settings-require}":
     target  => "${site_root}/sites/${sitessubdir}/settings.php",
     content => "if (file_exists(__DIR__ . '/settings.local.php')) {include_once __DIR__ . '/settings.local.php';}",
-    order   => '100',
+    order   => 100,
   }
 
   concat {"${site_root}/sites/${sitessubdir}/settings.local.php":
@@ -151,6 +152,7 @@ define drupalsi::site (
     path           => "${site_root}/sites/${sitessubdir}/settings.local.php",
     ensure_newline => true,
     mode           => '0440',
+    order          => 'numeric',
     replace        => true,
     backup         => false,
     show_diff      => false,
@@ -167,7 +169,7 @@ define drupalsi::site (
   concat::fragment {"${name}-envvars":
     target  => "${distro_root}/.env",
     content => dotenv($env),
-    order   => '05'
+    order   => 5
   }
 
   # Create the sites.php entries.
