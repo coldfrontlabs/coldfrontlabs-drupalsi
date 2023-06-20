@@ -5,6 +5,7 @@ define drupalsi::site::setting(
   Variant[Hash, String] $value,
   Boolean $append = false,
   Integer $order = 10,
+  Boolean $raw = false,
 ) {
 
   # @todo support nested key values and values.
@@ -12,9 +13,14 @@ define drupalsi::site::setting(
   $settingname = md5("${target}-${key}-${value}-${append}")
   $setting = "\$settings['${key}']"
 
+  $wrapper = $raw ? {
+    true => "",
+    false => "'",
+  }
+
   $content = $append ? {
-    true => "${setting}[] = '${value}';",
-    false => "${setting} = '${value}';",
+    true => "${setting}[] = ${wrapper}${value}${wrapper};",
+    false => "${setting} = ${wrapper}${value}${wrapper};",
   }
   concat::fragment {$settingname:
     target  => $target,
