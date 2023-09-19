@@ -27,6 +27,7 @@ define drupalsi::site (
   String $site_name = '',
   String $account_name = '',
   String $db_url = '',
+  Enum['cron', 'cron-run', 'core:cron'] $cron_command = 'cron'
 ) {
   include ::stdlib
 
@@ -98,7 +99,7 @@ define drupalsi::site (
     }
 
     # Build the command strings.
-    $command = "drush --quiet --yes --root=${site_root} cron"
+    $command = "drush --quiet --yes --root=${site_root} ${cron_command}"
     $run_command = '/usr/bin/env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin COLUMNS=72'
 
     cron {"drupalsi-site-cron-${name}":
