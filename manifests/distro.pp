@@ -9,7 +9,7 @@ define drupalsi::distro (
   $distro_build_location = 'https://updates.drupal.org/release-history', # deprecated.
   $distro_build_args = {},
   $omit_files = {}, #deprecated
-  $owner = 'apache',
+  $owner = 'cibuild',
 ) {
   include ::drush
 
@@ -61,7 +61,7 @@ define drupalsi::distro (
     }
 
     exec {"composer-post-install-fix-perms-${buildname}":
-      command => "/usr/local/bin/drupal-fix-permissions.sh --drupal_user=${} --httpd_group=${}",
+      command => "/usr/local/bin/drupal-fix-permissions.sh --drupal_user=${owner} --httpd_group=${web_user}",
       cwd => "${distro_root}/web",
       refreshonly => true,
       require => File['drupal-fix-permissions-script']
