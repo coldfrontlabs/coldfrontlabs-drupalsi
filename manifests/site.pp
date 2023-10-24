@@ -131,7 +131,8 @@ define drupalsi::site (
     replace        => false,
     backup         => false,
     show_diff      => false,
-    group          => $webserver_user # @todo use def modififier collector to fix this to webserver user.
+    group          => $webserver_user # @todo use def modififier collector to fix this to webserver user.,
+    require        => Drupalsi::Distro[$distro],
   }
 
   # Populate the settings.php file with the default values.
