@@ -44,10 +44,13 @@ define drupalsi::distro (
       user        => $owner,
       environment => ['HOME=/var/www'],
       require     => Class['php'],
+      notify      => [
+        Exec["composer-require-drush-${buildname}"]
+      ],
     }
 
     exec {"composer-require-drush-${buildname}":
-      command     => 'composer require drush/drush',
+      command     => 'composer require "drush/drush:<12"',
       cwd         => $distro_root,
       path        => ['/usr/local/bin', '/usr/bin'],
       subscribe   => Exec["composer-install-drupal-${buildname}"],
