@@ -139,7 +139,6 @@ define drupalsi::site (
     target  => "${site_root}/sites/${sitessubdir}/settings.php",
     source  => "${site_root}/sites/${sitessubdir}/default.settings.php",
     order   => 0,
-    require => Drupalsi::Distro[$distro],
   }
 
   # Add reference to settings.local.php
@@ -159,7 +158,6 @@ define drupalsi::site (
     backup         => false,
     show_diff      => false,
     group          => $webserver_user, # @todo use def modififier collector to fix this to webserver user.
-    require        => Drupalsi::Distro[$distro]
   }
 
   # Add entries into sites.php
@@ -173,7 +171,6 @@ define drupalsi::site (
     target  => "${distro_root}/.env",
     content => dotenv($env),
     order   => 5,
-    require => Drupalsi::Distro[$distro]
   }
 
   # Create the sites.php entries.
@@ -194,7 +191,6 @@ define drupalsi::site (
         'value'  => "^${trusted_regex}\$",
         'append' => true,
         'target' => "${site_root}/sites/${sitessubdir}/settings.local.php",
-        require  => Drupalsi::Distro[$distro]
       }
     }
 
