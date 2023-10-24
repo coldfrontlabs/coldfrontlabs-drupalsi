@@ -57,14 +57,7 @@ define drupalsi::distro (
       refreshonly => true,
       user        => $owner,
       environment => ['HOME=/var/www'],
-      notify      => Exec["composer-post-install-fix-perms-${buildname}"],
-    }
-
-    exec {"composer-post-install-fix-perms-${buildname}":
-      command => "/bin/sudo /usr/local/bin/drupal-fix-permissions.sh --drupal_user=${owner} --httpd_group=${web_user}",
-      cwd => "${distro_root}/web",
-      refreshonly => true,
-      require => File['drupal-fix-permissions-script']
+      notify      => Exec["distro-fix-perms-${buildname}"],
     }
 
   }
@@ -101,6 +94,13 @@ define drupalsi::distro (
     command => "/bin/cp ${distro_root}/${distro_docroot}/sites/example.sites.php ${distro_root}/${distro_docroot}/sites/sites.php"
   }
 
+  exec {"distro-fix-perms-${buildname}":
+    command => "/bin/sudo /usr/local/bin/drupal-fix-permissions.sh --drupal_user=${owner} --httpd_group=${web_user}",
+    cwd => "${distro_root}/${distro_docroot}",
+    refreshonly => true,
+    require => File['drupal-fix-permissions-script']
+  }
+
   # Add an env file.
   concat {"${distro_root}/.env":
     ensure_newline => true,
@@ -119,7 +119,7 @@ define drupalsi::distro (
     order   => 1
   }
 
-  concat {"${distro_root}/${distro_docroot}/sites.php":
+  concat {"${distro_root}/${distro_docroot}/sites/sites.php":
     ensure         => 'present',
     path           => "${distro_root}/${distro_docroot}/sites/sites.php",
     mode           => '0640',
@@ -130,6 +130,7 @@ define drupalsi::distro (
     show_diff      => true,
     group          => $web_user, # @todo use def modififier collector to fix this to webserver user.
     require        => Exec["create-${buildname}-sites.php"],
+    notify         => Exec["distro-fix-perms-${buildname}"],
   }
 }
 
