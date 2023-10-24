@@ -132,7 +132,7 @@ define drupalsi::site (
     backup         => false,
     show_diff      => false,
     group          => $webserver_user, # @todo use def modififier collector to fix this to webserver user.
-    notify         => Exec["distro-fix-perms-${buildname}"],
+    notify         => Exec["distro-fix-perms-${distro}"],
   }
 
   # Populate the settings.php file with the default values.
@@ -159,7 +159,7 @@ define drupalsi::site (
     backup         => false,
     show_diff      => false,
     group          => $webserver_user, # @todo use def modififier collector to fix this to webserver user.
-    notify         => Exec["distro-fix-perms-${buildname}"]
+    notify         => Exec["distro-fix-perms-${distro}"]
   }
 
   # Add entries into sites.php
