@@ -57,6 +57,14 @@ define drupalsi::distro (
       refreshonly => true,
       user        => $owner,
       environment => ['HOME=/var/www'],
+      notify      => Exec["composer-post-install-fix-perms-${buildname}"],
+    }
+
+    exec {"composer-post-install-fix-perms-${buildname}":
+      command => "/usr/local/bin/drupal-fix-permissions.sh --drupal_user=${} --httpd_group=${}",
+      cwd => "${distro_root}/web",
+      refreshonly => true,
+      require => File['drupal-fix-permissions-script']
     }
 
   }
