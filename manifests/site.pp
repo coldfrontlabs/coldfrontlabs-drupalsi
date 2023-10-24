@@ -172,7 +172,7 @@ define drupalsi::site (
   concat::fragment {"${name}-envvars":
     target  => "${distro_root}/.env",
     content => dotenv($env),
-    order   => 5
+    order   => 5,
     require => Drupalsi::Distro[$distro]
   }
 
@@ -193,7 +193,7 @@ define drupalsi::site (
         'key'    => 'trusted_host_patterns',
         'value'  => "^${trusted_regex}\$",
         'append' => true,
-        'target' => "${site_root}/sites/${sitessubdir}/settings.local.php"
+        'target' => "${site_root}/sites/${sitessubdir}/settings.local.php",
         require  => Drupalsi::Distro[$distro]
       }
     }
