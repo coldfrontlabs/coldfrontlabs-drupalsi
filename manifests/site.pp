@@ -131,14 +131,14 @@ define drupalsi::site (
     replace        => false,
     backup         => false,
     show_diff      => false,
-    group          => $webserver_user # @todo use def modififier collector to fix this to webserver user.
+    group          => $webserver_user, # @todo use def modififier collector to fix this to webserver user.
   }
 
   # Populate the settings.php file with the default values.
   concat::fragment {"drupalsi-${name}-default-settings-php":
-    target => "${site_root}/sites/${sitessubdir}/settings.php",
-    source => "${site_root}/sites/${sitessubdir}/default.settings.php",
-    order  => 0
+    target  => "${site_root}/sites/${sitessubdir}/settings.php",
+    source  => "${site_root}/sites/${sitessubdir}/default.settings.php",
+    order   => 0,
   }
 
   # Add reference to settings.local.php
@@ -157,7 +157,7 @@ define drupalsi::site (
     replace        => true,
     backup         => false,
     show_diff      => false,
-    group          => $webserver_user # @todo use def modififier collector to fix this to webserver user.
+    group          => $webserver_user, # @todo use def modififier collector to fix this to webserver user.
   }
 
   # Add entries into sites.php
@@ -170,7 +170,7 @@ define drupalsi::site (
   concat::fragment {"${name}-envvars":
     target  => "${distro_root}/.env",
     content => dotenv($env),
-    order   => 5
+    order   => 5,
   }
 
   # Create the sites.php entries.
@@ -187,10 +187,10 @@ define drupalsi::site (
 
     $trusted_host = {
       "${name}-${domain_name}" => {
-        'key' => 'trusted_host_patterns',
-        'value' => "^${trusted_regex}\$",
+        'key'    => 'trusted_host_patterns',
+        'value'  => "^${trusted_regex}\$",
         'append' => true,
-        'target' => "${site_root}/sites/${sitessubdir}/settings.local.php"
+        'target' => "${site_root}/sites/${sitessubdir}/settings.local.php",
       }
     }
 
