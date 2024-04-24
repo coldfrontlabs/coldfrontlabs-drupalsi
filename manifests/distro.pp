@@ -9,7 +9,7 @@ define drupalsi::distro (
   $distro_build_location = 'https://updates.drupal.org/release-history', # deprecated.
   $distro_build_args = {},
   $omit_files = {}, #deprecated
-  $owner = 'apache',
+  $owner = 'cibuild',
 ) {
   include ::drush
 
@@ -44,16 +44,20 @@ define drupalsi::distro (
       user        => $owner,
       environment => ['HOME=/var/www'],
       require     => Class['php'],
+      notify      => [
+        Exec["composer-require-drush-${buildname}"]
+      ],
     }
 
     exec {"composer-require-drush-${buildname}":
-      command     => 'composer require drush/drush',
+      command     => 'composer require "drush/drush:<12"',
       cwd         => $distro_root,
       path        => ['/usr/local/bin', '/usr/bin'],
       subscribe   => Exec["composer-install-drupal-${buildname}"],
       refreshonly => true,
       user        => $owner,
       environment => ['HOME=/var/www'],
+      notify      => Exec["distro-fix-perms-${buildname}"],
     }
 
   }
@@ -90,6 +94,13 @@ define drupalsi::distro (
     command => "/bin/cp ${distro_root}/${distro_docroot}/sites/example.sites.php ${distro_root}/${distro_docroot}/sites/sites.php"
   }
 
+  exec {"distro-fix-perms-${buildname}":
+    command => "/bin/sudo /usr/local/bin/drupal-fix-permissions.sh --drupal_user=${owner} --httpd_group=${web_user}",
+    cwd => "${distro_root}/${distro_docroot}",
+    refreshonly => true,
+    require => File['drupal-fix-permissions-script']
+  }
+
   # Add an env file.
   concat {"${distro_root}/.env":
     ensure_newline => true,
@@ -108,7 +119,7 @@ define drupalsi::distro (
     order   => 1
   }
 
-  concat {"${distro_root}/${distro_docroot}/sites.php":
+  concat {"${distro_root}/${distro_docroot}/sites/sites.php":
     ensure         => 'present',
     path           => "${distro_root}/${distro_docroot}/sites/sites.php",
     mode           => '0640',
@@ -119,6 +130,7 @@ define drupalsi::distro (
     show_diff      => true,
     group          => $web_user, # @todo use def modififier collector to fix this to webserver user.
     require        => Exec["create-${buildname}-sites.php"],
+    notify         => Exec["distro-fix-perms-${buildname}"],
   }
 }
 
