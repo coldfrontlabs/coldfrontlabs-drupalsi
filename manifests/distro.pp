@@ -37,8 +37,8 @@ define drupalsi::distro (
       creates     => "${distro_root}/composer.json",
       environment => ['HOME=/var/www'],
       require     => [
-        Php::Extensions['dom'],
-        Php::Extensions['pdo'],
+        Php::Extension['dom'],
+        Php::Extension['pdo'],
         Class['php::cli'],
       ],
     }
