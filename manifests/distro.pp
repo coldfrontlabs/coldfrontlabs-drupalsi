@@ -54,7 +54,7 @@ define drupalsi::distro (
     }
 
     exec {"composer-require-drush-${buildname}":
-      command     => 'composer require "drush/drush:<12"',
+      command     => 'composer require "drush/drush"',
       cwd         => $distro_root,
       path        => ['/usr/local/bin', '/usr/bin'],
       subscribe   => Exec["composer-install-drupal-${buildname}"],
@@ -95,7 +95,8 @@ define drupalsi::distro (
 
   exec {"create-${buildname}-sites.php":
     creates => "${distro_root}/${distro_docroot}/sites/sites.php",
-    command => "/bin/cp ${distro_root}/${distro_docroot}/sites/example.sites.php ${distro_root}/${distro_docroot}/sites/sites.php"
+    command => "/bin/cp ${distro_root}/${distro_docroot}/sites/example.sites.php ${distro_root}/${distro_docroot}/sites/sites.php",
+    require => File[$distro_root]
   }
 
   exec {"distro-fix-perms-${buildname}":
