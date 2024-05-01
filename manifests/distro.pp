@@ -36,6 +36,11 @@ define drupalsi::distro (
       path        => ['/usr/local/bin', '/usr/bin', '/bin'],
       creates     => "${distro_root}/composer.json",
       environment => ['HOME=/var/www'],
+      require     => [
+        Php::Extensions['dom'],
+        Php::Extensions['pdo'],
+        Class['php::cli'],
+      ],
     }
     ~> exec {"composer-install-drupal-${buildname}":
       command     => "composer create-project  --remove-vcs --no-cache --no-interaction drupal/recommended-project ${distro_root}",
@@ -50,7 +55,7 @@ define drupalsi::distro (
     }
 
     exec {"composer-require-drush-${buildname}":
-      command     => 'composer require "drush/drush:<12"',
+      command     => 'composer require "drush/drush"',
       cwd         => $distro_root,
       path        => ['/usr/local/bin', '/usr/bin'],
       subscribe   => Exec["composer-install-drupal-${buildname}"],
@@ -91,7 +96,15 @@ define drupalsi::distro (
 
   exec {"create-${buildname}-sites.php":
     creates => "${distro_root}/${distro_docroot}/sites/sites.php",
-    command => "/bin/cp ${distro_root}/${distro_docroot}/sites/example.sites.php ${distro_root}/${distro_docroot}/sites/sites.php"
+    command => "/bin/cp ${distro_root}/${distro_docroot}/sites/example.sites.php ${distro_root}/${distro_docroot}/sites/sites.php",
+    require => File[$distro_root]
+  }
+
+  exec {"distro-fix-perms-${buildname}":
+    command => "/bin/sudo /usr/local/bin/drupal-fix-permissions.sh --drupal_user=${owner} --httpd_group=${web_user}",
+    cwd => "${distro_root}/${distro_docroot}",
+    refreshonly => true,
+    require => File['drupal-fix-permissions-script']
   }
 
   exec {"distro-fix-perms-${buildname}":

@@ -116,19 +116,20 @@ if [ -d "${drupal_path}/../vendor" ]; then
   chmod g=rx ${drupal_path}/../vendor
 
   if [ -d "${drupal_path}/../vendor/bin" ]; then
-    printf "Changing permissions of vendor/bin directories in "${drupal_path}/../vendor/bin" to "u+x"...\n" && \
-    chmod -R u+x ${drupal_path}/../bin &
+    printf "Changing permissions of vendor/bin directories in "${drupal_path}/../vendor/bin" to "ug+x"...\n" && \
+    chmod -R ug+x ${drupal_path}/../bin &
   fi
 
 fi
 
 # Bin directories.
 if [ -d "${drupal_path}/../bin" ]; then
-  printf "Changing permissions of bin directories in "${drupal_path}/../bin" to "u+x"...\n" && \
-  chmod -R u+x ${drupal_path}/../bin &
+  printf "Changing permissions of bin directories in "${drupal_path}/../bin" to "ug+x"...\n" && \
+  chmod -R ug+x ${drupal_path}/../bin &
   # Set the right permissions.
   printf "Grant access to apache to parent folder "${drupal_path}/.." \n" && \
   chown ${drupal_user}:${httpd_group} ${drupal_path}/..
+  chown -R ${drupal_user}:${httpd_group} ${drupal_path}/../bin
   chmod u=rwx,g=rx,o= ${drupal_path}/..
 
 fi
