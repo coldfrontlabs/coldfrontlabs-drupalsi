@@ -39,6 +39,7 @@ define drupalsi::distro (
       require     => [
         Php::Extensions['dom'],
         Php::Extensions['pdo'],
+        Class['php::cli'],
       ],
     }
     ~> exec {"composer-install-drupal-${buildname}":
