@@ -107,13 +107,6 @@ define drupalsi::distro (
     require => File['drupal-fix-permissions-script']
   }
 
-  exec {"distro-fix-perms-${buildname}":
-    command => "/bin/sudo /usr/local/bin/drupal-fix-permissions.sh --drupal_user=${owner} --httpd_group=${web_user}",
-    cwd => "${distro_root}/${distro_docroot}",
-    refreshonly => true,
-    require => File['drupal-fix-permissions-script']
-  }
-
   # Add an env file.
   concat {"${distro_root}/.env":
     ensure_newline => true,
