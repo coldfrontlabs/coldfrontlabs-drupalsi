@@ -228,6 +228,16 @@ if [ -d "${drupal_path}/../samlconf" ]; then
   printf "Changing permissions of all files inside "${drupal_path}/../samlconf" to "rw-r-----"...\n"
   find ${drupal_path}/../samlconf -type f -exec chmod u=rw,g=r,o= '{}' +
 
+  if [ -d "${drupal_path}/../samlconf/log" ]; then
+    printf "Changing permissions of saml log directory inside "${drupal_path}/../samlconf" to "rwxrxx---"...\n"
+    chmod -R u=rwx,g=rwx,o= ${drupal_path}/../samlconf/log
+  fi
+
+  if [ -d "${drupal_path}/../samlconf/cache" ]; then
+    printf "Changing permissions of saml cache directory inside "${drupal_path}/../samlconf" to "rwxrxx---"...\n"
+    chmod -R u=rwx,g=rwx,o= ${drupal_path}/../samlconf/cache
+  fi
+
 fi
 
 # Static HTML directories.
