@@ -10,6 +10,7 @@ define drupalsi::distro (
   $distro_build_args = {},
   $omit_files = {}, #deprecated
   $owner = 'cibuild',
+  $manage_envfile = false
 ) {
   include ::drush
 
@@ -110,7 +111,7 @@ define drupalsi::distro (
   # Add an env file.
   concat {"${distro_root}/.env":
     ensure_newline => true,
-    replace        => false,
+    replace        => $manage_envfile,
     backup         => false,
     order          => 'numeric',
     show_diff      => false,
