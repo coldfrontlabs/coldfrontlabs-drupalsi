@@ -11,6 +11,7 @@ define drupalsi::site (
   String $public_dir = '',
   String $private_dir = '',
   String $tmp_dir = '',
+  Boolean $manage_cron = true,
   Hash $cron_schedule = {},
   Hash $site_aliases = {},
   Hash $env = {},
@@ -102,8 +103,14 @@ define drupalsi::site (
     $command = "drush --quiet --yes --root=${site_root} ${cron_command} &> /dev/null"
     $run_command = ''
 
+    $cron_ensure = $manage_cron ? {
+      true => 'present',
+      false => 'absent',
+      default => 'present',
+    }
+
     cron {"drupalsi-site-cron-${name}":
-      ensure   => 'present',
+      ensure   => $cron_ensure,
       command  => "${run_command} ${command}",
       environment => [
         'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
