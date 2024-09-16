@@ -10,7 +10,7 @@ define drupalsi::distro (
   $distro_build_args = {},
   $omit_files = {}, #deprecated
   $owner = 'cibuild',
-  $manage_envfile = false
+  Boolean $manage_envfile = false
 ) {
   include ::drush
 
