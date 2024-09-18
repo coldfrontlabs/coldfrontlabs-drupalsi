@@ -16,6 +16,16 @@ HELP
 exit 0
 }
 
+# Function which tests if a directory or file is on an NFS mount
+is_nfs_mount() {
+  local path=$1
+  if stat --file-system --format=%T "$path" | grep -q nfs; then
+    return 0
+  else
+    return 1
+  fi
+}
+
 # Tests the existance of commands on server.
 # Used to check if restorecon is available.
 command_exists () {
@@ -250,30 +260,36 @@ printf "Changing permissions of files directories in "${drupal_path}/sites" to "
 cd sites
 
 # Todo: Ask drush where the files are and set the perms there.
-printf "Changing permissions of all files inside all files directories in "${drupal_path}/sites" to "rw-rw----"...\n" && \
-printf "Changing permissions of all directories inside all files directories in "${drupal_path}/sites" to "rwxrwx---"...\n" && \
-for x in ./*/files; do
-  find ${x} -type d -exec chmod ug=rwx,o= '{}' +
-  # Don't need to set non-directory perms as they're already set above.
+for x in "${drupal_path}/sites"/*/files; do
+  if ! is_nfs_mount "$x"; then
+    printf "Changing permissions of all files inside '%s' to 'rw-rw----'...\n" "$x"
+    printf "Changing permissions of all directories inside '%s' to 'rwxrwx---'...\n" "$x"
+    
+    find "$x" -type d -exec chmod ug=rwx,o= '{}' +
+  else
+    printf "Skipping NFS mount at '%s'\n" "$x"
+  fi
 done
-
 
 # Set permissions on private files path.
 # Ask drush where the files directories are.
 cd $drupal_path
 if [ "$private_files_path" ] && [ -d "$private_files_path" ] && [[ "$private_files_path" == /var/www/* ]]; then
-  chown -R ${drupal_user}:${httpd_group} ${private_files_path} &
-  printf "Changing permissions of all files inside private files directory ${private_files_path} to rw-rw----...\n" && \
-  printf "Changing permissions of private files directory and all directories inside ${private_files_path} to rwxrwx---...\n" && \
-  chmod u=rwx,g=rwx,o= ${private_files_path}
-  find ${private_files_path} -type d -exec chmod u=rwx,g=rwx,o= '{}' +
-  find ${private_files_path} -not -type d -exec chmod u=rw,g=rw,o= '{}' +
-  # Restore SELinux modes for private files directory.
-  command_exists restorecon && \
-    printf "Restoring SeLinux file contexts for ${private_files_path}, please wait...\n" && \
-    restorecon -RF ${private_files_path} &
+  if ! is_nfs_mount "$private_files_path"; then
+    chown -R ${drupal_user}:${httpd_group} ${private_files_path} &
+    printf "Changing permissions of all files inside private files directory ${private_files_path} to rw-rw----...\n" && \
+    printf "Changing permissions of private files directory and all directories inside ${private_files_path} to rwxrwx---...\n" && \
+    chmod u=rwx,g=rwx,o= ${private_files_path}
+    find ${private_files_path} -type d -exec chmod u=rwx,g=rwx,o= '{}' +
+    find ${private_files_path} -not -type d -exec chmod u=rw,g=rw,o= '{}' +
+    # Restore SELinux modes for private files directory.
+    command_exists restorecon && \
+      printf "Restoring SeLinux file contexts for ${private_files_path}, please wait...\n" && \
+      restorecon -RF ${private_files_path} &
+  else
+    printf "Skipping NFS mount at '%s'\n" "$private_files_path"
+  fi
 fi
-
 
 # Check permissions for supporting directories.
 if [ "$dversion" -eq 7 ] && [ -d "${drupal_path}/sites/all/vendor/bin" ]; then
