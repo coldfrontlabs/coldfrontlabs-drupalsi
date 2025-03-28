@@ -173,7 +173,7 @@ if [ "$dversion" -ge 8 ] && [ -d "${drupal_path}/../config" ]; then
   printf "Grant access to apache to parent folder "${drupal_path}/.." \n" && \
   chown ${drupal_user}:${httpd_group} ${drupal_path}/..
   chmod u=rwx,g=rx,o= ${drupal_path}/..
-  
+
   printf "Changing permissions of all directories inside "${drupal_path}/../config" to "rwxr-x---"...\n"  && \
   find ${drupal_path}/../config -type d ! -name . -exec chmod u=rwx,g=rx,o= '{}' +
 
@@ -189,7 +189,7 @@ if [ "$dversion" -ge 8 ] && [ -d "${drupal_path}/../services" ]; then
   printf "Grant access to apache to parent folder "${drupal_path}/.." \n" && \
   chown ${drupal_user}:${httpd_group} ${drupal_path}/..
   chmod u=rwx,g=rx,o= ${drupal_path}/..
-  
+
   printf "Changing permissions of all directories inside "${drupal_path}/../services" to "rwxr-x---"...\n"  && \
   find ${drupal_path}/../services -type d ! -name . -exec chmod u=rwx,g=rx,o= '{}' +
 
@@ -205,7 +205,7 @@ if [ -d "${drupal_path}/../drush" ]; then
   printf "Grant access to apache to parent folder "${drupal_path}/.." \n"
   chown ${drupal_user}:${httpd_group} ${drupal_path}/..
   chmod u=rwx,g=rx,o= ${drupal_path}/..
-  
+
   printf "Changing permissions of all directories inside "${drupal_path}/../drush" to "rwxr-x---"...\n"
   find ${drupal_path}/../drush -type d ! -name . -exec chmod u=rwx,g=rx,o= '{}' +
 
@@ -221,7 +221,7 @@ if [ -d "${drupal_path}/../samlconf" ]; then
   printf "Grant access to apache to parent folder "${drupal_path}/.." \n"
   chown ${drupal_user}:${httpd_group} ${drupal_path}/..
   chmod u=rwx,g=rx,o= ${drupal_path}/..
-  
+
   printf "Changing permissions of all directories inside "${drupal_path}/../samlconf" to "rwxr-x---"...\n"
   find ${drupal_path}/../samlconf -type d ! -name . -exec chmod u=rwx,g=rx,o= '{}' +
 
@@ -247,12 +247,28 @@ if [ -d "${drupal_path}/../static" ]; then
   printf "Grant access to apache to parent folder "${drupal_path}/.." \n"
   chown ${drupal_user}:${httpd_group} ${drupal_path}/..
   chmod u=rwx,g=rx,o= ${drupal_path}/..
-  
+
   printf "Changing permissions of all directories inside "${drupal_path}/../static" to "rwxr-x---"...\n"
   find ${drupal_path}/../static -type d ! -name . -exec chmod u=rwx,g=rx,o= '{}' +
 
   printf "Changing permissions of all files inside "${drupal_path}/../static" to "rw-r-----"...\n"
   find ${drupal_path}/../static -type f -exec chmod u=rw,g=r,o= '{}' +
+
+fi
+
+# Default content directories.
+if [ -d "${drupal_path}/../default_content" ]; then
+  chown -R ${drupal_user}:${httpd_group} ${drupal_path}/../default_content &
+  # Set the right permissions.
+  printf "Grant access to apache to parent folder "${drupal_path}/.." \n"
+  chown ${drupal_user}:${httpd_group} ${drupal_path}/..
+  chmod u=rwx,g=rx,o= ${drupal_path}/..
+
+  printf "Changing permissions of all directories inside "${drupal_path}/../default_content" to "rwxr-x---"...\n"
+  find ${drupal_path}/../default_content -type d ! -name . -exec chmod u=rwx,g=rx,o= '{}' +
+
+  printf "Changing permissions of all files inside "${drupal_path}/../default_content" to "rw-r-----"...\n"
+  find ${drupal_path}/../default_content -type f -exec chmod u=rw,g=r,o= '{}' +
 
 fi
 
