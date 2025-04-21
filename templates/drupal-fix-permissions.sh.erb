@@ -147,6 +147,8 @@ if [ -f "${drupal_path}/../composer.json" ]; then
   if [ -f "${drupal_path}/../.env" ]; then
     chmod 640 ${drupal_path}/../.env
     chown ${drupal_user}:${httpd_group} ${drupal_path}/../.env
+    chmod 640 ${drupal_path}/../.env.*
+    chown ${drupal_user}:${httpd_group} ${drupal_path}/../.env.*
   fi
 fi
 
@@ -163,6 +165,8 @@ if [ -f "${drupal_path}/../load.environment.php" ]; then
   if [ -f "${drupal_path}/../.env" ]; then
     chmod 640 ${drupal_path}/../.env
     chown ${drupal_user}:${httpd_group} ${drupal_path}/../.env
+    chmod 640 ${drupal_path}/../.env.*
+    chown ${drupal_user}:${httpd_group} ${drupal_path}/../.env.*
   fi
 fi
 
@@ -315,7 +319,6 @@ if [ "$private_files_path" ] && [ -d "$private_files_path" ] && [[ "$private_fil
     printf "Restoring SeLinux file contexts for ${private_files_path}, please wait...\n" && \
     restorecon -RF ${private_files_path} &
 fi
-
 
 # Check permissions for supporting directories.
 if [ "$dversion" -eq 7 ] && [ -d "${drupal_path}/sites/all/vendor/bin" ]; then
