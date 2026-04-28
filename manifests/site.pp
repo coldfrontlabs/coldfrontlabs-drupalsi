@@ -101,7 +101,7 @@ define drupalsi::site (
 
     # Build the command strings.
     $command = "drush --quiet --yes --root=${site_root} ${cron_command} &> /dev/null"
-    $run_command = ''
+    $run_command = "drush --quiet --yes --root=${site_root} maint:status"
 
     $cron_ensure = $manage_cron ? {
       true => 'present',
@@ -111,7 +111,7 @@ define drupalsi::site (
 
     cron {"drupalsi-site-cron-${name}":
       ensure   => $cron_ensure,
-      command  => "${run_command} ${command}",
+      command  => "${run_command} && ${command}",
       environment => [
         'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
         'MAILTO=""',
